@@ -86,6 +86,8 @@ Adding, renaming or removing a reference touches more than one file:
       "What you get". This is the file readers see first, and the one that has already
       gone stale once (#5)
 - [ ] `docs/index.html` — refs grid card, section heading count, meta description count
+- [ ] GitHub repo description (the About field, via `gh repo edit`) — it quotes the
+      reference count and is not in git, so no checklist item in a PR can catch it
 - [ ] `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` — the description
       if it quotes a count, **and bump `version`**. Claude Code only ships updates to
       plugin installs when that field changes, so forgetting it silently pins every plugin
