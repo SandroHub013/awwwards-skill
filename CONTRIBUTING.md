@@ -45,8 +45,9 @@ Adding, renaming or removing a reference touches more than one file:
       plugin installs when that field changes, so forgetting it silently pins every plugin
       user to the previous snapshot (#8). Clone and one-liner installs are unaffected,
       which is exactly why this one goes unnoticed
-- [ ] `docs/og.png` — regenerate if the reference count changed. 1200×630, brand tokens
-      from `docs/styles.css`. No generator is committed; match the existing card's layout
+- [ ] `docs/og.png` — only if the card's copy changed. It deliberately quotes no counts,
+      so a new reference does not touch it. Regenerate from `docs/og.html`, which carries
+      the recipe in a comment and pulls the brand tokens from `docs/styles.css`
 - [ ] `assets/checklists/pre-flight.md` — if the change adds a shippable requirement
 - [ ] `assets/templates/README.md` — if templates are affected
 

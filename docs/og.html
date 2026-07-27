@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>og card source</title>
+<!--
+  Source for docs/og.png. Regenerate at exactly 1200x630:
+
+    npx serve docs -l 4180
+    chrome-devtools-axi newpage http://localhost:4180/og.html
+    chrome-devtools-axi emulate --viewport "1200x630x1"   # AFTER newpage, or it is ignored
+    chrome-devtools-axi screenshot <abs-path-without-spaces>/og.png
+
+  (screenshot silently fails on paths containing spaces — write to a temp
+  path, then copy into docs/.)
+
+  Deliberately states no reference count: a number here goes stale on every
+  new reference and nobody notices, because the card is only ever seen on
+  someone else's timeline.
+-->
+<link rel="stylesheet" href="./styles.css">
+<style>
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    margin: 0;
+    display: grid;
+    align-content: center;
+    gap: 1.5rem;
+    padding: 0 5rem;
+    background-attachment: scroll, scroll;
+  }
+  .og-eyebrow {
+    font-family: var(--mono);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: .28em;
+    color: var(--ink-faint);
+  }
+  .og-title {
+    font-size: 4.75rem;
+    font-weight: 560;
+    line-height: 1.03;
+    letter-spacing: -.042em;
+    max-width: 880px;
+  }
+  .og-title em { font-style: normal; color: var(--accent); }
+  .og-lede {
+    font-size: 1.45rem;
+    line-height: 1.35;
+    color: var(--ink-muted);
+    max-width: 46ch;
+  }
+  .og-foot {
+    position: absolute;
+    left: 5rem; right: 5rem; bottom: 3.4rem;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono); font-size: 1rem;
+    color: var(--ink-faint);
+  }
+  .og-foot b { color: var(--accent); font-weight: 400; }
+</style>
+</head>
+<body>
+  <p class="og-eyebrow">Claude Code skill</p>
+  <h1 class="og-title">Build websites to <em>jury standard.</em></h1>
+  <p class="og-lede">
+    The Awwwards rubric, encoded as a build method for AI coding agents.
+    Working templates, runnable browser audit.
+  </p>
+  <p class="og-foot">
+    <span>github.com/SandroHub013/<b>awwwards-skill</b></span>
+    <b>MIT</b>
+  </p>
+</body>
+</html>

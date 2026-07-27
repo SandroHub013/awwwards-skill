@@ -40,6 +40,8 @@ the emotional register (brutal / editorial / kinetic / quiet-luxury / retro-tech
 Write a one-sentence **concept statement** — if the site cannot be described in one
 sentence that is not "it has cool animations", it will not win.
 Read `references/01-scoring.md` and `references/02-concept.md`.
+To mine an awarded site for transferable reasoning first, use
+`references/18-deepdive.md` and the cards in `references/inspiration/`.
 
 ### Phase 1 — Art direction system
 Type scale, font pairing, color roles, grid, spacing rhythm, imagery direction, motion
@@ -111,6 +113,7 @@ These are hard rules. Violating any one of them caps the site below 7.
 | `references/15-audit.md` | Phase 6. Real-browser verification procedure |
 | `references/16-submission.md` | Phase 7. Submission playbook and timing |
 | `references/17-video.md` | Phase 3, video-led concepts. Encoding, HLS, previews, custom player |
+| `references/18-deepdive.md` | Phase 0, or on request. Dissect an awarded site into a reusable idea card |
 
 ## Reviewing an existing site
 
