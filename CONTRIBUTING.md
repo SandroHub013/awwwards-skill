@@ -1,8 +1,8 @@
 # Contributing
 
-Issues and PRs welcome, especially: corrections to the scoring facts, newer library
-versions, additional art-direction registers, and audit steps that catch something the
-current pass misses.
+Issues and PRs welcome. What this file adds to the README's Contributing section is the
+repo-specific conventions: how references are written, what has to stay in sync, and what
+gets rejected.
 
 ## Ground rules
 
@@ -36,11 +36,22 @@ editing one:
 Adding, renaming or removing a reference touches more than one file:
 
 - [ ] `SKILL.md` — reference map row, plus the workflow phase text that points to it
+- [ ] `README.md` — the reference table, and the count in the intro line and in
+      "What you get". This is the file readers see first, and the one that has already
+      gone stale once (#5)
 - [ ] `docs/index.html` — refs grid card, section heading count, meta description count
-- [ ] `docs/og.png` — regenerate if the reference count changed (see the file's history
-      for the recipe: 1200×630, brand tokens from `docs/styles.css`)
+- [ ] `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` — the description
+      if it quotes a count, **and bump `version`**. Claude Code only ships updates to
+      plugin installs when that field changes, so forgetting it silently pins every plugin
+      user to the previous snapshot (#8). Clone and one-liner installs are unaffected,
+      which is exactly why this one goes unnoticed
+- [ ] `docs/og.png` — regenerate if the reference count changed. 1200×630, brand tokens
+      from `docs/styles.css`. No generator is committed; match the existing card's layout
 - [ ] `assets/checklists/pre-flight.md` — if the change adds a shippable requirement
 - [ ] `assets/templates/README.md` — if templates are affected
+
+Both entries above that cite an issue number are there because the repo actually shipped
+that mistake. Add to this list the same way: after something breaks, not from memory.
 
 ## Commits and PRs
 
