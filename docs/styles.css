@@ -27,7 +27,7 @@
   --bg-sunk:   oklch(11% 0.008 265);
   --ink:       oklch(95% 0.006 100);
   --ink-muted: oklch(66% 0.010 265);
-  --ink-faint: oklch(50% 0.010 265);
+  --ink-faint: oklch(62% 0.010 265);
   --line:      oklch(26% 0.012 265);
   --line-soft: oklch(21% 0.010 265);
   --accent:    oklch(88% 0.19 108);
@@ -229,6 +229,13 @@ main { display: block; }
   overflow-x: auto; white-space: nowrap;
   scrollbar-width: thin;
 }
+@media (max-width: 40rem) {
+  /* Right-edge fade: signals the truncated command scrolls. */
+  .snippet code {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent);
+  }
+}
 .copy {
   flex: 0 0 auto;
   display: inline-flex; align-items: center; justify-content: center;
@@ -310,7 +317,7 @@ main { display: block; }
   align-items: baseline;
 }
 .field label { font-size: var(--step--1); }
-/* --ink-faint clears 4.5:1 on --bg but not on the elevated card surface. */
+/* --ink-faint measures ~5.3:1 on --bg and ~4.8:1 on --bg-elev: WCAG AA on both. */
 .field label i { font-style: normal; color: var(--ink-muted); font-family: var(--mono); margin-left: .4em; }
 .field output {
   font-family: var(--mono); font-variant-numeric: tabular-nums;
@@ -402,8 +409,11 @@ main { display: block; }
 
 /* ── proof table ────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
-.proof { width: 100%; border-collapse: collapse; font-size: var(--step--1); min-width: 34rem; }
+.proof { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
 .proof th, .proof td { padding: var(--space-s) var(--space-m); text-align: left; }
+@media (max-width: 40rem) {
+  .proof th, .proof td { padding: var(--space-s) var(--space-xs); }
+}
 .proof thead th {
   font-family: var(--mono); font-size: var(--step--2); text-transform: uppercase;
   letter-spacing: .12em; color: var(--ink-faint); font-weight: 400;
@@ -524,6 +534,10 @@ main { display: block; }
 @keyframes reveal {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: none; }
+}
+
+@media print {
+  [data-reveal] { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
