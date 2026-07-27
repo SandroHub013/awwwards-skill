@@ -118,9 +118,10 @@ highest-leverage fixes. No invented numbers.
 
 The [showcase page](https://sandrohub013.github.io/awwwards-skill/) was built with the skill
 and audited by it. Lighthouse, verified: **Accessibility 100 · Best Practices 100 · SEO 100**,
-0 failed audits, LCP 0.22 s, CLS 0.000, and it ships **zero animation libraries** — because
-reference 06 says pick the smallest stack that expresses the concept, and a documentation
-page is not a spatial experience. It also reports its own live metrics, in the page.
+0 failed audits. Live on GitHub Pages it loads in **15 KB total** (2.8 KB of JavaScript) with
+LCP 0.48 s and CLS 0.000, and it ships **zero animation libraries**, because reference 06 says
+pick the smallest stack that expresses the concept and a documentation page is not a spatial
+experience. It also reports its own live metrics, in the page, measured on your device.
 
 ## Non-negotiables
 

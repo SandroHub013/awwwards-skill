@@ -150,10 +150,9 @@ function initMetrics() {
       const entries = performance.getEntriesByType("resource");
       const nav = performance.getEntriesByType("navigation")[0];
 
-      // Deliberately encodedBodySize, not transferSize: a cached reload reports a
-      // ~300-byte revalidation and a compressed first load reports the gzip size,
-      // so neither is stable enough to publish. The uncompressed body is an honest
-      // upper bound that never flatters the page. Over the wire it is smaller.
+      // encodedBodySize is the body as sent, so it stays correct whether the server
+      // compressed it or not. transferSize is avoided because a cached reload reports
+      // only the ~300-byte revalidation, which would flatter the page dishonestly.
       const bytes = (e) => e.encodedBodySize || e.transferSize || 0;
 
       const totalBytes = (nav ? bytes(nav) : 0) + entries.reduce((sum, e) => sum + bytes(e), 0);
