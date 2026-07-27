@@ -1,7 +1,7 @@
 {
   "name": "awwwards",
-  "description": "Design, build and audit websites to Awwwards jury standard: the Design 40% / Usability 30% / Creativity 20% / Content 10% rubric encoded as an 8-phase build method, with 17 reference guides, working templates and a runnable real-browser audit.",
-  "version": "1.1.0",
+  "description": "Design, build and audit websites to Awwwards jury standard: the Design 40% / Usability 30% / Creativity 20% / Content 10% rubric encoded as an 8-phase build method, with 18 reference guides, working templates and a runnable real-browser audit.",
+  "version": "1.2.0",
   "author": {
     "name": "Alessandro Boni",
     "url": "https://github.com/SandroHub013"
