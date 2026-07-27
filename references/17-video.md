@@ -3,8 +3,10 @@
 For post-production houses, film studios, product reels and case-study sites, video is
 not decoration — it is the content (10% of the score) and usually the signature moment
 (20%). The jury watches it like a showreel. Reference site: [forms.world](https://www.forms.world/)
-(Awwwards nominee 2026, post-production house) — jury highlighted the loader, the video
-slider home, both project index modes and the work page player.
+(Awwwards nominee, July 2026, by Beaucoup.) — the entry highlights the loader, the video
+slider home, both project index modes and the work page player. Note that jury scores and
+comments are visible only to SOTD winners (`references/01-scoring.md`), so read a nominee's
+listed elements as the studio's own framing, not as jury commentary.
 
 If video on your site is background texture behind a headline, stop here: the five rules
 in `references/11-performance.md` §Video are all you need. This file is for video-first
@@ -88,7 +90,8 @@ turn the listing page into the showreel.
   with `currentTime` tricks — separate light files.
 - **Hover-scrub** (desktop alternative): on `pointermove`, map pointer X to
   `video.currentTime`. Use `requestVideoFrameCallback` to throttle seeks to decoded
-  frames; `preload="auto"` only for the first few visible cards, `metadata` for the rest.
+  frames (Chrome and Safari; Firefox has no support, so fall back to a `timeupdate` or
+  rAF throttle there); `preload="auto"` only for the first few visible cards, `metadata` for the rest.
   Scrubbing stutters if the file lacks frequent keyframes — encode previews with
   `-g 12` (keyframe every ~0.5s).
 - **Touch**: no hover exists. Tap = play inline (muted, `playsinline`), second tap = open
@@ -98,8 +101,15 @@ turn the listing page into the showreel.
 
 ```js
 const io = new IntersectionObserver((entries) => {
-  for (const e of entries) e.target.paused ? e.isIntersecting && e.target.play()
-                                           : !e.isIntersecting && e.target.pause();
+  for (const { target, isIntersecting } of entries) {
+    if (isIntersecting) {
+      // play() rejects on autoplay policy and when a pause interrupts it.
+      // Unhandled, that is console noise on every fast scroll.
+      target.play().catch(() => {});
+    } else {
+      target.pause();
+    }
+  }
 }, { rootMargin: "100px" });
 document.querySelectorAll("[data-preview] video").forEach((v) => io.observe(v));
 ```
