@@ -80,6 +80,12 @@ add a second RAF loop.
 images simply stay visible. It returns `{ destroy, measure, renderer }` otherwise — call
 `destroy()` on route change if you add a router; the GPU does not garbage-collect itself.
 
+`destroy()` is idempotent and unwinds everything the layer touched: listeners, the pending
+resize timer, GPU buffers, the WebGL context itself, and the inline `opacity` it wrote on
+your images — so the DOM fallback is visible again the moment the layer is gone. Context
+loss triggers the same image restore, but is not recovered from: once the context drops,
+the DOM images are the permanent fallback for that page load.
+
 ## Verify
 
 Run `references/15-audit.md` against the result. The checks that bite here:

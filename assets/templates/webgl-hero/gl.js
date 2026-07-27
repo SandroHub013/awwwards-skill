@@ -93,12 +93,17 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
 
     const state = {
       el, img, mesh, material, rect: null, hover: 0, hoverTarget: 0,
-      imageOpacity: img?.style.opacity ?? "",
+      // parked on the node: a re-init before destroy would otherwise
+      // capture the zeroed value and restore the image to invisible
+      imageOpacity: img ? (img.dataset.glOpacity ?? img.style.opacity) : "",
     };
     state.onPointerEnter = () => { state.hoverTarget = 1; };
     state.onPointerLeave = () => { state.hoverTarget = 0; };
 
-    if (img) img.style.opacity = "0";      // DOM image stays for a11y/SEO/fallback
+    if (img) {                             // DOM image stays for a11y/SEO/fallback
+      img.dataset.glOpacity = state.imageOpacity;
+      img.style.opacity = "0";
+    }
     el.addEventListener("pointerenter", state.onPointerEnter);
     el.addEventListener("pointerleave", state.onPointerLeave);
 
@@ -170,6 +175,9 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
   const restoreImages = () => {
     for (const it of items) if (it.img) it.img.style.opacity = it.imageOpacity;
   };
+  // Deliberate: no webglcontextrestored handler. Once the context drops, the
+  // layer stays down and the DOM images are the permanent fallback — cheaper
+  // and steadier than re-uploading every texture on a device already starved.
   const onContextLost = (e) => {
     e.preventDefault();
     running = false;
@@ -205,6 +213,7 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
     for (const it of items) {
       it.el.removeEventListener("pointerenter", it.onPointerEnter);
       it.el.removeEventListener("pointerleave", it.onPointerLeave);
+      if (it.img) delete it.img.dataset.glOpacity;
       const u = it.material.uniforms.uTex.value;
       u?.source?.data?.close?.();
       u?.dispose();
@@ -212,6 +221,7 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
       scene.remove(it.mesh);
     }
     renderer.renderLists.dispose();
+    renderer.forceContextLoss();   // dispose() alone leaves the context live; browsers cap them ~16
     renderer.dispose();
   }
 
