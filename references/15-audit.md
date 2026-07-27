@@ -180,6 +180,10 @@ $CDA eval "({title:document.title, desc:document.querySelector('meta[name=descri
 $CDA eval "/lorem ipsum|placeholder|company name|your text here|coming soon/i.test(document.body.innerText)"   // must be false
 ```
 
+Read a `true` before acting on it: a page that *writes about* placeholder content (a style
+guide, a checklist, this skill's own showcase) trips the regex legitimately. Confirm the
+match is real placeholder text, not prose about it.
+
 Repeat the whole content check on **every** route, plus the 404 page:
 
 ```bash

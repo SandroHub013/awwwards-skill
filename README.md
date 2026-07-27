@@ -1,61 +1,155 @@
-# awwwards — Claude Code skill
+<div align="center">
 
-Design and build websites to Awwwards jury standard, and audit existing ones against the
-same rubric.
+# awwwards skill
 
-Awwwards is not a visual style, it is a scoring system: **Design 40% · Usability 30% ·
-Creativity 20% · Content 10%**, scored by ≥18 working designers with the 3 outlier scores
-dropped. This skill encodes that system as a build method, from concept to submission.
+**Awwwards is not a style. It's a scoring system.**
+This skill encodes that system as a build method your coding agent can actually follow.
 
-## Install
+[![License: MIT](https://img.shields.io/badge/license-MIT-d8f34a.svg?style=flat-square)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-skill%20%2B%20plugin-000?style=flat-square)](https://code.claude.com/docs/en/skills)
+[![Stars](https://img.shields.io/github/stars/SandroHub013/awwwards-skill?style=flat-square&color=d8f34a)](https://github.com/SandroHub013/awwwards-skill/stargazers)
+[![Live demo](https://img.shields.io/badge/demo-live-d8f34a?style=flat-square)](https://sandrohub013.github.io/awwwards-skill/)
+
+[**Live demo →**](https://sandrohub013.github.io/awwwards-skill/) · [Read SKILL.md](SKILL.md) · [Browse the 16 references](references/)
+
+<img src="docs/media/showcase.png" alt="The awwwards skill showcase page: a dark editorial layout with the headline 'Awwwards is not a style. It's a scoring system', an install one-liner, and the four scoring weights" width="820">
+
+</div>
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.sh | sh
+```
+
+<details>
+<summary><b>Windows, plain git, or Claude Code plugin</b></summary>
 
 ```powershell
-# junction (edits here stay live in the skill)
-cmd /c mklink /J "$env:USERPROFILE\.claude\skills\awwwards" "$env:USERPROFILE\Favorites\AWWWARDS SKILL"
-
-# or copy
-Copy-Item "$env:USERPROFILE\Favorites\AWWWARDS SKILL" "$env:USERPROFILE\.claude\skills\awwwards" -Recurse
+# Windows PowerShell
+irm https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.ps1 | iex
 ```
 
-Then use it by asking for award-standard work ("build me an Awwwards-level site for…",
-"score my site against Awwwards criteria"), or invoke `/awwwards` directly.
-
-## Contents
-
-```
-SKILL.md                     workflow, non-negotiables, reference map
-references/
-  01-scoring.md              rubric decoded + self-scoring sheet
-  02-concept.md              concept statement, registers, narrative spines
-  03-typography.md           type systems, fluid scale, variable fonts, kinetic type
-  04-color-and-layout.md     OKLCH colour roles, grid, spacing, composition
-  05-motion.md               motion language, choreography, the signature moment
-  06-stack.md                stack matrix, current versions, project setup
-  07-scroll.md               Lenis + ScrollTrigger, native scroll-driven CSS, pinning
-  08-webgl.md                Three.js patterns, DOM sync, shaders, GPU budgets
-  09-transitions.md          preloaders, page transitions, View Transitions API
-  10-interactions.md         cursor, magnetic, hover, sound, micro-detail
-  11-performance.md          budgets, Core Web Vitals, asset pipeline
-  12-accessibility.md        WCAG 2.2 AA for motion-heavy sites, Developer Award
-  13-responsive.md           Mobile Excellence, touch, breakpoint discipline
-  14-anti-patterns.md        score killers, in the order a juror notices them
-  15-audit.md                runnable real-browser verification procedure
-  16-submission.md           submission playbook, timing, thumbnail, other awards
-assets/
-  templates/starter/         no-build reference implementation of the doctrine
-  templates/webgl-hero/      DOM-synced WebGL layer with full teardown
-  checklists/pre-flight.md   printable pre-submission checklist
+```sh
+# no pipe to shell
+git clone https://github.com/SandroHub013/awwwards-skill.git ~/.claude/skills/awwwards
 ```
 
-## The short version
+```
+# as a versioned Claude Code plugin, from inside Claude Code
+/plugin marketplace add SandroHub013/awwwards-skill
+/plugin install awwwards@awwwards-skill
+```
 
-- One concept, stated in one sentence, legible with all animation removed.
-- One signature moment, with a real mobile version and a real reduced-motion version.
-- LCP < 1.5s · CLS < 0.05 · INP < 100ms · 60fps sustained · < 3MB first view.
-- Keyboard operable, WCAG 2.2 AA, complete with motion switched off.
-- Real content. No stock, no lorem, no template.
-- Measure before claiming. `references/15-audit.md` drives a real browser.
+All routes install to `~/.claude/skills/awwwards`. Re-run the one-liner to update.
+Remove with `rm -rf ~/.claude/skills/awwwards`.
 
-Sources: Awwwards evaluation system, FAQ, Developer Award and Mobile Excellence pages;
-Awwwards case studies (Studio Freight, Trionn); Codrops; GSAP, Lenis, Three.js and MDN
-documentation current to mid-2026.
+</details>
+
+Then restart Claude Code (or `/reload-skills`) and say:
+
+```
+/awwwards                                        read the workflow
+"build me an awwwards-level site for my studio"  build
+"score my site against the Awwwards criteria"    audit an existing site
+```
+
+---
+
+## Why this exists
+
+Most "make it look premium" prompts produce the same competent, forgettable page. Awwwards
+publishes the actual mechanism, and it changes what you should optimise for:
+
+| Criterion  | Weight | |
+|---|---|---|
+| Design     | **40%** | hierarchy, type system, colour intent, spacing, states, consistency |
+| Usability  | **30%** | navigation, speed, responsiveness, accessibility, Core Web Vitals |
+| Creativity | **20%** | one idea, one signature moment, original interaction |
+| Content    | **10%** | real copy, real imagery, art direction and content authored together |
+
+At least **18 jurors**, and the **3 most extreme scores are dropped automatically**.
+
+Two consequences drive every rule in this skill:
+
+1. **You don't win because one juror loves it.** The outliers are discarded, so you win by
+   giving no juror a reason to mark you down. Usability is 30% *and* objectively
+   measurable, which is why it quietly eliminates the most beautiful sites.
+2. **One signature moment beats twenty effects.** Every recent Site of the Day has a single
+   interaction people describe out loud. Scattered effects read as noise and cost points in
+   Design *and* Usability.
+
+Thresholds: **≥ 6.5** Honorable Mention (jury *and* users, independently) · **highest of the
+day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
+
+## What you get
+
+An 8-phase workflow (concept → art direction → signature moment → build → craft → hardening
+→ self-score → submission) plus 16 references the agent loads only when the current phase
+needs them.
+
+| | |
+|---|---|
+| [`01-scoring`](references/01-scoring.md) | Rubric decoded, thresholds, self-scoring sheet |
+| [`02-concept`](references/02-concept.md) | Concept statement, 7 art-direction registers, narrative spines |
+| [`03-typography`](references/03-typography.md) | Fluid scale, variable fonts, zero-CLS loading, kinetic type |
+| [`04-color-and-layout`](references/04-color-and-layout.md) | OKLCH colour roles, contrast, grid, spacing, composition |
+| [`05-motion`](references/05-motion.md) | Easing language, choreography, the signature moment |
+| [`06-stack`](references/06-stack.md) | Stack decision matrix, current versions, project structure |
+| [`07-scroll`](references/07-scroll.md) | Lenis + ScrollTrigger, native scroll-driven CSS, pinning |
+| [`08-webgl`](references/08-webgl.md) | Three.js patterns, DOM sync, shaders, GPU budgets, disposal |
+| [`09-transitions`](references/09-transitions.md) | Preloaders, page transitions, View Transitions API |
+| [`10-interactions`](references/10-interactions.md) | Cursor, magnetic, hover, sound, micro-detail checklist |
+| [`11-performance`](references/11-performance.md) | Budgets, Core Web Vitals, asset pipeline, frame budget |
+| [`12-accessibility`](references/12-accessibility.md) | WCAG 2.2 AA for motion-heavy sites, Developer Award |
+| [`13-responsive`](references/13-responsive.md) | Mobile Excellence, touch, breakpoint discipline |
+| [`14-anti-patterns`](references/14-anti-patterns.md) | Score killers, ordered by how fast a juror notices |
+| [`15-audit`](references/15-audit.md) | Runnable real-browser verification, not guessed numbers |
+| [`16-submission`](references/16-submission.md) | Timing, thumbnail, deploy freeze, other awards |
+
+Plus a [no-build starter template](assets/templates/starter/) that encodes the doctrine, a
+[DOM-synced WebGL layer](assets/templates/webgl-hero/gl.js) with real teardown, and a
+[printable pre-flight checklist](assets/checklists/pre-flight.md).
+
+## It measures instead of guessing
+
+Ask it to score a site and it drives a real Chrome: throttled cold load, breakpoint sweep
+from 320px, keyboard pass, reduced-motion pass, contrast and heading structure, then reports
+**measured** LCP / CLS / INP / payload alongside a per-criterion score and the three
+highest-leverage fixes. No invented numbers.
+
+The [showcase page](https://sandrohub013.github.io/awwwards-skill/) was built with the skill
+and audited by it. Lighthouse, verified: **Accessibility 100 · Best Practices 100 · SEO 100**,
+0 failed audits, LCP 0.22 s, CLS 0.000, and it ships **zero animation libraries** — because
+reference 06 says pick the smallest stack that expresses the concept, and a documentation
+page is not a spatial experience. It also reports its own live metrics, in the page.
+
+## Non-negotiables
+
+The hard rules. Breaking any one caps a site below 7.
+
+- 60 fps sustained on a **mid-range** device, not on your laptop
+- LCP < 1.5 s · CLS < 0.05 · INP < 100 ms · first view < 3 MB
+- `prefers-reduced-motion` honoured everywhere, with equivalent non-animated cues
+- Keyboard operable: visible focus, logical order, skip link, no traps
+- Mobile is **designed**, not shrunk. Hover-only interactions have touch equivalents
+- Real content. No lorem ipsum, no stock, ever
+- Same design language on inner pages, forms, footer and 404
+- No template smell. A jury of working designers recognises defaults in seconds
+
+## Contributing
+
+Issues and PRs welcome, especially: corrections to the scoring facts, newer library
+versions, additional art-direction registers, and audit steps that catch something the
+current pass misses. Keep the prose dense and the claims verifiable.
+
+## License
+
+[MIT](LICENSE). Use it commercially, fork it, ship it.
+
+"Awwwards" is a trademark of Awwwards S.L. This is an independent, unofficial reference and
+is not affiliated with, endorsed by, or sponsored by Awwwards.
+
+<div align="center">
+
+**If this saved you a redesign, a star helps other people find it.**
+
+</div>

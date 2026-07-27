@@ -1,0 +1,24 @@
+{
+  "name": "awwwards",
+  "description": "Design, build and audit websites to Awwwards jury standard: the Design 40% / Usability 30% / Creativity 20% / Content 10% rubric encoded as an 8-phase build method, with 16 reference guides, working templates and a runnable real-browser audit.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Alessandro Boni",
+    "url": "https://github.com/SandroHub013"
+  },
+  "homepage": "https://sandrohub013.github.io/awwwards-skill/",
+  "repository": "https://github.com/SandroHub013/awwwards-skill",
+  "license": "MIT",
+  "keywords": [
+    "awwwards",
+    "web-design",
+    "frontend",
+    "gsap",
+    "lenis",
+    "threejs",
+    "webgl",
+    "accessibility",
+    "core-web-vitals",
+    "motion-design"
+  ]
+}
