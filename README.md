@@ -143,6 +143,8 @@ Issues and PRs welcome, especially: corrections to the scoring facts, newer libr
 versions, additional art-direction registers, and audit steps that catch something the
 current pass misses. Keep the prose dense and the claims verifiable.
 
+Conventions, sync checklist and PR rules: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 [MIT](LICENSE). Use it commercially, fork it, ship it.
