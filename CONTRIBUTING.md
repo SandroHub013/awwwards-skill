@@ -8,7 +8,7 @@ stay in sync, and what gets rejected.
 
 The repo's value is accuracy, so corrections outrank additions. In priority order:
 
-**Always welcome — small fixes can skip the issue, the PR body is enough:**
+**Always welcome — the issue is a formality here: title plus source, then open the PR:**
 
 - **Corrections with a primary source.** Scoring thresholds, rubric weights, browser
   support, library versions, API behavior. Cite the spec, MDN BCD, caniuse or the
@@ -111,7 +111,8 @@ that mistake. Add to this list the same way: after something breaks, not from me
   source for every factual claim, the checks run, and before/after output for anything
   user-visible. Templates and example code must run — "working templates" is the claim;
   keep it true.
-- **Link the issue** (`Closes #N`). No issue? For small fixes the PR body alone is fine.
+- **Every PR closes an issue** (`Closes #N`). No issue, no review: the issue decides
+  "should this exist?"; the PR only decides "is this done right?".
 - **Labels**: `bug` for wrong facts and broken templates, `enhancement` for new
   references/templates/registers, `documentation` for prose that isn't either.
   Maintainers apply them; don't open a PR to ask for one.
