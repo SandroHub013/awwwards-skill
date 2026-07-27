@@ -29,7 +29,8 @@ fallback that reveals the DOM images, reduced-motion single static frame, and a 
 `destroy()` that disposes GPU resources.
 
 Drop it next to `starter/`, add `<canvas>` plus `data-gl` wrappers around your images, and
-call `initGL({ canvas })` after the preloader resolves.
+call `initGL({ canvas })` after the preloader resolves. Exact snippets (import map entry,
+canvas CSS, call site, markup): `webgl-hero/README.md`.
 
 ## Before you ship anything built from these
 
