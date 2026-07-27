@@ -1,0 +1,258 @@
+/* ============================================================
+   TOKENS — every value the site uses lives here. Nothing inline.
+   ============================================================ */
+:root {
+  /* type scale: fluid clamp, one ratio (1.25), 360px → 1600px */
+  --step--1: clamp(0.83rem, 0.79rem + 0.18vw, 0.94rem);
+  --step-0:  clamp(1.00rem, 0.94rem + 0.28vw, 1.19rem);
+  --step-1:  clamp(1.25rem, 1.14rem + 0.49vw, 1.56rem);
+  --step-2:  clamp(1.56rem, 1.37rem + 0.85vw, 2.19rem);
+  --step-3:  clamp(1.95rem, 1.63rem + 1.42vw, 3.05rem);
+  --display: clamp(2.75rem, 1.2rem + 7.4vw, 9rem);
+
+  /* spacing: one scale */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-s:   1rem;    --space-m:   1.5rem;  --space-l:  2.5rem;
+  --space-xl:  4rem;    --space-2xl: 6rem;
+  --space-3xl: clamp(6rem, 10vw, 12rem);
+
+  /* layout */
+  --gutter: clamp(1rem, 0.6rem + 1.6vw, 2.5rem);
+  --page:   min(100% - var(--gutter) * 2, 1440px);
+  --radius: 2px;
+
+  /* colour roles — OKLCH, tinted neutrals, ONE accent */
+  --bg:        oklch(15% 0.012 275);
+  --bg-elev:   oklch(19% 0.014 275);
+  --ink:       oklch(96% 0.006 275);
+  --ink-muted: oklch(68% 0.012 275);
+  --line:      oklch(30% 0.014 275);
+  --accent:    oklch(74% 0.17 78);
+  --accent-ink:oklch(16% 0.02 78);
+  --focus:     oklch(80% 0.16 220);
+
+  /* motion language — one easing family */
+  --dur-fast: 0.18s; --dur-base: 0.4s; --dur-slow: 0.9s;
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0.05, 0.36, 1);
+
+  --font-display: "Display", "Times New Roman", serif;
+  --font-text:    "Text", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+}
+
+/* Metric-matched fallback so font swap causes ZERO layout shift.
+   Tune size-adjust/overrides against your real face. */
+@font-face {
+  font-family: "Display";
+  src: url("./fonts/display-var.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 24%;
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;            /* never allow horizontal scroll */
+}
+img, video, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; letter-spacing: -0.03em; }
+p { max-width: 62ch; }
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.skip-link {
+  position: fixed; top: var(--space-s); left: var(--space-s); z-index: 100;
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding-inline: var(--space-s);
+  background: var(--accent); color: var(--accent-ink);
+  translate: 0 -200%;
+}
+.skip-link:focus-visible { translate: 0 0; }
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
+/* Reveal target start-state. JS clears it; CSS restores it when JS is absent
+   or motion is reduced, so content is NEVER stuck invisible. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] { opacity: 0; }
+}
+
+/* ============================================================
+   PRELOADER
+   ============================================================ */
+.preloader {
+  position: fixed; inset: 0; z-index: 90;
+  display: grid; place-items: end center;
+  padding: var(--space-2xl) var(--gutter);
+  background: var(--bg);
+}
+.preloader.is-done { pointer-events: none; }
+.preloader__inner { display: grid; gap: var(--space-s); width: min(100%, 640px); }
+.preloader__num {
+  font-family: var(--font-mono); font-size: var(--step--1);
+  font-variant-numeric: tabular-nums; color: var(--ink-muted);
+}
+.preloader__bar { display: block; height: 1px; background: var(--line); }
+.preloader__bar > i { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+
+/* ============================================================
+   CURSOR — pointer-fine only, never on touch
+   ============================================================ */
+.cursor { display: none; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cursor {
+    display: block; position: fixed; top: 0; left: 0; z-index: 80;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); pointer-events: none;
+    mix-blend-mode: difference;
+  }
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.header {
+  position: sticky; top: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-m);
+  width: var(--page); margin-inline: auto;
+  padding-block: var(--space-m);
+  mix-blend-mode: difference;
+}
+/* Navigation links are tap targets, not body links: 44px floor, per Mobile Excellence. */
+.header__logo,
+.header__nav a,
+.footer nav a {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+}
+.header__logo { font-family: var(--font-display); font-size: var(--step-1); }
+.header__nav { display: flex; gap: var(--space-m); font-size: var(--step--1); }
+
+.link { position: relative; }
+.link::after {
+  content: ""; position: absolute; left: 0; bottom: -0.15em;
+  width: 100%; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.link:hover::after, .link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+/* minmax(0, 1fr): without it, a max-content child (the marquee track) forces the
+   grid item wider than the viewport. This is THE most common overflow bug. */
+main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3xl); }
+.hero, .work, .contact, .footer { width: var(--page); margin-inline: auto; }
+
+/* HERO — above the fold, visible at first paint */
+.hero { padding-block: clamp(var(--space-2xl), 14vh, var(--space-3xl)); display: grid; gap: var(--space-l); }
+.hero__title { font-size: var(--display); line-height: 0.95; }
+.hero__meta {
+  display: flex; flex-wrap: wrap; gap: var(--space-m);
+  font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* SplitText line masking */
+.hero__title .line, .contact__title .line { overflow: hidden; }
+
+/* STICKY NARRATIVE */
+.sticky { width: var(--page); margin-inline: auto; display: grid; gap: var(--space-xl); }
+.sticky__media { position: relative; }
+.sticky__figure { position: sticky; top: 12vh; }
+.sticky__figure img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); }
+.sticky__text { display: grid; gap: var(--space-3xl); }
+.sticky__text article { display: grid; gap: var(--space-xs); }
+.sticky__text h2 { font-size: var(--step-3); line-height: 1.05; }
+@media (min-width: 60rem) {
+  .sticky { grid-template-columns: 1fr 1fr; gap: var(--space-2xl); align-items: start; }
+  .sticky__text { padding-block: 20vh; }
+}
+
+/* MARQUEE */
+.marquee { min-width: 0; overflow: hidden; border-block: 1px solid var(--line); padding-block: var(--space-s); }
+.marquee__track {
+  display: flex; width: max-content; gap: 0;
+  font-family: var(--font-display); font-size: var(--step-3);
+  white-space: nowrap; will-change: transform;
+}
+
+/* WORK */
+.work { display: grid; gap: var(--space-l); }
+.work__grid { list-style: none; padding: 0; display: grid; gap: var(--space-l); }
+@media (min-width: 48rem) { .work__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card a { display: grid; gap: var(--space-s); }
+.card__media { display: block; overflow: hidden; border-radius: var(--radius); }
+.card__media img {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+@media (hover: hover) { .card a:hover .card__media img { transform: scale(1.04); } }
+.card__meta { display: flex; justify-content: space-between; gap: var(--space-s); align-items: baseline; }
+.card__title { font-family: var(--font-display); font-size: var(--step-1); }
+.card__year { font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-muted); }
+
+/* CONTACT */
+.contact { display: grid; gap: var(--space-l); justify-items: start; padding-block: var(--space-2xl); }
+.contact__title { font-size: var(--display); line-height: 0.95; }
+.button {
+  display: inline-block;
+  padding: var(--space-s) var(--space-l);
+  min-height: 44px;                      /* touch target floor */
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono); font-size: var(--step--1);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.button:hover, .button:focus-visible { background: var(--accent); color: var(--accent-ink); }
+
+/* FOOTER */
+.footer {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-m);
+  padding-block: var(--space-xl);
+  margin-top: var(--space-3xl);
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1); color: var(--ink-muted);
+}
+.footer nav { display: flex; gap: var(--space-m); }
+
+/* ============================================================
+   REDUCED MOTION — safety net. The real work happens in main.js.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html.js [data-reveal] { opacity: 1 !important; }
+  .sticky__figure { position: static; }
+}
