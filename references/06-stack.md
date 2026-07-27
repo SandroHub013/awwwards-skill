@@ -9,6 +9,7 @@ they score speed, craft and originality. Custom code beats configured templates 
 |---|---|
 | Static/marketing, motion-led, no app state | **Astro** or plain Vite + vanilla TS. Ship near-zero JS, add islands. |
 | Content-driven with a CMS, many pages | **Astro** + headless CMS (Sanity / DatoCMS / Prismic / Contentful). |
+| Client-owned reel/editorial site, frequent updates | **WordPress + custom theme with a Vite build** (the forms.world stack). Craft lives in the theme; the client owns content. |
 | App-like, routing, shared WebGL canvas across routes | **Next.js** (App Router) or **Nuxt**. |
 | Heavy 3D with React ergonomics | Next.js + **react-three-fiber** + drei + postprocessing. |
 | Heavy 3D, maximum control/perf | Vite + vanilla **Three.js** (or **OGL** for small scenes). |

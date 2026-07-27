@@ -54,7 +54,8 @@ quieter. Read `references/05-motion.md` §Signature moment.
 ### Phase 3 — Build
 Pick the stack from the decision matrix, install the scroll spine, then build sections.
 Read `references/06-stack.md`, `references/07-scroll.md`, and — only if the concept needs
-3D — `references/08-webgl.md`.
+3D — `references/08-webgl.md`; if the concept is video-led (reels, post-production),
+`references/17-video.md`.
 Starter code: `assets/templates/`.
 
 ### Phase 4 — Craft pass
@@ -109,6 +110,7 @@ These are hard rules. Violating any one of them caps the site below 7.
 | `references/14-anti-patterns.md` | Phase 6. Score killers, in review order |
 | `references/15-audit.md` | Phase 6. Real-browser verification procedure |
 | `references/16-submission.md` | Phase 7. Submission playbook and timing |
+| `references/17-video.md` | Phase 3, video-led concepts. Encoding, HLS, previews, custom player |
 
 ## Reviewing an existing site
 

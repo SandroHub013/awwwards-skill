@@ -10,7 +10,7 @@ This skill encodes that system as a build method your coding agent can actually 
 [![Stars](https://img.shields.io/github/stars/SandroHub013/awwwards-skill?style=flat-square&color=d8f34a)](https://github.com/SandroHub013/awwwards-skill/stargazers)
 [![Live demo](https://img.shields.io/badge/demo-live-d8f34a?style=flat-square)](https://sandrohub013.github.io/awwwards-skill/)
 
-[**Live demo →**](https://sandrohub013.github.io/awwwards-skill/) · [Read SKILL.md](SKILL.md) · [Browse the 16 references](references/)
+[**Live demo →**](https://sandrohub013.github.io/awwwards-skill/) · [Read SKILL.md](SKILL.md) · [Browse the 17 references](references/)
 
 <img src="docs/media/showcase.png" alt="The awwwards skill showcase page: a dark editorial layout with the headline 'Awwwards is not a style. It's a scoring system', an install one-liner, and the four scoring weights" width="820">
 
@@ -83,7 +83,7 @@ day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
 ## What you get
 
 An 8-phase workflow (concept → art direction → signature moment → build → craft → hardening
-→ self-score → submission) plus 16 references the agent loads only when the current phase
+→ self-score → submission) plus 17 references the agent loads only when the current phase
 needs them.
 
 | | |
@@ -104,6 +104,7 @@ needs them.
 | [`14-anti-patterns`](references/14-anti-patterns.md) | Score killers, ordered by how fast a juror notices |
 | [`15-audit`](references/15-audit.md) | Runnable real-browser verification, not guessed numbers |
 | [`16-submission`](references/16-submission.md) | Timing, thumbnail, deploy freeze, other awards |
+| [`17-video`](references/17-video.md) | Video-first sites: encoding ladder, HLS, preview patterns, accessible player |
 
 Plus a [no-build starter template](assets/templates/starter/) that encodes the doctrine, a
 [DOM-synced WebGL layer](assets/templates/webgl-hero/gl.js) with real teardown, and a
