@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>awwwards skill — build websites to jury standard</title>
-<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and three demo sites built with it.">
+<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and four demo sites built with it.">
 <meta name="theme-color" content="#0b0b0d">
 <link rel="canonical" href="https://sandrohub013.github.io/awwwards-skill/">
 <meta property="og:type" content="website">
@@ -94,12 +94,13 @@
   <section class="section" id="demos">
     <header class="section__head" data-reveal>
       <p class="eyebrow">Built with it</p>
-      <h2 class="section__title">Three sites, no stock anything</h2>
+      <h2 class="section__title">Four sites, no stock anything</h2>
       <p class="section__sub">All three were produced by running the method in this repo
         end to end, and each is scored against the same rubric with the numbers published
         rather than implied. Two are built on primary sources &mdash; a font binary and a
-        public earthquake catalog. The third is generated footage, and says so in its
-        headline rather than its footer.</p>
+        public earthquake catalog. The third is generated footage and says so in its
+        headline rather than its footer. The fourth has no assets at all: it computes
+        every frame while you watch.</p>
     </header>
 
     <ul class="demos">
@@ -162,6 +163,27 @@
               at 1920&times;1080, so the scroll bar is the film&rsquo;s transport.</p>
             <p class="demo__meta">
               <span>Video-first</span><span>Scroll-driven</span><span>18s at 1080p, 1.57 MB</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/abyss/">
+          <figure class="demo__shot">
+            <img src="./media/demo-abyss.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The abyss demo: a rock wall lit by a single warm lamp in dark water,
+                      with marine snow drifting through the beam.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">04 &middot; real-time &middot; Three.js</p>
+            <h3 class="demo__title">abyss</h3>
+            <p class="demo__line">The dark is the default. Scroll descends and the pointer
+              aims the lamp &mdash; nothing is lit until you point at it, which is the one
+              thing a rendered film can never do.</p>
+            <p class="demo__meta">
+              <span>Spatial</span><span>4 draw calls</span><span>zero textures</span>
             </p>
           </div>
         </a>
