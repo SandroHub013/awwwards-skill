@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>scroll-sequence test</title>
+<style>
+  :root { color-scheme: dark; }
+  * { margin: 0; box-sizing: border-box; }
+  body { background: #0b0b0d; color: #eee; font: 16px/1.5 system-ui, sans-serif; }
+  .spacer { height: 100vh; display: grid; place-items: center; }
+  #seq-section { height: 300vh; position: relative; }
+  .pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .hud { position: absolute; left: 1rem; bottom: 1rem; font-family: ui-monospace, monospace;
+         background: #000a; padding: .4rem .7rem; border-radius: 6px; }
+  .bar { position: absolute; left: 0; top: 0; height: 4px; background: #d8f34a; width: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    #seq-section { height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<section class="spacer"><p>scroll down ↓</p></section>
+
+<section id="seq-section" aria-label="Scroll-driven frame sequence">
+  <div class="pin">
+    <canvas id="seq"></canvas>
+    <div class="bar" id="bar"></div>
+    <div class="hud" id="hud">frame — / 120 · progress 0.00</div>
+  </div>
+</section>
+
+<section class="spacer"><p>end ✓</p></section>
+
+<script type="module">
+import { initScrollSequence } from "./sequence.js";
+
+const section = document.getElementById("seq-section");
+const hud = document.getElementById("hud");
+const bar = document.getElementById("bar");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const update = initScrollSequence(document.getElementById("seq"), { count: 120 });
+
+function progress() {
+  const r = section.getBoundingClientRect();
+  const total = r.height - innerHeight;
+  return Math.min(1, Math.max(0, -r.top / total));
+}
+
+let frameShown = null;
+async function onScroll() {
+  const p = reduced ? 0.5 : progress();   // reduced motion: static mid frame
+  frameShown = (await update(p)) ?? frameShown;
+  hud.textContent = `frame ${frameShown ?? "—"} / 120 · progress ${p.toFixed(2)}`;
+  bar.style.width = `${p * 100}%`;
+}
+
+let ticking = false;
+addEventListener("scroll", () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => { onScroll(); ticking = false; });
+}, { passive: true });
+
+onScroll();
+</script>
+</body>
+</html>

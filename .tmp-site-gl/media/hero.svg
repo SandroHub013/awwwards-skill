@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <radialGradient id="glow" cx="42%" cy="46%" r="55%">
+      <stop offset="0%" stop-color="#d8f34a" stop-opacity="0.16"/>
+      <stop offset="55%" stop-color="#d8f34a" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#d8f34a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2f2ee" stop-opacity="0.10"/>
+      <stop offset="45%" stop-color="#f2f2ee" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#d8f34a" stop-opacity="0.07"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f2f2ee" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#d8f34a" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d8f34a" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#d8f34a" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <filter id="soft-sm" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="#17181c"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+
+  <!-- lime spill behind the panels -->
+  <ellipse cx="800" cy="560" rx="520" ry="300" fill="#d8f34a" opacity="0.10" filter="url(#soft)"/>
+  <ellipse cx="1210" cy="470" rx="300" ry="220" fill="#d8f34a" opacity="0.07" filter="url(#soft)"/>
+
+  <!-- floor reflection hint -->
+  <rect x="240" y="880" width="1440" height="120" fill="url(#floor)" filter="url(#soft)"/>
+
+  <!-- four glass panels, widths ∝ 40/30/20/10 -->
+  <g>
+    <!-- 40 -->
+    <g>
+      <rect x="252" y="218" width="560" height="640" rx="26" fill="url(#glass)" stroke="url(#edge)" stroke-opacity="0.5" stroke-width="1.5"/>
+      <rect x="252" y="218" width="560" height="640" rx="26" fill="none" stroke="#d8f34a" stroke-opacity="0.14" stroke-width="1"/>
+      <line x1="278" y1="244" x2="786" y2="244" stroke="#f2f2ee" stroke-opacity="0.28" stroke-width="1.5" filter="url(#soft-sm)"/>
+    </g>
+    <!-- 30 -->
+    <g>
+      <rect x="858" y="150" width="420" height="708" rx="26" fill="url(#glass)" stroke="url(#edge)" stroke-opacity="0.45" stroke-width="1.5"/>
+      <line x1="884" y1="176" x2="1252" y2="176" stroke="#f2f2ee" stroke-opacity="0.22" stroke-width="1.5" filter="url(#soft-sm)"/>
+    </g>
+    <!-- 20 -->
+    <g>
+      <rect x="1324" y="268" width="280" height="590" rx="26" fill="url(#glass)" stroke="url(#edge)" stroke-opacity="0.4" stroke-width="1.5"/>
+      <line x1="1350" y1="294" x2="1578" y2="294" stroke="#f2f2ee" stroke-opacity="0.18" stroke-width="1.5" filter="url(#soft-sm)"/>
+    </g>
+    <!-- 10 -->
+    <g>
+      <rect x="1650" y="360" width="140" height="498" rx="22" fill="url(#glass)" stroke="url(#edge)" stroke-opacity="0.35" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- vignette -->
+  <rect width="1920" height="1080" fill="none" stroke="#0b0b0d" stroke-opacity="0.55" stroke-width="120" filter="url(#soft)"/>
+</svg>

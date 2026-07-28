@@ -1,0 +1,15 @@
+Create ONE hero image and save it to disk.
+
+Output (pick the first method that works for you):
+1. Preferred: a raster PNG at C:/Users/39349/Favorites/AWWWARDS SKILL/.tmp-site-gl/media/hero.png (1920x1080).
+2. Fallback: an SVG at C:/Users/39349/Favorites/AWWWARDS SKILL/.tmp-site-gl/media/hero.svg (viewBox="0 0 1920 1080").
+Write exactly one of the two files, not both.
+
+Art direction:
+- Background: near-black blue-gray, hex #17181c.
+- One accent color only: acid lime, hex #d8f34a. Soft off-white (#f2f2ee) for small highlights.
+- Subject: four vertical frosted-glass (acrylic) panels floating in dark space. Their widths follow the ratio 40 : 30 : 20 : 10. Panels slightly staggered in depth, subtle lime light spilling from behind and between them, gentle reflections on the floor, soft depth of field.
+- Mood: premium, minimal, editorial 3D render (Microsoft Windows 11 "Bloom" aesthetic).
+- Absolutely NO text, letters, numbers or logos anywhere in the image.
+
+When finished, print only: the file path you wrote and one word about the method (png/svg).

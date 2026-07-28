@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio Name — Concept statement in seven words</title>
+<meta name="description" content="One real sentence about what this studio does. Written in the site's voice, not marketing filler.">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="canonical" href="https://example.com/">
+<meta property="og:title" content="Studio Name">
+<meta property="og:description" content="One real sentence about what this studio does.">
+<meta property="og:image" content="https://example.com/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="./styles.css">
+
+<script type="importmap">
+{
+  "imports": {
+    "gsap": "https://esm.sh/gsap@3",
+    "gsap/ScrollTrigger": "https://esm.sh/gsap@3/ScrollTrigger",
+    "gsap/SplitText": "https://esm.sh/gsap@3/SplitText",
+    "lenis": "https://esm.sh/lenis@1",
+    "three": "https://esm.sh/three@0.184.0"
+  }
+}
+</script>
+<script type="module" src="./main.js"></script>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<canvas class="gl-canvas" data-gl-canvas aria-hidden="true"></canvas>
+
+<!-- Preloader: real progress, skippable, self-completing. Never hides painted content. -->
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader__inner">
+    <span class="preloader__num" data-preload-num>000</span>
+    <span class="preloader__bar"><i data-preload-bar></i></span>
+  </div>
+</div>
+
+<div class="cursor" data-cursor aria-hidden="true"></div>
+
+<header class="header">
+  <a class="header__logo" href="/" data-magnetic>Studio<span aria-hidden="true">®</span></a>
+  <nav class="header__nav" aria-label="Primary">
+    <a href="#work" class="link">Work</a>
+    <a href="#studio" class="link">Studio</a>
+    <a href="#contact" class="link">Contact</a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- HERO — the one idea, visible at first paint. Never revealed on scroll. -->
+  <section class="hero">
+    <p class="label" data-reveal>Independent design practice</p>
+    <h1 class="hero__title" data-split>
+      We build the one moment
+      people describe out loud.
+    </h1>
+    <div class="hero__meta" data-reveal>
+      <span>Est. 2019</span>
+      <span>Milan / Remote</span>
+      <span data-clock>—</span>
+    </div>
+  </section>
+
+  <!-- STICKY NARRATIVE — high craft, zero scroll-jacking, reduced-motion safe. -->
+  <section class="sticky" id="studio">
+    <div class="sticky__media">
+      <figure class="sticky__figure" data-gl>
+        <img src="./media/frame-01.webp" alt="Studio floor during the Vela installation build, March 2026"
+             width="1280" height="720" decoding="async">
+      </figure>
+    </div>
+    <div class="sticky__text">
+      <article data-reveal>
+        <p class="label">Concept</p>
+        <h2>Every project starts as one sentence.</h2>
+        <p>Replace this with real copy. Short, specific, in the studio's voice. No filler,
+           no "welcome to our website", no lorem ipsum. Content is 10% of the score and it
+           makes the other 90% legible.</p>
+      </article>
+      <article data-reveal>
+        <p class="label">Craft</p>
+        <h2>Then it becomes a system.</h2>
+        <p>Type scale, colour roles, spacing rhythm and one motion language, decided before
+           the first component is written.</p>
+      </article>
+      <article data-reveal>
+        <p class="label">Proof</p>
+        <h2>And the system ships fast.</h2>
+        <p>Sub-1.5&thinsp;s LCP, 60&thinsp;fps sustained, keyboard operable, and complete
+           with motion switched off.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- MARQUEE — one horizontal band breaking the vertical page. Once, not thrice. -->
+  <section class="marquee" aria-hidden="true">
+    <div class="marquee__track" data-marquee>
+      <span>Brand&nbsp;/ Interaction&nbsp;/ Motion&nbsp;/ Type&nbsp;/&nbsp;</span>
+      <span>Brand&nbsp;/ Interaction&nbsp;/ Motion&nbsp;/ Type&nbsp;/&nbsp;</span>
+    </div>
+  </section>
+
+  <section class="work" id="work">
+    <p class="label" data-reveal>Selected work</p>
+    <ul class="work__grid">
+      <li class="card" data-reveal>
+        <a href="/work/vela">
+          <span class="card__media" data-gl>
+            <img src="./media/work-01.webp" alt="Vela — kinetic identity for a sailmaker"
+                 width="1280" height="720" loading="lazy" decoding="async">
+          </span>
+          <span class="card__meta">
+            <span class="card__title">Vela</span>
+            <span class="card__year">2026 / Identity, Site</span>
+          </span>
+        </a>
+      </li>
+      <li class="card" data-reveal>
+        <a href="/work/atto">
+          <span class="card__media" data-gl>
+            <img src="./media/work-02.webp" alt="Atto — configurator for a furniture maker"
+                 width="1280" height="720" loading="lazy" decoding="async">
+          </span>
+          <span class="card__meta">
+            <span class="card__title">Atto</span>
+            <span class="card__year">2025 / Product, WebGL</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2 class="contact__title" data-split>Tell us the one sentence.</h2>
+    <a class="button" href="mailto:hello@example.com" data-magnetic data-cursor-state="link">
+      hello@example.com
+    </a>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>© 2026 Studio Name. Milan.</p>
+  <nav aria-label="Elsewhere">
+    <a href="#" class="link">Instagram</a>
+    <a href="#" class="link">LinkedIn</a>
+  </nav>
+</footer>
+</body>
+</html>
