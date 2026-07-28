@@ -1,0 +1,47 @@
+/* Windows-nominee scroll effect: scene background choreography + reveals.
+   Zero libraries: CSS scroll-driven animations (07-scroll.md pattern) + one JS bg tween. */
+
+/* ---- per-scene palette (brand-dark variants; JS tweens body bg between them) ---- */
+:root {
+  --scene-hero:     #0b0b0d;
+  --scene-pull:     #0e1016;
+  --scene-rubric:   #0f120c;
+  --scene-score:    #120e10;
+  --scene-workflow: #0c1114;
+  --scene-proof:    #101010;
+  --scene-inside:   #0e1013;
+  --scene-install:  #131308;
+  --scene-closer:   #0b0b0d;
+}
+
+html { scroll-behavior: smooth; }
+body { background-color: var(--scene-hero); } /* JS lerps this per scroll */
+
+/* ---- scene reveals: native scroll-driven animations, @supports-guarded ----
+   Unsupported browsers (Firefox release, mid-2026): no animation, content simply
+   visible — the 07-scroll.md rule: never hide content behind an animation. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section > *, .pull > * {
+      animation: scene-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 45%;
+    }
+    @keyframes scene-reveal {
+      from { opacity: 0; transform: translateY(32px) scale(0.985); }
+    }
+  }
+}
+
+/* ---- reduced motion: nothing moves, colors stay static per section ---- */
+@media (prefers-reduced-motion: reduce) {
+  .hero     { background: var(--scene-hero); }
+  .pull     { background: var(--scene-pull); }
+  #rubric   { background: var(--scene-rubric); }
+  #score    { background: var(--scene-score); }
+  #workflow { background: var(--scene-workflow); }
+  #proof    { background: var(--scene-proof); }
+  #inside   { background: var(--scene-inside); }
+  #install  { background: var(--scene-install); }
+  .closer   { background: var(--scene-closer); }
+}

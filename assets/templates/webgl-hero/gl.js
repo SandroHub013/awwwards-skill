@@ -91,12 +91,21 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    if (img) img.style.opacity = "0";      // DOM image stays for a11y/SEO/fallback
+    const state = {
+      el, img, mesh, material, rect: null, hover: 0, hoverTarget: 0,
+      // parked on the node: a re-init before destroy would otherwise
+      // capture the zeroed value and restore the image to invisible
+      imageOpacity: img ? (img.dataset.glOpacity ?? img.style.opacity) : "",
+    };
+    state.onPointerEnter = () => { state.hoverTarget = 1; };
+    state.onPointerLeave = () => { state.hoverTarget = 0; };
 
-    const state = { el, mesh, material, rect: null, hover: 0, hoverTarget: 0 };
-
-    el.addEventListener("pointerenter", () => { state.hoverTarget = 1; });
-    el.addEventListener("pointerleave", () => { state.hoverTarget = 0; });
+    if (img) {                             // DOM image stays for a11y/SEO/fallback
+      img.dataset.glOpacity = state.imageOpacity;
+      img.style.opacity = "0";
+    }
+    el.addEventListener("pointerenter", state.onPointerEnter);
+    el.addEventListener("pointerleave", state.onPointerLeave);
 
     return state;
   });
@@ -144,7 +153,8 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
 
   gsap.ticker.add(render);
 
-  document.addEventListener("visibilitychange", () => { running = !document.hidden; });
+  const onVisibilityChange = () => { running = !document.hidden; };
+  document.addEventListener("visibilitychange", onVisibilityChange);
 
   /* ---- resize ---- */
   let rt;
@@ -162,14 +172,18 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
   addEventListener("resize", onResize);
 
   /* ---- context loss WILL happen on some devices ---- */
-  renderer.domElement.addEventListener("webglcontextlost", (e) => {
+  const restoreImages = () => {
+    for (const it of items) if (it.img) it.img.style.opacity = it.imageOpacity;
+  };
+  // Deliberate: no webglcontextrestored handler. Once the context drops, the
+  // layer stays down and the DOM images are the permanent fallback — cheaper
+  // and steadier than re-uploading every texture on a device already starved.
+  const onContextLost = (e) => {
     e.preventDefault();
     running = false;
-    for (const it of items) {
-      const img = it.el.querySelector("img");
-      if (img) img.style.opacity = "1";      // reveal the DOM fallback
-    }
-  });
+    restoreImages();                        // reveal the DOM fallback
+  };
+  renderer.domElement.addEventListener("webglcontextlost", onContextLost);
 
   /* ---- reduced motion: render one beautiful static frame, then stop ---- */
   if (REDUCED) {
@@ -181,14 +195,25 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
     render();
   }
 
-  document.fonts.ready.then(measure);
+  let destroyed = false;
+  document.fonts.ready.then(() => { if (!destroyed) measure(); });
 
   /* ---- teardown: three does NOT garbage-collect the GPU ---- */
   function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    running = false;
+    clearTimeout(rt);
     gsap.ticker.remove(render);
     removeEventListener("resize", onResize);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+    restoreImages();
     geometry.dispose();
     for (const it of items) {
+      it.el.removeEventListener("pointerenter", it.onPointerEnter);
+      it.el.removeEventListener("pointerleave", it.onPointerLeave);
+      if (it.img) delete it.img.dataset.glOpacity;
       const u = it.material.uniforms.uTex.value;
       u?.source?.data?.close?.();
       u?.dispose();
@@ -196,6 +221,7 @@ export function initGL({ selector = "[data-gl]", canvas } = {}) {
       scene.remove(it.mesh);
     }
     renderer.renderLists.dispose();
+    renderer.forceContextLoss();   // dispose() alone leaves the context live; browsers cap them ~16
     renderer.dispose();
   }
 
