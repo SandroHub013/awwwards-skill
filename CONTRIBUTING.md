@@ -64,7 +64,9 @@ editing one:
 
 ## Formatting
 
-- **Prose wraps at 100 columns.** Code blocks and tables may exceed it; prose may not.
+- **Prose wraps at 100 columns**, in references, `README.md` and `docs/`. Code blocks,
+  tables and unbreakable tokens — URLs, badge markup, image tags — may exceed it; prose
+  may not. Do not break a URL to satisfy the count.
 - **Headings**: ATX (`##`), sentence case, no trailing punctuation. One `#` per file.
 - **Tables for facts.** Budgets, versions, thresholds, support matrices, checklists — if
   it's a list of facts, it's a table, not prose. If it's an argument, it's prose, not
