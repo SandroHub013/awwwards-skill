@@ -108,8 +108,9 @@ Use this when the concept doesn't justify a pinned scene.
 
 ## Native CSS scroll-driven animations
 
-Supported in Chromium 115+, Safari 18+, Firefox 132+ (~84% global). Use for *decorative*
-effects with progressive enhancement — zero JS, runs off the main thread.
+Supported in Chromium 115+ and Safari 26+; Firefox has it behind a flag only (MDN BCD,
+mid-2026). Use for *decorative* effects with progressive enhancement — zero JS, runs off
+the main thread.
 
 ```css
 @supports (animation-timeline: view()) {

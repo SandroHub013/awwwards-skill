@@ -67,8 +67,8 @@ Give the counter `font-variant-numeric: tabular-nums` so it does not jitter.
 ### Option 1 — View Transitions API (default choice in 2026)
 
 Same-document view transitions are **Baseline newly available** (Chrome, Edge, Safari 18+,
-Firefox 144+). Cross-document (`@view-transition`) animates in Chromium today; Firefox and
-Safari currently ignore the at-rule and fall back to an instant navigation — which is a
+Firefox 144+). Cross-document (`@view-transition`) animates in Chromium 126+ and Safari
+18.2+; Firefox ignores the at-rule and falls back to an instant navigation — which is a
 perfectly acceptable degradation.
 
 Cross-document, zero JS:
