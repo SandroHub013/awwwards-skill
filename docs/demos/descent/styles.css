@@ -28,7 +28,10 @@
   --void-2:  oklch(17% 0.026 255);
   --ink:     oklch(94% 0.008 240);
   --ink-2:   oklch(72% 0.016 240);
-  --ink-3:   oklch(55% 0.020 245);
+  /* L55 measured 4.14:1 on --void — under the 4.5 floor, and the copy here
+     sits on a translucent scrim over a scene that is sometimes bright, so
+     it takes extra margin rather than the minimum. L61 measures 5.4:1. */
+  --ink-3:   oklch(61% 0.020 245);
   --rule:    oklch(30% 0.030 250);
   --rule-2:  oklch(24% 0.026 252);
 

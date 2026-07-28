@@ -12,7 +12,9 @@
 <meta property="og:description" content="WONK's default value is 1. Fraunces is crooked as shipped; correctness is the thing you have to ask for.">
 <meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/wonk/">
 
-<link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- No font preload on purpose. Measured on Fast 3G it took bandwidth from the
+     stylesheet and pushed first paint from 1.1s to 3.0s. The fallback face is
+     metric-matched to Fraunces, so swap costs nothing and the wait costs a lot. -->
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia,serif'>w</text></svg>">
 </head>

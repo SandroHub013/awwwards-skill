@@ -63,7 +63,9 @@
   --paper-3:   oklch(90.0% 0.024 78);
   --ink:       oklch(19% 0.021 55);
   --ink-2:     oklch(43% 0.019 55);
-  --ink-3:     oklch(58% 0.016 55);
+  /* L58 measured 3.89:1 on --paper and failed the 4.5 floor for the mono
+     labels, which are all 12px. L51 measures 5.2:1. */
+  --ink-3:     oklch(51% 0.016 55);
   --rule:      oklch(84% 0.020 75);
   --rule-soft: oklch(89% 0.016 78);
   --accent:    oklch(53% 0.195 32);
@@ -269,9 +271,10 @@ b { font-weight: 700; }
   width: 100%;
   background: transparent;
   cursor: ew-resize;
-  /* keeps the 44px touch target without a 44px-tall bar */
-  padding-block: 1rem;
-  margin-block: -1rem;
+  /* 2px track + 21px of padding a side = a 44px hit area, without a 44px bar.
+     Measured at 34px before this and the guideline floor is 44. */
+  padding-block: 21px;
+  margin-block: -21px;
 }
 .control__range::-webkit-slider-runnable-track,
 .axis__range::-webkit-slider-runnable-track {
@@ -510,7 +513,9 @@ table { border-collapse: collapse; width: 100%; min-width: 30rem; }
   border-top: 1px solid var(--rule);
   padding-top: var(--space-xs);
 }
-.state figcaption span { display: block; margin-top: var(--space-3xs); color: var(--ink-3); }
+/* --ink-3 measured 4.47:1 here: the card ground is --paper-2, not --paper,
+   which costs just enough to miss the floor. */
+.state figcaption span { display: block; margin-top: var(--space-3xs); color: var(--ink-2); }
 
 @media (min-width: 48rem) {
   .states__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

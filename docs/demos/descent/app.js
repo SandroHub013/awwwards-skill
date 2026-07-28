@@ -9,7 +9,7 @@
    1 world unit ≈ 222 km across, ≈ 14.9 km down → ×15 exaggeration,
    which the page states rather than hides.
    ============================================================ */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js";
 import { gsap } from "https://cdn.jsdelivr.net/npm/gsap@3.15.0/+esm";
 import { ScrollTrigger } from "https://cdn.jsdelivr.net/npm/gsap@3.15.0/ScrollTrigger.js/+esm";
 import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.3.25/+esm";
