@@ -125,9 +125,10 @@ that mistake. Add to this list the same way: after something breaks, not from me
   - *patch* — corrections, template fixes, support-table updates
   - *minor* — new reference, template, register or idea card
   - *major* — workflow or scoring-model changes
-- **On merge of a version bump, the squashed commit on `main` gets tagged `vX.Y.Z`** (no
-  tags exist yet; the first bump after this file lands starts the practice). Tags are what
-  make a plugin version installable by reference instead of by branch.
+- **On merge of a version bump, the squashed commit on `main` gets tagged `vX.Y.Z`.**
+  Tagged from `v1.2.1` onward; annotated tags, message `vX.Y.Z — <PR title> (#N)`. Tags
+  are what make a plugin version installable by reference instead of by branch, so a bump
+  that reaches `main` untagged is only half-shipped.
 - **Concurrent PRs collide on the version field.** Every PR branches from the same number,
   so the second and third to merge hit a conflict on those two lines. Rebase and take the
   next patch number — do not resolve it by keeping the number already on `main`, or the
