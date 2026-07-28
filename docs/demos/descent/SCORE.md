@@ -41,10 +41,9 @@ compromise is visible.
 
 **Usability ×0.30 → 7.2.** CLS is a true zero, memory is flat under a minute of
 continuous scrolling at 4× throttle, and two draw calls is about as cheap as 8,556
-points get. **LCP is 1.58s, over the 1.5s budget**, and I am recording that as a miss
-rather than rounding it. Marked down further for the same unverified items as demo 01 —
-INP, a real frame-rate trace, and `prefers-reduced-motion`, which this tooling cannot
-emulate.
+points get, and reduced motion is **verified**. **LCP is 1.58s, over the 1.5s budget**,
+and I am recording that as a miss rather than rounding it. Marked down further for INP
+and a real frame-rate trace, neither of which was measured.
 
 **Creativity ×0.20 → 8.0.** The concept survives its own removal: even frozen, the page
 argues that a flat quake map hides the dimension the events differ in most. The reveal —
@@ -58,9 +57,15 @@ and retrieval date printed on the page. The vertical exaggeration is ×15 and st
 screen rather than buried, because an unstated exaggeration in a piece about a hidden
 dimension would be self-defeating. Imagery is generative from the data itself.
 
+## Verified
+
+- **`prefers-reduced-motion`** — Chrome launched with `--force-prefers-reduced-motion`.
+  The scene renders exactly one composed frame at 415 km and stops, still at two draw
+  calls; every beat is revealed rather than waiting on an observer, and all four
+  distribution bands are present. The instrument holds still and the data stays.
+
 ## Not verified
 
-- `prefers-reduced-motion` (no emulation available in this tooling)
 - INP, and sustained frame rate under a real trace
 - Any physical device, and no low-end GPU; all checks are emulated
 - Safari and Firefox — Chrome only

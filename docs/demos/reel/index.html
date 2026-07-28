@@ -12,8 +12,37 @@
 <meta property="og:description" content="Every clip generated, none shot. The prompt, the cost and the bitrate are printed next to each frame.">
 <meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/reel/">
 
-<link rel="preload" as="image" href="media/hero.poster.avif" type="image/avif" fetchpriority="high">
-<link rel="stylesheet" href="styles.css">
+<link rel="preload" as="image" href="media/film.poster.avif" type="image/avif" fetchpriority="high">
+
+<!-- Critical CSS inline: the stylesheet is render-blocking, and on Fast 3G the
+     HTML→CSS round trip was the whole of FCP at 1.56s, with the LCP poster
+     landing 32ms later. Enough of the first screen to paint is inlined here;
+     the rest arrives without blocking. -->
+<style>
+  :root{--film:oklch(11% 0.005 260);--film-2:oklch(15% 0.007 258);--ink:oklch(96% 0.004 250);
+    --ink-2:oklch(74% 0.008 250);--ink-3:oklch(62% 0.010 250);--rule:oklch(28% 0.008 255);
+    --rule-2:oklch(21% 0.007 257);--synth:oklch(76% 0.16 52);
+    --gutter:clamp(1.15rem,.6rem + 2.1vw,3rem);--page:min(100% - var(--gutter)*2,1280px);
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,p,figure,ul{margin:0;padding:0}
+  body{background:var(--film);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+  .head{width:var(--page);margin-inline:auto;padding-block:1.5rem;display:flex;flex-wrap:wrap;
+    gap:1rem;align-items:baseline;justify-content:space-between;font-family:var(--mono);font-size:.9rem}
+  .head a{color:inherit;text-decoration:none}.dim{color:var(--ink-3)}
+  .head__meta{font-size:.72rem;color:var(--ink-3);letter-spacing:.10em;text-transform:uppercase}
+  .scene{height:340svh;position:relative}
+  .stage{position:sticky;top:0;height:100svh;width:100%;background:var(--film);overflow:hidden}
+  .stage__poster,.stage__video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+  .stage__video{opacity:0}
+  .transport{position:absolute;left:0;right:0;bottom:0;opacity:0}
+  .stage__hint{position:absolute;left:50%;bottom:2.5rem;transform:translateX(-50%);
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+  .skip{position:absolute;left:1rem;top:-4rem}
+</style>
+<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0c'/><rect x='14' y='30' width='72' height='40' fill='none' stroke='%23ff9b45' stroke-width='7'/></svg>">
 </head>
 <body>
@@ -27,24 +56,37 @@
 
 <main>
 
-  <!-- ── beat 1 ── the hero loop ─────────────────────────────────── -->
-  <section class="hero" id="top">
-    <figure class="stage" data-hero>
+  <!-- ── beat 1 ── the transport: scroll is the film's carriage ──── -->
+  <section class="scene" data-scene>
+    <div class="stage" data-hero>
       <!-- The poster is a real <img>, not the video's poster attribute: Chrome
            attributes the paint of a poster-only <video> to the video itself, so
            the LCP element became a 976,000px² video at 3.3s. As an <img> it is
-           preloaded, painted early, and the video fades in over it. -->
-      <img class="stage__poster" src="media/hero.poster.avif" width="1920" height="1080"
+           preloaded, painted early, and the film fades in over it. -->
+      <img class="stage__poster" src="media/film.poster.avif" width="1920" height="1080"
            fetchpriority="high" decoding="async"
            alt="Generated footage: cold shafts of light falling through deep water onto dark basalt rock.">
-      <video class="stage__video" muted loop playsinline preload="none"
-             width="1920" height="1080" aria-hidden="true" tabindex="-1">
-        <source src="media/hero.av1.mp4"  type='video/mp4; codecs="av01.0.05M.08"'>
-        <source src="media/hero.h264.mp4" type='video/mp4; codecs="avc1.4d401f"'>
-      </video>
-      <noscript><p class="stage__fallback">The frame above is from the clip. Playback needs JavaScript.</p></noscript>
-    </figure>
+      <!-- One file, all three clips, every frame a keyframe — so scroll can land
+           on any frame without waiting for a GOP. -->
+      <video class="stage__video" muted playsinline preload="none"
+             width="960" height="540" aria-hidden="true" tabindex="-1"
+             src="media/film.scrub.mp4"></video>
 
+      <div class="transport" data-transport aria-hidden="true">
+        <p class="transport__chapter"><span data-chapter>Shafts</span></p>
+        <p class="transport__time"><span data-tc>00:00</span> / 00:18</p>
+        <div class="transport__rule"><i data-rule></i></div>
+        <div class="transport__marks">
+          <span style="--at:0"></span><span style="--at:.3333"></span><span style="--at:.6667"></span>
+        </div>
+      </div>
+
+      <p class="stage__hint" data-hint>Scroll runs the film</p>
+      <noscript><p class="stage__fallback">The frame above is from the film. Scroll playback needs JavaScript.</p></noscript>
+    </div>
+  </section>
+
+  <section class="hero" id="top">
     <div class="hero__type">
       <p class="eyebrow">A reel &middot; three clips &middot; none of them shot</p>
       <h1 class="title">Nothing here<br>was filmed.</h1>
@@ -55,6 +97,12 @@
         nobody mentions.
       </p>
       <p class="hero__silent">
+        You just ran that film with the scroll bar. Three clips, one 18-second file, every
+        frame a keyframe &mdash; so the page can land on any of them without waiting. The
+        scroll position is <b>mapped, never hijacked</b>: the page moves exactly as far as
+        you pushed it.
+      </p>
+      <p class="hero__silent hero__silent--quiet">
         These clips carry <b>no audio track</b>. There is no sound toggle on this page
         because a control that switches nothing is set dressing, and this page is about
         not doing that.
