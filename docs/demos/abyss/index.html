@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>abyss — everything you see, you found</title>
+<meta name="description" content="A real-time water column in Three.js. Scroll descends, the pointer aims the lamp, and nothing is lit until you point at it. No textures, no models, no photographs — the whole scene is arithmetic.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="abyss — everything you see, you found">
+<meta property="og:description" content="Real-time, not rendered. The dark is the default and the lamp is yours to aim.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/abyss/">
+
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23020609'/><circle cx='50' cy='50' r='16' fill='none' stroke='%23ffdcb0' stroke-width='6'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#read">Skip to the reading</a>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 04 &middot; real-time &middot; Three.js</p>
+</header>
+
+<!-- the instrument readout: depth, and whether the lamp is yours yet -->
+<aside class="hud" data-hud aria-hidden="true">
+  <p class="hud__row"><span class="hud__k">Depth</span><span class="hud__v" data-depth>0</span><span class="hud__u">m</span></p>
+  <p class="hud__row"><span class="hud__k">Lamp</span><span class="hud__v hud__v--sm" data-lamp>centred</span></p>
+</aside>
+
+<main>
+
+  <!-- ── the descent ─────────────────────────────────────────────── -->
+  <section class="scene" data-scene>
+    <div class="scene__type scene__type--open">
+      <p class="eyebrow">Real-time &middot; no textures &middot; no models</p>
+      <h1 class="title">Everything you<br>see, you found.</h1>
+      <p class="lede">
+        There is no ambient light down here worth the name. This scene ships almost
+        entirely black, and stays that way until you aim the lamp &mdash; which is what
+        the water is actually like, and what a rendered film can never let you do.
+      </p>
+      <p class="cue" data-cue>Move the pointer to aim &middot; scroll to descend</p>
+    </div>
+
+    <div class="scene__type" data-at="0.34">
+      <p class="beat__mark">120 m</p>
+      <h2 class="beat__title">The light from above gives out</h2>
+      <p class="beat__body">
+        Below roughly a hundred metres there is not enough daylight left to see by. Every
+        photon in this frame is coming from the lamp you are holding, and it is being
+        eaten by the water at the same rate a real one would be.
+      </p>
+    </div>
+
+    <div class="scene__type" data-at="0.68">
+      <p class="beat__mark">400 m</p>
+      <h2 class="beat__title">Snow, not dust</h2>
+      <p class="beat__body">
+        The particulate drifting through the beam is marine snow &mdash; organic debris
+        falling from the productive water above. It is the one detail that makes a dark
+        frame read as <i>underwater</i> rather than as a cave, and it is the cheapest
+        thing in this scene to draw.
+      </p>
+    </div>
+
+    <div class="scene__type" data-at="1">
+      <p class="beat__mark">700 m</p>
+      <h2 class="beat__title">Nothing here is a photograph</h2>
+      <p class="beat__body">
+        No texture file, no model file, no captured image. Every surface is a sphere
+        displaced by noise and shaded by one moving light, which is why the whole scene
+        weighs less than a single photograph of one.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── the reading ─────────────────────────────────────────────── -->
+  <section class="section" id="read">
+    <header class="section__head">
+      <p class="eyebrow">Why real-time</p>
+      <h2 class="section__title">The film cannot answer you</h2>
+    </header>
+
+    <div class="cols">
+      <div class="col">
+        <p>
+          The demo before this one is a reel of generated footage. It is sharper than this
+          scene, and it always will be &mdash; it was rendered once, offline, with no
+          frame budget. But it is finished. It cannot respond to where you are looking,
+          because every one of its pixels was decided before you arrived.
+        </p>
+        <p>
+          This scene is worse-looking and more alive. The lamp is a real spotlight
+          calculation running against real geometry, so pointing it somewhere new
+          produces an image nobody has seen, including me.
+        </p>
+      </div>
+      <div class="col">
+        <p>
+          That is the whole trade, and it is worth stating plainly rather than pretending
+          real-time has caught up with pre-rendered. It has not. What it has is the one
+          thing film does not: it is still being computed while you watch.
+        </p>
+        <p>
+          Deep water happens to be the kindest possible subject for that trade. The medium
+          hides what a real-time renderer is bad at &mdash; and the thing it is good at,
+          a light moving through suspended matter, is exactly what the subject is about.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── what it costs ───────────────────────────────────────────── -->
+  <section class="section" id="cost">
+    <header class="section__head">
+      <p class="eyebrow">Measured, live</p>
+      <h2 class="section__title">What the frame costs</h2>
+      <p class="section__sub">
+        Read from the renderer while you are looking at it, not typed in by hand.
+      </p>
+    </header>
+
+    <dl class="counts" data-counts>
+      <div><dt>Draw calls</dt><dd data-c="calls">&mdash;</dd></div>
+      <div><dt>Triangles</dt><dd data-c="tris">&mdash;</dd></div>
+      <div><dt>Points</dt><dd data-c="points">&mdash;</dd></div>
+      <div><dt>Textures</dt><dd data-c="textures">&mdash;</dd></div>
+      <div><dt>Shader programs</dt><dd data-c="programs">&mdash;</dd></div>
+      <div><dt>Frame</dt><dd data-c="fps">&mdash;</dd></div>
+    </dl>
+
+    <p class="note">
+      Zero textures is not a boast, it is the method: there is nothing to download and
+      nothing to decode, so the scene starts the moment the script does. The budget in
+      <code>references/08-webgl.md</code> is under 100 draw calls; this sits at four.
+    </p>
+  </section>
+
+  <!-- ── colophon ────────────────────────────────────────────────── -->
+  <section class="section colophon" id="colophon">
+    <header class="section__head">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">How it is made</h2>
+    </header>
+
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Renderer</dt><dd>Three.js r185, WebGL, one shared uniform block</dd></div>
+        <div><dt>Geometry</dt><dd>One icosahedron, instanced 70 times, displaced in the vertex shader</dd></div>
+        <div><dt>Surface</dt><dd>Face normals from screen-space derivatives, bumped by a three-octave noise gradient</dd></div>
+        <div><dt>Light</dt><dd>One spot: cone, inverse-square falloff, specular sheen</dd></div>
+        <div><dt>Water</dt><dd>Exponential-squared fog with a cyan shift, because water absorbs red first</dd></div>
+        <div><dt>Assets</dt><dd><b>None.</b> No textures, no models, no images</dd></div>
+      </dl>
+
+      <div class="colophon__note">
+        <p>
+          The look was not designed in a shader editor and then measured. It was measured
+          the whole way: the first version rendered black because a spotlight
+          <code>smoothstep</code> had an upper bound of 1.168, past anything a dot product
+          can return, so the cone never reached full brightness. That is written up in the
+          score rather than quietly fixed.
+        </p>
+        <a class="cta" href="../../">Read the method &#8594;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Real-time, computed in your browser. A demo, not a simulation of anything.</p>
+  <p><a href="#top">Back to the surface</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

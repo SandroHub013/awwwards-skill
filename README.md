@@ -82,7 +82,7 @@ day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
 
 ## Built with it
 
-Three demo sites, each produced by running the method end to end, each scored against the
+Four demo sites, each produced by running the method end to end, each scored against the
 same rubric with the numbers printed rather than implied:
 
 | | |
@@ -90,11 +90,13 @@ same rubric with the numbers printed rather than implied:
 | [**wonk**](https://sandrohub013.github.io/awwwards-skill/demos/wonk/) | A Fraunces specimen for one number: `WONK` defaults to 1, so the typeface ships crooked. Editorial, no WebGL. [Score](docs/demos/wonk/SCORE.md) |
 | [**descent**](https://sandrohub013.github.io/awwwards-skill/demos/descent/) | 8,556 real earthquakes of 2025 at their own depth — a quake map is the top face of a solid. WebGL, no webfont. [Score](docs/demos/descent/SCORE.md) |
 | [**nothing here was filmed**](https://sandrohub013.github.io/awwwards-skill/demos/reel/) | A reel whose footage came out of a model — the scroll bar is the film's transport, and every prompt, cost and byte is printed. Video-first. [Score](docs/demos/reel/SCORE.md) |
+| [**abyss**](https://sandrohub013.github.io/awwwards-skill/demos/abyss/) | A real-time water column. The dark is the default and the pointer aims the lamp. Four draw calls, zero textures, no assets at all. [Score](docs/demos/abyss/SCORE.md) |
 
 None uses stock imagery or placeholder copy. The first two are measured from primary
 sources: a font binary and the USGS catalog. The third is generated footage, which the
 skill would otherwise forbid — so its provenance is the subject of the page rather than a
-line in the footer, and the ledger of what each clip cost is published with it.
+line in the footer. The fourth has no assets to source: every frame is arithmetic, and
+the renderer counters are read live on the page rather than typed.
 
 ## What you get
 
