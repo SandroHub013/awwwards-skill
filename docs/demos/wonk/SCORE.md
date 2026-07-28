@@ -37,10 +37,9 @@ Marked down for having no inner pages, forms or error states to prove consistenc
 across — a jury clicks through, and here there is nowhere to click.
 
 **Usability ×0.30 → 7.4.** Core Web Vitals measured and inside budget, keyboard order
-sane, skip link, focus visible, 44px targets, no horizontal overflow at 390px. Marked
-down for three things I did not measure: INP, a real frame-rate trace on the scrub, and
-`prefers-reduced-motion` — the browser tool available here has no flag to emulate it, so
-that path is written and reviewed but **unverified**. The scrub animates
+sane, skip link, focus visible, 44px targets, no horizontal overflow at 390px, and
+reduced motion **verified** rather than assumed. Marked down for two things I did not
+measure: INP and a real frame-rate trace on the scrub. The scrub animates
 `font-variation-settings`, which is layout-bound by nature; it is scoped with `contain`
 to the two morphing blocks, but that is a mitigation, not a measurement.
 
@@ -54,9 +53,17 @@ metrics from `head`/`hhea`/`OS/2`, credits from the project's own metadata. Typo
 only, no photography — a deliberate choice the doctrine prefers over stock, but it is
 still a narrower content range than a site with commissioned imagery.
 
+## Verified
+
+- **`prefers-reduced-motion`** — Chrome launched with `--force-prefers-reduced-motion`.
+  No reveal is left hidden, the scrub does not run, the progress rail sits full, and both
+  static specimens still show `WONK 1` against `WONK 0` side by side, so the argument
+  survives without a single frame of motion. The sliders remain live: the hero word
+  answers the control at `WONK 0.30`, which is the point — this page is an instrument,
+  and reduced motion does not mean a dead one.
+
 ## Not verified
 
-- `prefers-reduced-motion` (no emulation available in this tooling)
 - INP, and sustained frame rate under a real trace
 - Any physical device; all mobile checks are emulated
 - Safari and Firefox — Chrome only

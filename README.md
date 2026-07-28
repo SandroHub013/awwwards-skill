@@ -89,7 +89,7 @@ same rubric with the numbers printed rather than implied:
 |---|---|
 | [**wonk**](https://sandrohub013.github.io/awwwards-skill/demos/wonk/) | A Fraunces specimen for one number: `WONK` defaults to 1, so the typeface ships crooked. Editorial, no WebGL. [Score](docs/demos/wonk/SCORE.md) |
 | [**descent**](https://sandrohub013.github.io/awwwards-skill/demos/descent/) | 8,556 real earthquakes of 2025 at their own depth — a quake map is the top face of a solid. WebGL, no webfont. [Score](docs/demos/descent/SCORE.md) |
-| [**nothing here was filmed**](https://sandrohub013.github.io/awwwards-skill/demos/reel/) | A reel whose footage came out of a model — prompt, cost and shipped bytes printed beside every clip. Video-first. [Score](docs/demos/reel/SCORE.md) |
+| [**nothing here was filmed**](https://sandrohub013.github.io/awwwards-skill/demos/reel/) | A reel whose footage came out of a model — the scroll bar is the film's transport, and every prompt, cost and byte is printed. Video-first. [Score](docs/demos/reel/SCORE.md) |
 
 None uses stock imagery or placeholder copy. The first two are measured from primary
 sources: a font binary and the USGS catalog. The third is generated footage, which the

@@ -26,42 +26,106 @@ const fmtTime = (s) => {
 };
 
 /* ============================================================
-   1 — the hero loop
+   1 — the transport: native scroll position drives the film
+
+   The signature moment. The three clips are one 18s file where every
+   frame is a keyframe, so scroll can land anywhere without waiting for
+   a GOP. Scroll is *mapped*, never hijacked: the page scrolls exactly as
+   it would with this code deleted, and the film advances with it.
    ============================================================ */
 {
+  const scene = document.querySelector("[data-scene]");
   const stage = document.querySelector("[data-hero]");
   const video = stage?.querySelector("video");
 
-  if (video) {
-    // The poster is the LCP element. The video fades in over it once it can
-    // actually play, so a slow network shows a composed frame, not a black box.
-    const ready = () => video.classList.add("is-ready");
-    if (video.readyState >= 3) ready();
-    else video.addEventListener("canplay", ready, { once: true });
+  const CHAPTERS = LEDGER
+    ? LEDGER.clips.map((c, i) => ({ at: i / LEDGER.clips.length, name: c.title }))
+    : [{ at: 0, name: "" }];
 
-    if (!REDUCED) {
-      /* The poster is the LCP element, so the video is not allowed to compete
-         with it for bandwidth. Measured: fetching it during first paint put LCP
-         at 2.2s on Fast 3G; deferring to the load event brings it back under
-         budget and costs nothing visible, because the poster is already there. */
+  if (video && scene) {
+    const ready = () => video.classList.add("is-ready");
+    if (video.readyState >= 2) ready();
+    else video.addEventListener("loadeddata", ready, { once: true });
+
+    if (REDUCED) {
+      /* No pin, no scrub, no autoplay: the poster and the cards below carry
+         the whole reel. The scene collapses so nothing scrolls past a frozen
+         frame for three viewport heights. */
+      scene.style.height = "auto";
+      stage.style.position = "static";
+      stage.style.height = "auto";
+      stage.style.aspectRatio = "16 / 9";
+      video.remove();
+      document.querySelector("[data-hint]")?.remove();
+      document.querySelector("[data-transport]")?.remove();
+    } else {
+      /* The poster is the LCP element, so the film is not allowed to compete
+         with it for bandwidth. Measured: fetching during first paint put LCP at
+         2.2s on Fast 3G; deferring to load keeps the poster the LCP. */
       const begin = () => { video.preload = "auto"; video.load(); };
       if (document.readyState === "complete") begin();
       else addEventListener("load", begin, { once: true });
 
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          // play() rejects under autoplay policy and when a pause interrupts it
-          if (e.isIntersecting) e.target.play().catch(() => {});
-          else e.target.pause();
+      const tc = document.querySelector("[data-tc]");
+      const rule = document.querySelector("[data-rule]");
+      const chapter = document.querySelector("[data-chapter]");
+
+      let target = 0, applied = -1, ticking = false, live = false;
+
+      const frame = () => {
+        ticking = false;
+        const d = video.duration;
+        if (!isFinite(d)) return;
+
+        // Only seek on a real change: a redundant currentTime write still costs
+        // a decode, and at 60Hz that is what turns a scrub into a stutter.
+        if (Math.abs(target - applied) > 0.0008) {
+          applied = target;
+          video.currentTime = target * d;
         }
-      }, { rootMargin: "80px" });
-      io.observe(video);
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) video.pause();
-        else if (video.getBoundingClientRect().top < innerHeight) video.play().catch(() => {});
-      });
-    } else {
-      video.classList.add("is-ready");   // poster only; nothing moves
+        const t = target * d;
+        if (tc) tc.textContent =
+          String(Math.floor(t / 60)).padStart(2, "0") + ":" +
+          String(Math.floor(t % 60)).padStart(2, "0");
+        if (rule) rule.style.width = (target * 100).toFixed(2) + "%";
+        if (chapter) {
+          let name = CHAPTERS[0].name;
+          for (const c of CHAPTERS) if (target >= c.at) name = c.name;
+          if (chapter.textContent !== name) chapter.textContent = name;
+        }
+      };
+
+      const onScroll = () => {
+        const r = scene.getBoundingClientRect();
+        const travel = scene.offsetHeight - innerHeight;
+        const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+        target = p;
+
+        // The transport only appears once the scene is actually the thing on
+        // screen, so it does not sit over the poster before anything can move.
+        const nowLive = r.top <= 8 && r.bottom > innerHeight * 0.5;
+        if (nowLive !== live) { live = nowLive; stage.classList.toggle("is-running", live); }
+
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(frame);
+      };
+
+      addEventListener("scroll", onScroll, { passive: true });
+      addEventListener("resize", onScroll, { passive: true });
+      video.addEventListener("loadedmetadata", onScroll, { once: true });
+      onScroll();
+
+      /* If the film cannot be scrubbed — a browser that refuses to seek, or a
+         connection that never buffers it — it becomes an ordinary muted loop
+         rather than a frozen frame. */
+      addEventListener("load", () => {
+        setTimeout(() => {
+          if (video.seekable.length && video.seekable.end(0) > 0) return;
+          video.loop = true;
+          video.play().catch(() => {});
+        }, 4000);
+      }, { once: true });
     }
   }
 }

@@ -112,30 +112,30 @@ code {
 }
 .section__sub { max-width: 54ch; color: var(--ink-2); font-size: var(--step-0); }
 
-/* ── beat 1 · hero ─────────────────────────────────────────────── */
-/* The reel is the hero — so the frame gets the viewport and the type sits
-   under it, rather than the two splitting the screen as equals. */
-.hero { padding-bottom: var(--space-2xl); }
+/* ── beat 1 · the transport ────────────────────────────────────── */
+/* Pinned with sticky, not a library and not a wheel handler: native scroll
+   position is mapped to the film's time, so the page still scrolls exactly
+   as the user expects and nothing is hijacked. */
+.scene { height: 340svh; position: relative; }
 .stage {
-  position: relative;
+  position: sticky; top: 0;
+  height: 100svh;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  max-height: 68svh;
-  background: var(--film-2);
+  background: var(--film);
   overflow: hidden;
-  border-block: 1px solid var(--rule-2);
 }
+.hero { padding-bottom: var(--space-2xl); }
 .hero__type {
   width: var(--page); margin-inline: auto;
   padding-top: var(--space-l);
   display: grid; gap: var(--space-m);
 }
-.stage__poster {
-  display: block; width: 100%; height: 100%; object-fit: cover;
-}
+.stage__poster,
 .stage__video {
   position: absolute; inset: 0;
   display: block; width: 100%; height: 100%; object-fit: cover;
+}
+.stage__video {
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-out);
 }
@@ -144,6 +144,48 @@ code {
   position: absolute; inset: auto 0 0 0; padding: var(--space-s);
   font-family: var(--mono); font-size: var(--step--2); color: var(--ink-3);
   background: linear-gradient(to top, var(--film), transparent);
+}
+.stage__hint {
+  position: absolute; left: 50%; bottom: var(--space-l);
+  transform: translateX(-50%);
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-2);
+  text-shadow: 0 1px 12px oklch(11% 0.005 260 / .9);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.stage.is-running .stage__hint { opacity: 0; }
+
+/* The transport readout. The reference is explicit: a pinned scene needs a
+   visible progress signal or it reads as scroll-jacking. */
+.transport {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: var(--space-l) var(--gutter) var(--space-m);
+  display: grid; gap: var(--space-2xs);
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  font-family: var(--mono);
+  background: linear-gradient(to top, oklch(11% 0.005 260 / .85), transparent);
+  opacity: 0; transition: opacity var(--dur-base) var(--ease-out);
+}
+.stage.is-running .transport { opacity: 1; }
+.transport__chapter {
+  font-size: var(--step-1); letter-spacing: -.01em; color: var(--ink);
+}
+.transport__time {
+  font-size: var(--step--1); color: var(--ink-2);
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+.transport__rule {
+  grid-column: 1 / -1;
+  height: 2px; background: var(--rule); position: relative;
+}
+.transport__rule i {
+  display: block; height: 100%; width: 0; background: var(--synth);
+}
+.transport__marks { grid-column: 1 / -1; position: relative; height: 10px; }
+.transport__marks span {
+  position: absolute; left: calc(var(--at) * 100%); top: 0;
+  width: 1px; height: 6px; background: var(--rule);
 }
 .title {
   font-size: var(--display); line-height: .92;
@@ -168,8 +210,9 @@ code {
   .hero__type .eyebrow { grid-column: 1; grid-row: 1; }
   .title { grid-column: 1; grid-row: 2; margin: 0; }
   .lede { grid-column: 2; grid-row: 1 / span 2; }
-  .hero__silent { grid-column: 2; grid-row: 3; }
+  .hero__silent { grid-column: 2; }
 }
+.hero__silent--quiet { border-left-color: var(--rule); color: var(--ink-3); }
 
 /* ── beat 2 · the reel index ───────────────────────────────────── */
 .cards { display: grid; gap: var(--space-m); }
