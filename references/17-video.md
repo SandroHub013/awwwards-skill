@@ -91,8 +91,8 @@ turn the listing page into the showreel.
 - **Hover-scrub** (desktop alternative): on `pointermove`, map pointer X to
   `video.currentTime`. Use `requestVideoFrameCallback` to throttle seeks to decoded
   frames (Chrome and Safari; Firefox has no support, so fall back to a `timeupdate` or
-  rAF throttle there); `preload="auto"` only for the first few visible cards, `metadata` for the rest.
-  Scrubbing stutters if the file lacks frequent keyframes — encode previews with
+  rAF throttle there); `preload="auto"` only for the first few visible cards, `metadata`
+  for the rest. Scrubbing stutters if the file lacks frequent keyframes — encode previews with
   `-g 12` (keyframe every ~0.5s).
 - **Touch**: no hover exists. Tap = play inline (muted, `playsinline`), second tap = open
   the project. Never hijack scroll to fake playback.

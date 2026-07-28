@@ -147,8 +147,9 @@ Tab through the primary journey and confirm at each step:
 $CDA eval "(()=>{const a=document.activeElement;const s=getComputedStyle(a);return {el:a.tagName+'.'+a.className, outline:s.outlineWidth+' '+s.outlineColor, shadow:s.boxShadow}})()"
 ```
 
-Focus must be visibly styled at every stop. `resize` is fine for desktop-sized checks (it moves the real window); for anything under
-~500px, or when you need `mobile`/`touch`/DPR emulation, use `emulate --viewport`.
+Focus must be visibly styled at every stop. `resize` is fine for desktop-sized checks (it
+moves the real window); for anything under ~500px, or when you need `mobile`/`touch`/DPR
+emulation, use `emulate --viewport`.
 
 Then structural checks:
 
