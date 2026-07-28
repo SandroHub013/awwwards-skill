@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>awwwards skill — build websites to jury standard</title>
-<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and two demo sites built with it.">
+<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and three demo sites built with it.">
 <meta name="theme-color" content="#0b0b0d">
 <link rel="canonical" href="https://sandrohub013.github.io/awwwards-skill/">
 <meta property="og:type" content="website">
@@ -94,11 +94,12 @@
   <section class="section" id="demos">
     <header class="section__head" data-reveal>
       <p class="eyebrow">Built with it</p>
-      <h2 class="section__title">Two sites, no stock anything</h2>
-      <p class="section__sub">Both were produced by running the method in this repo end
-        to end. Every figure on either page is measured from a primary source &mdash; a
-        font binary and a public earthquake catalog &mdash; because the skill refuses
-        placeholder content, and so do they.</p>
+      <h2 class="section__title">Three sites, no stock anything</h2>
+      <p class="section__sub">All three were produced by running the method in this repo
+        end to end, and each is scored against the same rubric with the numbers published
+        rather than implied. Two are built on primary sources &mdash; a font binary and a
+        public earthquake catalog. The third is generated footage, and says so in its
+        headline rather than its footer.</p>
     </header>
 
     <ul class="demos">
@@ -144,10 +145,31 @@
           </div>
         </a>
       </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/reel/">
+          <figure class="demo__shot">
+            <img src="./media/demo-reel.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The reel demo: a full-bleed frame of cold light falling through deep
+                      water, under the headline Nothing here was filmed.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">03 &middot; video-first &middot; generated footage</p>
+            <h3 class="demo__title">nothing here was filmed</h3>
+            <p class="demo__line">A reel whose footage came out of a model. The prompt,
+              the model, the money and the shipped bytes are printed beside every clip
+              instead of buried in a footer.</p>
+            <p class="demo__meta">
+              <span>Video-first</span><span>AV1 + H.264</span><span>1.05 MB of 1080p</span>
+            </p>
+          </div>
+        </a>
+      </li>
     </ul>
 
     <p class="note" data-reveal>
-      Neither is a template. Both are self-scored against
+      None is a template. All three are self-scored against
       <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/01-scoring.md">the
       same rubric</a> the skill applies to your work, and the score is printed in each
       repo folder rather than implied.

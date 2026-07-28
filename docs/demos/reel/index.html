@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nothing here was filmed — a reel of generated footage</title>
+<meta name="description" content="A video-first reel where every clip was generated, not shot. Model, prompt, duration, cost and shipped bytes published for each one. Built with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="nothing here was filmed">
+<meta property="og:description" content="Every clip generated, none shot. The prompt, the cost and the bitrate are printed next to each frame.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/reel/">
+
+<link rel="preload" as="image" href="media/hero.poster.avif" type="image/avif" fetchpriority="high">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0c'/><rect x='14' y='30' width='72' height='40' fill='none' stroke='%23ff9b45' stroke-width='7'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#reel">Skip to the reel</a>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 03 &middot; video-first &middot; generated footage</p>
+</header>
+
+<main>
+
+  <!-- ── beat 1 ── the hero loop ─────────────────────────────────── -->
+  <section class="hero" id="top">
+    <figure class="stage" data-hero>
+      <!-- The poster is a real <img>, not the video's poster attribute: Chrome
+           attributes the paint of a poster-only <video> to the video itself, so
+           the LCP element became a 976,000px² video at 3.3s. As an <img> it is
+           preloaded, painted early, and the video fades in over it. -->
+      <img class="stage__poster" src="media/hero.poster.avif" width="1920" height="1080"
+           fetchpriority="high" decoding="async"
+           alt="Generated footage: cold shafts of light falling through deep water onto dark basalt rock.">
+      <video class="stage__video" muted loop playsinline preload="none"
+             width="1920" height="1080" aria-hidden="true" tabindex="-1">
+        <source src="media/hero.av1.mp4"  type='video/mp4; codecs="av01.0.05M.08"'>
+        <source src="media/hero.h264.mp4" type='video/mp4; codecs="avc1.4d401f"'>
+      </video>
+      <noscript><p class="stage__fallback">The frame above is from the clip. Playback needs JavaScript.</p></noscript>
+    </figure>
+
+    <div class="hero__type">
+      <p class="eyebrow">A reel &middot; three clips &middot; none of them shot</p>
+      <h1 class="title">Nothing here<br>was filmed.</h1>
+      <p class="lede">
+        Every frame on this page came out of a model. That used to be the disclaimer at
+        the bottom of a reel. Here it is the subject, so the prompt, the model, the money
+        and the shipped bytes are printed next to each clip instead of being the part
+        nobody mentions.
+      </p>
+      <p class="hero__silent">
+        These clips carry <b>no audio track</b>. There is no sound toggle on this page
+        because a control that switches nothing is set dressing, and this page is about
+        not doing that.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── beat 2 ── the reel index ────────────────────────────────── -->
+  <section class="section" id="reel">
+    <header class="section__head">
+      <p class="eyebrow">The reel</p>
+      <h2 class="section__title">The index plays</h2>
+      <p class="section__sub">
+        Each card is its own 480p cut, not the hero file seeked with
+        <code>currentTime</code>. Point at one on a desktop and it scrubs to your pointer.
+        Tap on a phone and it plays inline. Only one ever runs at a time.
+      </p>
+    </header>
+
+    <ul class="cards" data-cards>
+      <!-- populated from the same ledger the table below is built from,
+           and pre-rendered here so the page works with JS off -->
+    </ul>
+  </section>
+
+  <!-- ── beat 3 ── the player ────────────────────────────────────── -->
+  <section class="section" id="player">
+    <header class="section__head">
+      <p class="eyebrow">The player</p>
+      <h2 class="section__title">Owned, not borrowed</h2>
+      <p class="section__sub">
+        Native controls are a design failure at this tier, and removing them without
+        rebuilding keyboard access is an accessibility failure. So: real buttons, a
+        seekable progress bar, arrow-key seeking, visible focus.
+      </p>
+    </header>
+
+    <div class="player" data-player>
+      <div class="player__frame">
+        <video class="player__video" playsinline preload="none"
+               width="1920" height="1080" poster="media/hero.poster.avif"
+               aria-label="Generated footage, full clip.">
+          <source src="media/hero.av1.mp4"  type='video/mp4; codecs="av01.0.05M.08"'>
+          <source src="media/hero.h264.mp4" type='video/mp4; codecs="avc1.4d401f"'>
+        </video>
+        <button class="player__big" type="button" data-bigplay aria-label="Play the clip">
+          <span aria-hidden="true">&#9654;</span>
+        </button>
+      </div>
+
+      <div class="player__bar">
+        <button class="pbtn" type="button" data-play aria-label="Play" aria-pressed="false">
+          <span data-play-icon aria-hidden="true">&#9654;</span>
+        </button>
+        <span class="player__time"><span data-cur>0:00</span> / <span data-dur>0:00</span></span>
+        <label class="player__seek">
+          <span class="sr-only">Seek</span>
+          <input type="range" data-seek min="0" max="1000" value="0" step="1">
+        </label>
+        <button class="pbtn" type="button" data-full aria-label="Enter fullscreen">
+          <span aria-hidden="true">&#9974;</span>
+        </button>
+      </div>
+      <p class="player__note">
+        No captions track: there is no speech in any of these clips. A narrated reel
+        without <code>&lt;track kind="captions"&gt;</code> would fail both accessibility
+        and the content criterion.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── beat 4 ── the ledger ────────────────────────────────────── -->
+  <section class="section" id="ledger">
+    <header class="section__head">
+      <p class="eyebrow">The receipts</p>
+      <h2 class="section__title">What each clip cost, and what it weighs</h2>
+      <p class="section__sub">
+        Generation cost is what OpenRouter billed for that job. Shipped bytes are the
+        files this page actually serves, after the encode.
+      </p>
+    </header>
+
+    <div class="table-wrap">
+      <table class="ledger" data-ledger>
+        <caption class="sr-only">Model, duration, generation cost and shipped size for each clip</caption>
+        <thead>
+          <tr>
+            <th scope="col">Clip</th><th scope="col">Model</th>
+            <th scope="col">Dur.</th><th scope="col">Cost</th>
+            <th scope="col">1080p</th><th scope="col">480p</th><th scope="col">Poster</th>
+          </tr>
+        </thead>
+        <tbody><!-- filled by app.js from ledger.json, and by the build otherwise --></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── beat 5 ── colophon ──────────────────────────────────────── -->
+  <section class="section colophon" id="colophon">
+    <header class="section__head">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">Say it plainly</h2>
+    </header>
+
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Footage</dt><dd><b class="synth">Generated</b>, not filmed. No camera, no location, no crew.</dd></div>
+        <div><dt>Model</dt><dd>ByteDance Seedance 2.0, via OpenRouter</dd></div>
+        <div><dt>Audio</dt><dd>None generated, none shipped</dd></div>
+        <div><dt>Encode</dt><dd>ffmpeg 8.1.2 &mdash; SVT-AV1 + H.264 ladder, AVIF posters</dd></div>
+        <div><dt>Type</dt><dd>System stacks only &mdash; no webfont, the video is the payload</dd></div>
+      </dl>
+
+      <div class="colophon__note">
+        <p>
+          A reel is the one format where the provenance of the footage is the whole
+          question, so burying it in a footer would have been the dishonest version of
+          this page. Every prompt is reproducible: same model, same text, same seed.
+        </p>
+        <p>
+          The other two demos in this set take the opposite position &mdash; every figure
+          on them is measured from a primary source, nothing invented. This one is the
+          exception, and it is labelled as one rather than quietly blending in.
+        </p>
+        <a class="cta" href="../../">Read the method &#8594;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Generated footage, declared. A demo, not a commercial reel.</p>
+  <p><a href="#top">Back to the top</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

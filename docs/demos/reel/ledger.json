@@ -1,0 +1,64 @@
+{
+  "model": "Seedance 2.0",
+  "model_id": "bytedance/seedance-2.0",
+  "provider": "OpenRouter",
+  "generated": "2026-07-28",
+  "audio": "none requested, none shipped",
+  "encoder": "ffmpeg 8.1.2 — SVT-AV1 + libx264, AVIF stills via libaom",
+  "clips": [
+    {
+      "slug": "hero",
+      "title": "Shafts",
+      "duration": 6,
+      "cost_usd": 2.020788,
+      "job": "qc49ottz6gATalaoCKWL",
+      "seed": null,
+      "alt": "Cold shafts of light falling through deep water onto dark basalt rock, with a distant amber glow at the left edge.",
+      "prompt": "Anamorphic cinematic shot, slow steady push-in. Cold cyan volumetric shafts of light falling through deep water onto dark basalt rock, suspended particulate drifting, a single distant amber instrument glow at frame left.",
+      "resolution": "1920×1080",
+      "bytes": {
+        "av1": 264691,
+        "h264": 1123384,
+        "prev_av1": 125173,
+        "prev_h264": 230774,
+        "poster": 22823
+      }
+    },
+    {
+      "slug": "arm",
+      "title": "Manipulator",
+      "duration": 6,
+      "cost_usd": 2.020788,
+      "job": "UrChSfGIf1Y7aMPqgV33",
+      "seed": 11101,
+      "alt": "A submersible's manipulator arm under hard floodlights in black water, scratched yellow paint and hydraulic lines.",
+      "prompt": "Anamorphic cinematic shot, slow orbit. A submersible manipulator arm lit by hard floodlights in absolute black water, scratched yellow paint, hydraulic lines, marine snow drifting through the beams.",
+      "resolution": "1920×1080",
+      "bytes": {
+        "av1": 570808,
+        "h264": 1158418,
+        "prev_av1": 243267,
+        "prev_h264": 323027,
+        "poster": 37701
+      }
+    },
+    {
+      "slug": "vent",
+      "title": "Chimney",
+      "duration": 6,
+      "cost_usd": 2.020788,
+      "job": "eadTzes5mtuRZgWXkZCv",
+      "seed": 11102,
+      "alt": "A hydrothermal vent chimney on the seafloor with black mineral smoke billowing upward and a faint orange glow at its base.",
+      "prompt": "Anamorphic cinematic shot, slow drift upward. A hydrothermal vent chimney on the deep seafloor, black mineral smoke billowing in dense plumes, faint orange heat glow at the base, blue floodlight raking across mineral crust.",
+      "resolution": "1920×1080",
+      "bytes": {
+        "av1": 267509,
+        "h264": 1302099,
+        "prev_av1": 104247,
+        "prev_h264": 205876,
+        "poster": 13224
+      }
+    }
+  ]
+}
