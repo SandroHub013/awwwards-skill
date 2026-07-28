@@ -13,8 +13,8 @@ TRIGGER:   scroll range over the pinned hero scene
 PHASES:    frame 0, clip 1  →  scroll  →  frame 434, end of clip 3
 INPUT:     native scroll position, mapped. The page scrolls exactly as far as
            it was pushed; the wheel is never intercepted. Three clips are one
-           18s file where every frame is a keyframe, so the page can land
-           anywhere without waiting for a GOP.
+           18s 1920x1080 file with a keyframe every half-second, so the page
+           lands anywhere in a few decoded frames.
 FALLBACK:  no JS, or a browser that will not seek → an ordinary muted loop
 MOBILE:    same mapping on native touch scroll, shorter pin distance
 REDUCED:   no pin, no scrub. The scene collapses to a 16:9 poster and the
@@ -33,11 +33,11 @@ Chrome against a local server with byte-range support, emulating **Fast 3G + 4×
 
 | Metric | Budget | Measured |
 |---|---|---|
-| LCP | < 1.5s | **1.41s** |
-| FCP | — | **0.66s** |
+| LCP | < 1.5s | **1.45s** |
+| FCP | — | **0.82s** |
 | CLS | < 0.05 | **0** |
-| First-view transfer | < 3MB | **1.74 MB** |
-| Scrub film (18s, all-intra) | < 2MB reel-page | **1.70 MB** |
+| First-view transfer | < 3MB | **1.62 MB** |
+| Scrub film — 18s, **1920×1080**, 24fps | < 2MB reel-page | **1.57 MB** |
 | Hero loop 1080p (AV1) | < 1.5MB | **258 KB** |
 | Hero loop 1080p (H.264) | < 1.5MB | **1.10 MB** |
 | Card preview 480p | < 400KB | **102–238 KB** |
@@ -74,8 +74,21 @@ three**, which is the difference between a reel that loads and the 50 MB hero MP
   priority, so the actual LCP image was competing with a file nothing displayed.
 - **Render-blocking CSS was the whole of FCP.** On Fast 3G the HTML→CSS round trip put
   first paint at 1.56s with the poster landing 32ms later. Inlining the first screen's
-  CSS took FCP to **0.66s**; re-encoding the poster from 19.6 KB to 11.8 KB took LCP
-  from 1.60s to **1.41s**, under budget for the first time.
+  CSS took FCP to **0.82s**; re-encoding the poster from 19.6 KB to 11.8 KB took LCP
+  under budget.
+- **The scrub film shipped at 960×540 and looked it.** It was encoded all-intra — every
+  frame a keyframe — on the assumption that scrubbing needs instant access to any frame.
+  It does not: `17-video.md` prescribes `-g 12`, a keyframe every half-second, and
+  seeking within a GOP costs a few decoded frames on hardware. All-intra cost roughly
+  four times the bytes, which was then paid for by dropping resolution — trading the one
+  thing a full-bleed film needs. At `-g 12` the same 18 seconds ship at **1920×1080, 24fps,
+  1.57 MB**: full resolution, full frame rate, and *smaller* than the soft 960×540 file
+  it replaced. Seek accuracy is unaffected — measured drift is 0.01% at every position.
+- **A `<video>` in the DOM is an LCP candidate even when it cannot be seen.** Once the
+  film was 1080p it outranked the poster it sits on and took LCP to 3.32s. `opacity: 0`
+  did not stop it. `visibility: hidden` did not stop it. The element is now built in JS
+  and left **detached** until the first scroll — not existing is the only reliable way to
+  not be a candidate, and before anyone scrolls the poster is the correct frame anyway.
 
 ## Scored
 
@@ -97,9 +110,8 @@ trace, and no Safari.
 **Creativity ×0.20 → 8.0.** Two ideas, and they reinforce each other. The disclosure is
 the page: prompt, model, cost and shipped bytes printed beside every clip, where a reel
 normally hides all four. And the scroll bar is the film's transport — three clips are one
-file, every frame a keyframe, so the reel is not something you watch but something you
-run. It also completes the set: in demo 01 scroll straightens type, in 02 it is depth,
-here it is time.
+1920×1080 file, so the reel is not something you watch but something you run. It also
+completes the set: in demo 01 scroll straightens type, in 02 it is depth, here it is time.
 
 **Content ×0.10 → 7.0.** Every prompt, cost and byte count is real and reproducible, and
 the ledger is generated from the files on disk rather than typed, so a figure cannot
