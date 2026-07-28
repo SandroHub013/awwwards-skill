@@ -35,7 +35,7 @@
   .scene{height:340svh;position:relative}
   .stage{position:sticky;top:0;height:100svh;width:100%;background:var(--film);overflow:hidden}
   .stage__poster,.stage__video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
-  .stage__video{opacity:0}
+  .stage__video{visibility:hidden;opacity:0}
   .transport{position:absolute;left:0;right:0;bottom:0;opacity:0}
   .stage__hint{position:absolute;left:50%;bottom:2.5rem;transform:translateX(-50%);
     font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
@@ -66,11 +66,12 @@
       <img class="stage__poster" src="media/film.poster.avif" width="1920" height="1080"
            fetchpriority="high" decoding="async"
            alt="Generated footage: cold shafts of light falling through deep water onto dark basalt rock.">
-      <!-- One file, all three clips, every frame a keyframe — so scroll can land
-           on any frame without waiting for a GOP. -->
-      <video class="stage__video" muted playsinline preload="none"
-             width="960" height="540" aria-hidden="true" tabindex="-1"
-             src="media/film.scrub.mp4"></video>
+      <!-- The film element is created by app.js, not declared here. A painted
+           1080p <video> outranks the poster it sits on as an LCP candidate, and
+           Chrome counts it even at opacity 0 and visibility:hidden — it was
+           taking LCP from 1.48s to 3.32s. Not existing is the only reliable way
+           to not be a candidate. Without JS there is nothing to scrub anyway,
+           and the poster is the correct frame. -->
 
       <div class="transport" data-transport aria-hidden="true">
         <p class="transport__chapter"><span data-chapter>Shafts</span></p>

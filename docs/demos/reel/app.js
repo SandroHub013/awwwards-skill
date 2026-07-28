@@ -36,29 +36,51 @@ const fmtTime = (s) => {
 {
   const scene = document.querySelector("[data-scene]");
   const stage = document.querySelector("[data-hero]");
-  const video = stage?.querySelector("video");
+
+  /* Built here rather than declared in the HTML: see the note in index.html.
+     A <video> that exists is an LCP candidate the moment it paints, whatever
+     its opacity or visibility, and it outranks the poster underneath it. */
+  const video = stage && !REDUCED ? Object.assign(document.createElement("video"), {
+    className: "stage__video",
+    muted: true, playsInline: true, preload: "none",
+    width: 1920, height: 1080, src: "media/film.scrub.mp4",
+  }) : null;
+  if (video) {
+    video.setAttribute("aria-hidden", "true");
+    video.tabIndex = -1;
+    // Deliberately NOT attached yet — see reveal(). A detached element cannot
+    // be an LCP candidate; a hidden attached one still is.
+  }
 
   const CHAPTERS = LEDGER
     ? LEDGER.clips.map((c, i) => ({ at: i / LEDGER.clips.length, name: c.title }))
     : [{ at: 0, name: "" }];
 
-  if (video && scene) {
-    const ready = () => video.classList.add("is-ready");
-    if (video.readyState >= 2) ready();
-    else video.addEventListener("loadeddata", ready, { once: true });
+  if (scene && REDUCED) {
+    /* No pin, no scrub, no film element at all: the poster and the cards below
+       carry the whole reel. The scene collapses so nothing scrolls past a
+       frozen frame for three viewport heights. */
+    scene.style.height = "auto";
+    stage.style.position = "static";
+    stage.style.height = "auto";
+    stage.style.aspectRatio = "16 / 9";
+    document.querySelector("[data-hint]")?.remove();
+    document.querySelector("[data-transport]")?.remove();
+  }
 
-    if (REDUCED) {
-      /* No pin, no scrub, no autoplay: the poster and the cards below carry
-         the whole reel. The scene collapses so nothing scrolls past a frozen
-         frame for three viewport heights. */
-      scene.style.height = "auto";
-      stage.style.position = "static";
-      stage.style.height = "auto";
-      stage.style.aspectRatio = "16 / 9";
-      video.remove();
-      document.querySelector("[data-hint]")?.remove();
-      document.querySelector("[data-transport]")?.remove();
-    } else {
+  if (video && scene) {
+    /* The film is revealed on the first scroll, not on loadeddata: before
+       anyone scrolls, the poster IS the correct frame, and keeping the video
+       unpainted until then keeps LCP on the poster. */
+    let revealed = false;
+    const reveal = () => {
+      if (revealed || video.readyState < 2) return;
+      revealed = true;
+      stage.insertBefore(video, stage.querySelector(".transport"));
+      requestAnimationFrame(() => video.classList.add("is-ready"));
+    };
+
+    {
       /* The poster is the LCP element, so the film is not allowed to compete
          with it for bandwidth. Measured: fetching during first paint put LCP at
          2.2s on Fast 3G; deferring to load keeps the poster the LCP. */
@@ -105,6 +127,7 @@ const fmtTime = (s) => {
         // screen, so it does not sit over the poster before anything can move.
         const nowLive = r.top <= 8 && r.bottom > innerHeight * 0.5;
         if (nowLive !== live) { live = nowLive; stage.classList.toggle("is-running", live); }
+        if (p > 0.001) reveal();
 
         if (ticking) return;
         ticking = true;
@@ -114,6 +137,8 @@ const fmtTime = (s) => {
       addEventListener("scroll", onScroll, { passive: true });
       addEventListener("resize", onScroll, { passive: true });
       video.addEventListener("loadedmetadata", onScroll, { once: true });
+      // A reload lands mid-scene: reveal without waiting for a scroll event.
+      video.addEventListener("loadeddata", () => { if (scrollY > 4) reveal(); }, { once: true });
       onScroll();
 
       /* If the film cannot be scrubbed — a browser that refuses to seek, or a

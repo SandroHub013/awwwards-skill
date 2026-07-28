@@ -135,11 +135,15 @@ code {
   position: absolute; inset: 0;
   display: block; width: 100%; height: 100%; object-fit: cover;
 }
-.stage__video {
-  opacity: 0;
+/* visibility, not opacity: an opacity-0 <video> is still an LCP candidate in
+   Chrome, and a painted 1080p film beat the poster it sits on, taking LCP from
+   1.48s to 3.32s. visibility:hidden keeps it out of paint entirely while it
+   still loads and seeks. */
+.stage__video { visibility: hidden; opacity: 0; }
+.stage__video.is-ready {
+  visibility: visible; opacity: 1;
   transition: opacity var(--dur-slow) var(--ease-out);
 }
-.stage__video.is-ready { opacity: 1; }
 .stage__fallback {
   position: absolute; inset: auto 0 0 0; padding: var(--space-s);
   font-family: var(--mono); font-size: var(--step--2); color: var(--ink-3);
