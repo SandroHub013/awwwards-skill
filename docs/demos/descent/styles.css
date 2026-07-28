@@ -1,0 +1,419 @@
+/* ============================================================
+   descent — an instrument, not a poster.
+   Zero webfonts: system stacks only. Colour encodes depth and
+   nothing else, so the ramp is data rather than decoration.
+   ============================================================ */
+
+:root {
+  --step--2: clamp(0.68rem, 0.66rem + 0.09vw, 0.74rem);
+  --step--1: clamp(0.80rem, 0.77rem + 0.14vw, 0.90rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.19vw, 1.08rem);
+  --step-1:  clamp(1.15rem, 1.08rem + 0.32vw, 1.38rem);
+  --step-2:  clamp(1.42rem, 1.28rem + 0.60vw, 1.85rem);
+  --step-3:  clamp(1.80rem, 1.52rem + 1.20vw, 2.70rem);
+  --display: clamp(2.4rem, 1.2rem + 5.2vw, 5.4rem);
+  --readout: clamp(2.6rem, 1.4rem + 5.4vw, 5rem);
+
+  --space-3xs: .25rem; --space-2xs: .5rem; --space-xs: .75rem;
+  --space-s: 1rem;  --space-m: 1.5rem; --space-l: 2.5rem;
+  --space-xl: 4rem; --space-2xl: 6rem;
+  --space-3xl: clamp(6rem, 14vh, 11rem);
+
+  --gutter: clamp(1.15rem, .6rem + 2.1vw, 3rem);
+  --page: min(100% - var(--gutter) * 2, 1240px);
+  --col: min(100% - var(--gutter) * 2, 40rem);
+
+  /* ground */
+  --void:    oklch(13.5% 0.022 255);
+  --void-2:  oklch(17% 0.026 255);
+  --ink:     oklch(94% 0.008 240);
+  --ink-2:   oklch(72% 0.016 240);
+  --ink-3:   oklch(55% 0.020 245);
+  --rule:    oklch(30% 0.030 250);
+  --rule-2:  oklch(24% 0.026 252);
+
+  /* the depth ramp — shallow is hot, deep is cold. This is the legend. */
+  --shallow: oklch(78% 0.175 62);
+  --mid:     oklch(74% 0.120 130);
+  --deep:    oklch(74% 0.145 218);
+  --alert:   oklch(68% 0.205 27);
+  --focus:   oklch(80% 0.14 220);
+
+  --dur-fast: .18s; --dur-base: .4s; --dur-slow: .9s;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-snap: cubic-bezier(.16, 1, .3, 1);
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono",
+          "Roboto Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body, h1, h2, p, dl, dd, ul, figure { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: inherit; }
+
+body {
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--shallow); color: var(--void); }
+
+/* ---- the instrument sits behind everything ---- */
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+  /* until JS decides otherwise, it is an empty dark plate — no flash */
+  background:
+    radial-gradient(120% 90% at 50% 0%, oklch(20% 0.04 250) 0%, transparent 60%),
+    var(--void);
+}
+/* faint scanline tooth: register, not texture-for-its-own-sake */
+.grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom, oklch(100% 0 0 / .012) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+}
+
+header, main, footer, .hud { position: relative; z-index: 2; }
+
+/* ---- a11y furniture ---- */
+.skip {
+  position: absolute; left: var(--space-s); top: -4rem; z-index: 60;
+  background: var(--ink); color: var(--void);
+  padding: .7rem 1.1rem; font-family: var(--mono); font-size: var(--step--1);
+  text-decoration: none;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip:focus-visible { top: var(--space-s); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* ---- header ---- */
+.head {
+  width: var(--page); margin-inline: auto;
+  padding-block: var(--space-m);
+  display: flex; flex-wrap: wrap; gap: var(--space-s);
+  align-items: baseline; justify-content: space-between;
+  font-family: var(--mono); font-size: var(--step--1);
+}
+.head__back { text-decoration: none; }
+.head__back:hover { color: var(--shallow); }
+.dim { color: var(--ink-3); }
+.head__meta {
+  font-size: var(--step--2); color: var(--ink-3);
+  letter-spacing: .10em; text-transform: uppercase;
+}
+
+/* ---- the HUD: a depth gauge, fixed ---- */
+.hud {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--space-l);
+  z-index: 3;
+  text-align: right;
+  font-family: var(--mono);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.hud.is-live { opacity: 1; }
+/* the gauge gets its own pool of dark, or it sits on the brightest cluster */
+.hud::before {
+  content: "";
+  position: absolute;
+  inset: -1.5rem -2rem -2rem -3.5rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 80% 40%,
+    oklch(13.5% 0.022 255 / .88) 0%,
+    oklch(13.5% 0.022 255 / .55) 55%,
+    transparent 78%);
+}
+.hud__label {
+  font-size: var(--step--2); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.hud__value {
+  font-size: var(--readout);
+  line-height: .95;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
+  color: var(--shallow);
+  transition: color var(--dur-slow) linear;
+}
+.hud.is-deep .hud__value { color: var(--deep); }
+.hud__unit {
+  font-size: var(--step-0); margin-left: .3em;
+  color: var(--ink-3); letter-spacing: 0;
+}
+.hud__scale {
+  position: relative;
+  width: 2px; height: clamp(7rem, 22vh, 12rem);
+  margin: var(--space-s) 0 0 auto;
+  background: linear-gradient(to bottom, var(--shallow), var(--mid), var(--deep));
+  opacity: .45;
+}
+.hud__tick {
+  position: absolute; right: 10px; top: calc(var(--at) * 100%);
+  transform: translateY(-50%);
+  font-size: var(--step--2); color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hud__tick::before {
+  content: ""; position: absolute; right: -10px; top: 50%;
+  width: 6px; height: 1px; background: var(--rule);
+}
+.hud__head {
+  position: absolute; left: -3px; top: 0;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ink);
+  transform: translateY(-50%);
+  will-change: transform;
+}
+.hud__note {
+  margin-top: var(--space-s);
+  font-size: var(--step--2); color: var(--ink-3);
+  letter-spacing: .04em;
+}
+@media (max-width: 60rem) {
+  .hud { bottom: auto; top: 4.5rem; }
+  .hud__scale { display: none; }
+  .hud__value { font-size: var(--step-2); }
+  .hud__note { display: none; }
+}
+
+/* ---- beats ---- */
+.beat {
+  position: relative;
+  width: var(--page); margin-inline: auto;
+  padding-block: var(--space-3xl);
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+}
+/* The scene is bright where the data is dense. Text never sits on it
+   unprotected — a scrim rides behind whichever side the copy is on. */
+.beat::before {
+  content: "";
+  position: absolute;
+  /* exactly the gutters back, never more: --page is 100% - 2*gutter, so this
+     reaches the viewport edge and stops. -50vw here cost a horizontal
+     scrollbar on every phone. */
+  inset: 0 calc(-1 * var(--gutter));
+  z-index: -1;
+  pointer-events: none;
+  /* Sized to the copy, not to half the viewport: the text is safe and the
+     scene keeps the room it needs to be worth looking at. */
+  background: linear-gradient(to right,
+    oklch(13.5% 0.022 255 / .90) 0%,
+    oklch(13.5% 0.022 255 / .86) 30%,
+    transparent 56%);
+}
+.beat[data-beat]::before { transform: scaleX(-1); }
+.beat--table::before, .beat--colophon::before {
+  background: oklch(13.5% 0.022 255 / .88);
+}
+.beat--open { min-height: 92svh; }
+.eyebrow, .beat__mark {
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
+}
+.beat__mark { color: var(--shallow); }
+.beat--floor .beat__mark, .beat--table .beat__mark { color: var(--deep); }
+
+.title {
+  font-size: var(--display);
+  line-height: 1.0;
+  letter-spacing: -.035em;
+  font-weight: 700;
+  margin-block: var(--space-m) var(--space-l);
+  text-wrap: balance;
+}
+.beat__title {
+  font-size: var(--step-3);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  font-weight: 650;
+  margin-block: var(--space-2xs) var(--space-m);
+  max-width: 20ch;
+  text-wrap: balance;
+}
+.lede {
+  font-size: var(--step-1);
+  max-width: 44ch;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.beat__body { max-width: 46ch; color: var(--ink-2); }
+.beat__body--wide { max-width: 60ch; }
+.beat__body b, .lede b { color: var(--ink); font-weight: 600; }
+
+.cue {
+  margin-top: var(--space-2xl);
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3);
+}
+
+/* the reading beats sit right, so the scene stays legible left */
+.beat[data-beat] { align-items: flex-end; text-align: left; }
+.beat[data-beat] > * { width: min(100%, 34rem); }
+@media (max-width: 60rem) {
+  .beat[data-beat] { align-items: stretch; }
+  .beat[data-beat] > * { width: 100%; }
+  .beat { padding-block: var(--space-2xl); min-height: auto; }
+  .beat--open { min-height: 80svh; }
+}
+
+/* ---- the floor event card ---- */
+.event {
+  border: 1px solid var(--rule);
+  background: oklch(17% 0.026 255 / .72);
+  backdrop-filter: blur(6px);
+  padding: var(--space-m);
+}
+.event__data > div {
+  display: grid; grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-s);
+  padding-block: var(--space-2xs);
+  border-bottom: 1px solid var(--rule-2);
+}
+.event__data dt {
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+}
+.event__data dd { font-family: var(--mono); font-size: var(--step--1); }
+.event__note {
+  margin-top: var(--space-m);
+  color: var(--ink-2); font-size: var(--step--1); line-height: 1.6;
+}
+
+/* ---- the inversion ---- */
+.compare {
+  display: grid; gap: var(--space-s);
+  margin-bottom: var(--space-m);
+}
+.compare__col {
+  border-top: 2px solid var(--deep);
+  padding-top: var(--space-s);
+}
+.compare__col--alert { border-top-color: var(--alert); }
+.compare__k {
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+}
+.compare__v {
+  font-family: var(--mono);
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  color: var(--deep);
+}
+.compare__col--alert .compare__v { color: var(--alert); }
+.compare__v .u { font-size: var(--step-0); color: var(--ink-3); margin-left: .25em; }
+.compare__m { font-family: var(--mono); font-size: var(--step--1); color: var(--ink-2); }
+.compare__m b { color: var(--ink); }
+.compare__p { font-size: var(--step--1); color: var(--ink-3); }
+@media (min-width: 34rem) {
+  .compare { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-l); }
+}
+
+/* ---- the distribution: real bars, no library ---- */
+.bands { margin-block: var(--space-l); display: grid; gap: var(--space-2xs); }
+.band {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 4rem 3.5rem;
+  align-items: center;
+  gap: var(--space-s);
+  padding-block: var(--space-xs);
+  border-bottom: 1px solid var(--rule-2);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+.band__range { color: var(--ink-2); }
+.band__bar { display: block; height: 10px; background: var(--rule-2); }
+.band__bar i {
+  display: block; height: 100%;
+  width: calc(var(--w) * 1%);
+  background: var(--shallow);
+  transform-origin: left;
+}
+.band--deep .band__bar i { background: var(--deep); }
+.band__n, .band__pct { font-variant-numeric: tabular-nums; text-align: right; }
+.band__pct { color: var(--ink-3); }
+@media (max-width: 46rem) {
+  .band { grid-template-columns: 7rem minmax(0, 1fr) 3.5rem; }
+  .band__pct { display: none; }
+}
+
+/* ---- colophon ---- */
+.creds { margin-block: var(--space-l); }
+.creds > div {
+  display: grid; grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-s);
+  padding-block: var(--space-2xs);
+  border-bottom: 1px solid var(--rule-2);
+}
+.creds dt {
+  font-family: var(--mono); font-size: var(--step--2);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+}
+.creds dd { font-size: var(--step--1); color: var(--ink-2); }
+code {
+  font-family: var(--mono); font-size: .92em;
+  background: var(--void-2); padding: .1em .35em; border-radius: 2px;
+  color: var(--ink);
+}
+.cta {
+  align-self: flex-start;
+  margin-top: var(--space-m);
+  font-family: var(--mono); font-size: var(--step--1);
+  text-decoration: none;
+  border-bottom: 2px solid var(--shallow);
+  padding-bottom: 2px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.cta:hover { color: var(--shallow); }
+
+.foot {
+  width: var(--page); margin-inline: auto;
+  padding-block: var(--space-l) var(--space-2xl);
+  border-top: 1px solid var(--rule-2);
+  display: flex; flex-wrap: wrap; gap: var(--space-s);
+  justify-content: space-between;
+  font-family: var(--mono); font-size: var(--step--2); color: var(--ink-3);
+}
+
+/* ---- reveals: on by default, JS opts into hiding ---- */
+.js [data-beat] > *, .js .beat--table > *, .js .beat--colophon > * { opacity: 0; }
+.js .is-in > * {
+  opacity: 1;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.js .is-in > *:nth-child(2) { transition-delay: .06s; }
+.js .is-in > *:nth-child(3) { transition-delay: .12s; }
+
+/* ---- reduced motion: the instrument holds still, the data stays ---- */
+@media (prefers-reduced-motion: reduce) {
+  .js [data-beat] > *, .js .beat--table > *, .js .beat--colophon > * {
+    opacity: 1; transition: none;
+  }
+  .hud { opacity: 1; }
+  .grain { display: none; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

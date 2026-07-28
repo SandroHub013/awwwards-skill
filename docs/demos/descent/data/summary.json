@@ -1,0 +1,32 @@
+{
+  "source": "USGS Earthquake Catalog (fdsnws event/1/query)",
+  "query": "starttime=2025-01-01 endtime=2026-01-01 minmagnitude=4.5",
+  "retrieved": "2026-07-28",
+  "count": 8556,
+  "bands": {
+    "crust_0_35": 5316,
+    "upper_35_70": 1626,
+    "intermediate_70_300": 1328,
+    "deep_300_700": 286
+  },
+  "pct": {
+    "crust": 62.1,
+    "below300": 3.3
+  },
+  "below300": 286,
+  "below500": 200,
+  "maxDepth": 669.6,
+  "deepest": {
+    "depth": 669.6,
+    "mag": 4.8,
+    "place": "205 km ESE of Levuka, Fiji",
+    "time": "2025-10-29T17:07:34.157Z"
+  },
+  "largest": {
+    "depth": 35,
+    "mag": 8.8,
+    "place": "2025 Kamchatka Peninsula, Russia Earthquake",
+    "time": "2025-07-29T23:24:52.483Z"
+  },
+  "bytes": 59900
+}
