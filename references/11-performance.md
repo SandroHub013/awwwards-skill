@@ -58,7 +58,8 @@ build rather than the jury.
 - `preload="metadata"`, `playsinline`, `muted`, `loop`, and a `poster` that matches frame 0.
 - Never let a background video be the LCP element — put a poster image behind it.
 - Pause offscreen video with `IntersectionObserver`; pause on `visibilitychange`.
-- Hero video budget: < 1.5MB for 6–10s at 1080p with a good encoder (`-crf 30` AV1 / `-crf 24` h264).
+- Hero video budget: < 1.5MB for 6–10s at 1080p with a good encoder (`-crf 30` AV1 /
+  `-crf 24` h264).
 - Video-*first* sites (reels, post-production, case films — encoding ladders, HLS, preview
   patterns, accessible custom players): `references/17-video.md`.
 

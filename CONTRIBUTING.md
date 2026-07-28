@@ -69,10 +69,13 @@ editing one:
 - **Tables for facts.** Budgets, versions, thresholds, support matrices, checklists — if
   it's a list of facts, it's a table, not prose. If it's an argument, it's prose, not
   bullets.
-- **Fenced code always carries a language** (`css`, `ts`, `bash`, `glsl`, `html`). Code
-  in references must be copy-paste runnable, not pseudo-code.
-- **No HTML, no images, no emoji** in references. Markdown that renders as plain text
-  without loss, because that is how agents read it.
+- **Fenced code carries a language** (`css`, `ts`, `bash`, `glsl`, `html`), and must be
+  copy-paste runnable, not pseudo-code. Blocks that are not code — ASCII checklists,
+  fill-in templates, tool output — take no tag; that is what an untagged fence means here.
+- **No raw HTML, no images, no emoji** in references. Tag names inside backticks
+  (`` `<h1>` ``, `` `<link rel="preload">` ``) are prose about markup, not markup, and are
+  expected. The constraint is that the Markdown renders as plain text without loss,
+  because that is how agents read it.
 - **Relative links** between repo files (`references/11-performance.md`,
   `assets/checklists/pre-flight.md`), absolute URLs only for external sources.
 - American English, present tense, imperative mood for rules.
@@ -122,9 +125,13 @@ that mistake. Add to this list the same way: after something breaks, not from me
   - *patch* — corrections, template fixes, support-table updates
   - *minor* — new reference, template, register or idea card
   - *major* — workflow or scoring-model changes
-- **On merge of a version bump, the merge commit gets tagged `vX.Y.Z`** (no tags exist
-  yet; the first bump after this file lands starts the practice). Tags are what make a
-  plugin version installable by reference instead of by branch.
+- **On merge of a version bump, the squashed commit on `main` gets tagged `vX.Y.Z`** (no
+  tags exist yet; the first bump after this file lands starts the practice). Tags are what
+  make a plugin version installable by reference instead of by branch.
+- **Concurrent PRs collide on the version field.** Every PR branches from the same number,
+  so the second and third to merge hit a conflict on those two lines. Rebase and take the
+  next patch number — do not resolve it by keeping the number already on `main`, or the
+  merge ships with a version plugin installs have seen and no one receives it (#8).
 
 ## What will be rejected
 
