@@ -82,17 +82,19 @@ day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
 
 ## Built with it
 
-Two demo sites, both produced by running the method end to end, both scored against the
+Three demo sites, each produced by running the method end to end, each scored against the
 same rubric with the numbers printed rather than implied:
 
 | | |
 |---|---|
 | [**wonk**](https://sandrohub013.github.io/awwwards-skill/demos/wonk/) | A Fraunces specimen for one number: `WONK` defaults to 1, so the typeface ships crooked. Editorial, no WebGL. [Score](docs/demos/wonk/SCORE.md) |
 | [**descent**](https://sandrohub013.github.io/awwwards-skill/demos/descent/) | 8,556 real earthquakes of 2025 at their own depth — a quake map is the top face of a solid. WebGL, no webfont. [Score](docs/demos/descent/SCORE.md) |
+| [**nothing here was filmed**](https://sandrohub013.github.io/awwwards-skill/demos/reel/) | A reel whose footage came out of a model — prompt, cost and shipped bytes printed beside every clip. Video-first. [Score](docs/demos/reel/SCORE.md) |
 
-Neither uses stock imagery or placeholder copy. Every figure on either page is measured
-from a primary source — a font binary and the USGS catalog — because the skill refuses
-invented content and the demos have to survive their own rule.
+None uses stock imagery or placeholder copy. The first two are measured from primary
+sources: a font binary and the USGS catalog. The third is generated footage, which the
+skill would otherwise forbid — so its provenance is the subject of the page rather than a
+line in the footer, and the ledger of what each clip cost is published with it.
 
 ## What you get
 
