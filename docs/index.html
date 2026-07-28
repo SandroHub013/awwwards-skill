@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>awwwards skill — build websites to jury standard</title>
-<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides and a runnable browser audit.">
+<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and two demo sites built with it.">
 <meta name="theme-color" content="#0b0b0d">
 <link rel="canonical" href="https://sandrohub013.github.io/awwwards-skill/">
 <meta property="og:type" content="website">
@@ -24,6 +24,7 @@
 <header class="site-head">
   <a class="site-head__mark" href="#main"><span aria-hidden="true">◈</span> awwwards<span class="dim">.skill</span></a>
   <nav class="site-head__nav" aria-label="Primary">
+    <a href="#demos">Demos</a>
     <a href="#rubric">Rubric</a>
     <a href="#score">Score</a>
     <a href="#inside">Inside</a>
@@ -87,6 +88,70 @@
            once in usability.</p>
       </article>
     </div>
+  </section>
+
+  <!-- ── DEMOS ────────────────────────────────────────────── -->
+  <section class="section" id="demos">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Built with it</p>
+      <h2 class="section__title">Two sites, no stock anything</h2>
+      <p class="section__sub">Both were produced by running the method in this repo end
+        to end. Every figure on either page is measured from a primary source &mdash; a
+        font binary and a public earthquake catalog &mdash; because the skill refuses
+        placeholder content, and so do they.</p>
+    </header>
+
+    <ul class="demos">
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/wonk/">
+          <figure class="demo__shot">
+            <img src="./media/demo-wonk.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The wonk demo: the word wonk set very large in red Fraunces on warm
+                      paper, with a WONK slider and a live readout of the four axis values.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">01 &middot; type specimen &middot; no WebGL</p>
+            <h3 class="demo__title">wonk</h3>
+            <p class="demo__line">Fraunces ships crooked &mdash; <code>WONK</code> has a
+              default of 1. Scroll resolves the argument: the column you are reading
+              travels from the shipped axes to the asked-for ones.</p>
+            <p class="demo__meta">
+              <span>Editorial</span><span>GSAP + Lenis</span><span>1 webfont, 121 KB</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/descent/">
+          <figure class="demo__shot">
+            <img src="./media/demo-descent.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The descent demo: thousands of amber and cyan points forming
+                      subduction zones descending into darkness, with a depth gauge
+                      reading in kilometres.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">02 &middot; data / WebGL &middot; no webfont</p>
+            <h3 class="demo__title">descent</h3>
+            <p class="demo__line">A quake map is the top face of a solid. 8,556 real
+              events of 2025 at their own depth, and scroll is the only way down through
+              the 670 km underneath.</p>
+            <p class="demo__meta">
+              <span>Retro-technical</span><span>Three.js</span><span>data 59,900 B</span>
+            </p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <p class="note" data-reveal>
+      Neither is a template. Both are self-scored against
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/01-scoring.md">the
+      same rubric</a> the skill applies to your work, and the score is printed in each
+      repo folder rather than implied.
+    </p>
   </section>
 
   <!-- ── RUBRIC ───────────────────────────────────────────── -->

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>descent — the 670 km every earthquake map flattens</title>
+<meta name="description" content="8,556 real earthquakes of 2025, plotted at their true depth. Scroll is the only way down. Built with the awwwards Claude Code skill from the USGS catalog.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="descent — the 670 km every earthquake map flattens">
+<meta property="og:description" content="A quake map is the top face of a solid. 8,556 real events of 2025, at depth.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/descent/">
+
+<link rel="preload" href="data/quakes-2025.bin" as="fetch" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b1220'/><circle cx='50' cy='30' r='9' fill='%23ffab4d'/><circle cx='50' cy='72' r='5' fill='%234fc3f7'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#brief">Skip to the reading</a>
+
+<!-- the instrument. Decoration only: every number is in the DOM below. -->
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 02 &middot; WebGL &middot; USGS catalog</p>
+</header>
+
+<!-- fixed instrument readout, mirrors the camera -->
+<aside class="hud" aria-hidden="true">
+  <p class="hud__label">Depth</p>
+  <p class="hud__value"><span data-hud-depth>0</span><span class="hud__unit">km</span></p>
+  <div class="hud__scale">
+    <span class="hud__tick" style="--at:0">0</span>
+    <span class="hud__tick" style="--at:.052">35</span>
+    <span class="hud__tick" style="--at:.104">70</span>
+    <span class="hud__tick" style="--at:.448">300</span>
+    <span class="hud__tick" style="--at:.746">500</span>
+    <span class="hud__tick" style="--at:1">670</span>
+    <span class="hud__head" data-hud-head></span>
+  </div>
+  <p class="hud__note">vert. exaggeration &times;15</p>
+</aside>
+
+<main>
+
+  <!-- ── beat 1 ── the map you already know ──────────────────────── -->
+  <section class="beat beat--open" id="brief">
+    <p class="eyebrow">USGS catalog &middot; 2025 &middot; M4.5+</p>
+    <h1 class="title">
+      A quake map is<br>the top face<br>of a solid.
+    </h1>
+    <p class="lede">
+      Every map you have seen of this data is drawn flat, because paper and screens are
+      flat. It shows you <b>where</b>. It cannot show you the dimension the events
+      actually differ in most, which is <b>how far down</b>.
+    </p>
+    <p class="cue">Scroll is the only way down</p>
+  </section>
+
+  <!-- ── beat 2 ── the skin ──────────────────────────────────────── -->
+  <section class="beat" data-beat="crust" data-depth="35">
+    <p class="beat__mark">0 &ndash; 35 km</p>
+    <h2 class="beat__title">Almost all of it is skin</h2>
+    <p class="beat__body">
+      <b>5,316</b> of the year&rsquo;s 8,556 events &mdash; <b>62.1%</b> &mdash; sit in the
+      top 35 kilometres. On a globe 6,371 km in radius that is a film half a percent thick.
+      This band is what a flat map is really showing you, and it is why one looks so much
+      like another.
+    </p>
+  </section>
+
+  <!-- ── beat 3 ── the thinning ──────────────────────────────────── -->
+  <section class="beat" data-beat="mid" data-depth="300">
+    <p class="beat__mark">35 &ndash; 300 km</p>
+    <h2 class="beat__title">Then it thins out fast</h2>
+    <p class="beat__body">
+      <b>1,626</b> events between 35 and 70 km. <b>1,328</b> more from there down to 300.
+      The scatter stops being a sheet and starts being a set of ramps &mdash; each one a
+      slab of ocean floor going down under something else, lit up along its length.
+    </p>
+  </section>
+
+  <!-- ── beat 4 ── the deep ──────────────────────────────────────── -->
+  <section class="beat" data-beat="deep" data-depth="500">
+    <p class="beat__mark">300 &ndash; 700 km</p>
+    <h2 class="beat__title">Below 300 km, almost nothing</h2>
+    <p class="beat__body">
+      <b>286</b> events in the whole year. <b>200</b> of them below 500 km. At this depth
+      the rock is too hot and under too much pressure to snap the way it does at the
+      surface, and yet it does &mdash; which is a problem seismology has not finished
+      arguing about.
+    </p>
+  </section>
+
+  <!-- ── beat 5 ── the floor ─────────────────────────────────────── -->
+  <section class="beat beat--floor" data-beat="floor" data-depth="670">
+    <p class="beat__mark">669.6 km</p>
+    <h2 class="beat__title">The floor of the year</h2>
+    <div class="event">
+      <dl class="event__data">
+        <div><dt>Depth</dt><dd>669.6 km</dd></div>
+        <div><dt>Magnitude</dt><dd>4.8</dd></div>
+        <div><dt>Where</dt><dd>205 km ESE of Levuka, Fiji</dd></div>
+        <div><dt>When</dt><dd>29 October 2025, 17:07 UTC</dd></div>
+      </dl>
+      <p class="event__note">
+        The deepest earthquake recorded anywhere in 2025. Nothing in the catalog goes
+        below it. Under Fiji and Tonga the descending slab reaches further than anywhere
+        else on the planet, which is why the deepest events of almost every year are
+        found within a few hundred kilometres of here.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── beat 6 ── the inversion ─────────────────────────────────── -->
+  <section class="beat beat--turn" data-beat="turn" data-depth="35">
+    <p class="beat__mark">The inversion</p>
+    <h2 class="beat__title">Depth is not size</h2>
+    <div class="compare">
+      <div class="compare__col">
+        <p class="compare__k">Deepest of 2025</p>
+        <p class="compare__v"><span class="num">669.6</span><span class="u">km</span></p>
+        <p class="compare__m">magnitude <b>4.8</b></p>
+        <p class="compare__p">205 km ESE of Levuka, Fiji</p>
+      </div>
+      <div class="compare__col compare__col--alert">
+        <p class="compare__k">Largest of 2025</p>
+        <p class="compare__v"><span class="num">35.0</span><span class="u">km</span></p>
+        <p class="compare__m">magnitude <b>8.8</b></p>
+        <p class="compare__p">Kamchatka Peninsula, Russia</p>
+      </div>
+    </div>
+    <p class="beat__body">
+      The biggest earthquake of the year happened in the skin. The deepest was one you
+      would not have felt standing on top of it. The two dimensions are close to
+      unrelated, and the flat map &mdash; which encodes magnitude as circle size and
+      depth as nothing at all &mdash; quietly suggests otherwise.
+    </p>
+  </section>
+
+  <!-- ── the numbers, always present, WebGL or not ───────────────── -->
+  <section class="beat beat--table" id="table">
+    <p class="beat__mark">The distribution</p>
+    <h2 class="beat__title">All 8,556, by band</h2>
+
+    <ul class="bands">
+      <li class="band" style="--w:62.1">
+        <span class="band__range">0 &ndash; 35 km</span>
+        <span class="band__bar"><i></i></span>
+        <span class="band__n">5,316</span>
+        <span class="band__pct">62.1%</span>
+      </li>
+      <li class="band" style="--w:19.0">
+        <span class="band__range">35 &ndash; 70 km</span>
+        <span class="band__bar"><i></i></span>
+        <span class="band__n">1,626</span>
+        <span class="band__pct">19.0%</span>
+      </li>
+      <li class="band" style="--w:15.5">
+        <span class="band__range">70 &ndash; 300 km</span>
+        <span class="band__bar"><i></i></span>
+        <span class="band__n">1,328</span>
+        <span class="band__pct">15.5%</span>
+      </li>
+      <li class="band band--deep" style="--w:3.3">
+        <span class="band__range">300 &ndash; 700 km</span>
+        <span class="band__bar"><i></i></span>
+        <span class="band__n">286</span>
+        <span class="band__pct">3.3%</span>
+      </li>
+    </ul>
+
+    <p class="beat__body beat__body--wide">
+      The scene above plots every one of those events at its own depth. It is not a
+      sample and it is not smoothed &mdash; it is the catalog, packed to
+      <b>59,900 bytes</b> at seven bytes an event, which is less than one photograph.
+    </p>
+  </section>
+
+  <!-- ── colophon ────────────────────────────────────────────────── -->
+  <section class="beat beat--colophon" id="colophon">
+    <p class="beat__mark">Colophon</p>
+    <h2 class="beat__title">Where this came from</h2>
+
+    <dl class="creds">
+      <div><dt>Data</dt><dd>USGS Earthquake Catalog, <code>fdsnws event/1/query</code></dd></div>
+      <div><dt>Query</dt><dd><code>starttime=2025-01-01 endtime=2026-01-01 minmagnitude=4.5</code></dd></div>
+      <div><dt>Events</dt><dd>8,556 after dropping non-earthquake and above-sea-level rows</dd></div>
+      <div><dt>Retrieved</dt><dd>28 July 2026</dd></div>
+      <div><dt>Rights</dt><dd>USGS data are in the public domain</dd></div>
+      <div><dt>Projection</dt><dd>equirectangular, vertical exaggeration &times;15</dd></div>
+      <div><dt>Type</dt><dd>system stacks only &mdash; this page loads no webfont</dd></div>
+    </dl>
+
+    <p class="beat__body beat__body--wide">
+      The vertical scale is stretched fifteen times. At true proportion the whole 670 km
+      would be a hairline under the map and you would see nothing, which is precisely the
+      problem this page is about &mdash; so the exaggeration is stated rather than hidden.
+    </p>
+
+    <a class="cta" href="../../">Read the method &#8594;</a>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>USGS earthquake data, public domain. A demo, not a monitoring tool.</p>
+  <p><a href="#brief">Back to the surface</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

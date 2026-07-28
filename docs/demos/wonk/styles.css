@@ -1,0 +1,595 @@
+/* ============================================================
+   wonk — type specimen for one number.
+   One webfont, one accent, one idea. No framework.
+   ============================================================ */
+
+/* ---- the face, and a fallback that occupies the same line box ---- */
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-latin.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-stretch: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+2000-206F, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+
+/* Metrics lifted from head/hhea of the same binary, so swap costs zero CLS. */
+@font-face {
+  font-family: "Fraunces fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Liberation Serif"), local("serif");
+  ascent-override: 97.80%;
+  descent-override: 25.50%;
+  line-gap-override: 0.00%;
+  size-adjust: 103%;
+}
+
+/* Registered so the axis values interpolate instead of snapping.
+   --ax-* is the reading column, scrubbed by scroll.
+   --hx-wonk is the hero word, driven by the slider. Kept apart on purpose:
+   one value with two owners is a bug, not a feature. */
+@property --ax-opsz { syntax: "<number>"; inherits: true; initial-value: 9; }
+@property --ax-wght { syntax: "<number>"; inherits: true; initial-value: 900; }
+@property --ax-soft { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --ax-wonk { syntax: "<number>"; inherits: true; initial-value: 1; }
+@property --hx-wonk { syntax: "<number>"; inherits: false; initial-value: 1; }
+
+:root {
+  /* type scale, ratio 1.25, fluid between 360px and 1500px */
+  --step--2: clamp(0.70rem, 0.68rem + 0.09vw, 0.76rem);
+  --step--1: clamp(0.84rem, 0.81rem + 0.15vw, 0.95rem);
+  --step-0:  clamp(1.00rem, 0.96rem + 0.20vw, 1.15rem);
+  --step-1:  clamp(1.25rem, 1.17rem + 0.36vw, 1.50rem);
+  --step-2:  clamp(1.56rem, 1.41rem + 0.66vw, 2.05rem);
+  --step-3:  clamp(1.95rem, 1.68rem + 1.19vw, 2.85rem);
+  --step-4:  clamp(2.44rem, 1.97rem + 2.07vw, 4.00rem);
+  /* Measured, not guessed: "wonk" sets 2.78x its font-size in the shipped
+     axes, so 400px fills --page at its 1140px ceiling with room for the
+     letterforms to widen as WONK drops to 0. */
+  --display: clamp(3.5rem, 0.2rem + 25vw, 25rem);
+
+  --space-3xs: .25rem; --space-2xs: .5rem;  --space-xs: .75rem;
+  --space-s:   1rem;   --space-m:  1.5rem;  --space-l:  2.5rem;
+  --space-xl:  4rem;   --space-2xl: 6rem;
+  --space-3xl: clamp(5rem, 9vw, 9rem);
+
+  --gutter: clamp(1.15rem, .6rem + 2.1vw, 3rem);
+  --page:   min(100% - var(--gutter) * 2, 1140px);
+  --measure: 62ch;
+
+  /* warm paper, warm ink, one accent that MEANS "as shipped" */
+  --paper:     oklch(96.6% 0.013 84);
+  --paper-2:   oklch(93.4% 0.019 80);
+  --paper-3:   oklch(90.0% 0.024 78);
+  --ink:       oklch(19% 0.021 55);
+  --ink-2:     oklch(43% 0.019 55);
+  /* L58 measured 3.89:1 on --paper and failed the 4.5 floor for the mono
+     labels, which are all 12px. L51 measures 5.2:1. */
+  --ink-3:     oklch(51% 0.016 55);
+  --rule:      oklch(84% 0.020 75);
+  --rule-soft: oklch(89% 0.016 78);
+  --accent:    oklch(53% 0.195 32);
+  --accent-2:  oklch(53% 0.195 32 / 0.10);
+  --focus:     oklch(48% 0.16 250);
+
+  --dur-fast: .18s; --dur-base: .4s; --dur-slow: .9s;
+  --ease-out:   cubic-bezier(.22, 1, .36, 1);
+  --ease-inout: cubic-bezier(.65, .05, .36, 1);
+
+  --serif: "Fraunces", "Fraunces fallback", Georgia, serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, monospace;
+
+  /* the four live axis values — the whole page reads from these */
+  --ax-opsz: 9; --ax-wght: 900; --ax-soft: 0; --ax-wonk: 1;
+}
+
+/* ---- reset, only what is used ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body, h1, h2, h3, p, dl, dd, figure, ul, table { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 14, "wght" 400, "SOFT" 30, "WONK" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: var(--paper); }
+
+/* ---- a11y furniture ---- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.skip {
+  position: absolute; left: var(--space-s); top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--paper); padding: .7rem 1.1rem;
+  font-family: var(--mono); font-size: var(--step--1); text-decoration: none;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip:focus-visible { top: var(--space-s); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ---- shared atoms ---- */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+code {
+  font-family: var(--mono);
+  font-size: .9em;
+  background: var(--paper-2);
+  padding: .1em .35em;
+  border-radius: 2px;
+}
+b { font-weight: 700; }
+
+.section {
+  width: var(--page);
+  margin-inline: auto;
+  padding-block: var(--space-3xl);
+  border-top: 1px solid var(--rule-soft);
+}
+.section__head { margin-bottom: var(--space-l); }
+.section__title {
+  font-size: var(--step-3);
+  line-height: 1.05;
+  font-variation-settings: "opsz" 72, "wght" 600, "SOFT" 20, "WONK" 1;
+  margin-top: var(--space-2xs);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.45;
+  max-width: 52ch;
+  color: var(--ink-2);
+  font-variation-settings: "opsz" 36, "wght" 400, "SOFT" 40, "WONK" 0;
+}
+.note {
+  margin-top: var(--space-m);
+  max-width: 58ch;
+  color: var(--ink-2);
+  font-size: var(--step--1);
+  line-height: 1.65;
+  padding-left: var(--space-s);
+  border-left: 2px solid var(--rule);
+}
+
+/* ---- header ---- */
+.head {
+  width: var(--page);
+  margin-inline: auto;
+  padding-block: var(--space-m);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  align-items: baseline;
+  justify-content: space-between;
+}
+.head__back {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+.head__back:hover { color: var(--accent); }
+.dim { color: var(--ink-3); }
+.head__meta {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ── beat 1 · hero ─────────────────────────────────────────────── */
+.hero {
+  width: var(--page);
+  margin-inline: auto;
+  padding-block: clamp(2rem, 5vw, 5rem) var(--space-2xl);
+}
+.hero__word {
+  font-size: var(--display);
+  line-height: .78;
+  letter-spacing: -.02em;
+  margin-block: clamp(1rem, 3vw, 2.5rem);
+  color: var(--accent);
+  /* display cut, at its heaviest — exactly the fvar defaults.
+     Only WONK moves here, and only because the reader drags it. */
+  font-variation-settings:
+    "opsz" 9, "wght" 900, "SOFT" 0, "WONK" var(--hx-wonk);
+  /* the morph relayouts this one block, not the document */
+  contain: layout paint style;
+  will-change: font-variation-settings;
+}
+.hero__panel {
+  display: grid;
+  gap: var(--space-l);
+  grid-template-columns: 1fr;
+  padding-top: var(--space-m);
+  border-top: 1px solid var(--rule);
+}
+.hero__claim {
+  font-size: var(--step-2);
+  line-height: 1.32;
+  max-width: 26ch;
+  text-wrap: pretty;
+  font-variation-settings: "opsz" 60, "wght" 380, "SOFT" 30, "WONK" 0;
+}
+[data-hl] {
+  color: var(--accent);
+  background: var(--accent-2);
+  padding: 0 .2em;
+}
+
+.control { max-width: 30rem; }
+.control__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-s);
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2xs);
+}
+.control__hint { color: var(--ink-3); letter-spacing: .06em; }
+.control__out {
+  display: block;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  margin-top: var(--space-3xs);
+}
+
+/* one range style, used by hero and every axis row */
+.control__range, .axis__range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: ew-resize;
+  /* 2px track + 21px of padding a side = a 44px hit area, without a 44px bar.
+     Measured at 34px before this and the guideline floor is 44. */
+  padding-block: 21px;
+  margin-block: -21px;
+}
+.control__range::-webkit-slider-runnable-track,
+.axis__range::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule);
+}
+.control__range::-moz-range-track,
+.axis__range::-moz-range-track {
+  height: 2px; background: var(--rule);
+}
+.control__range::-webkit-slider-thumb,
+.axis__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; margin-top: -10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--accent);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.control__range::-moz-range-thumb,
+.axis__range::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.control__range:active::-webkit-slider-thumb,
+.axis__range:active::-webkit-slider-thumb { transform: scale(1.25); }
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-s);
+  font-family: var(--mono);
+  border-top: 1px solid var(--rule-soft);
+  padding-top: var(--space-s);
+}
+.readout dt {
+  font-size: var(--step--2);
+  color: var(--ink-3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.readout dd {
+  font-size: var(--step-0);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--space-3xs);
+}
+
+.scroll-cue {
+  margin-top: var(--space-xl);
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@media (min-width: 60rem) {
+  .hero__panel {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: start;
+    column-gap: var(--space-2xl);
+  }
+  .hero__claim { grid-column: 1; grid-row: 1 / span 2; }
+  .control { grid-column: 2; }
+  .readout { grid-column: 2; }
+}
+
+/* ── beat 2 · fvar table ───────────────────────────────────────── */
+.table-wrap { overflow-x: auto; margin-top: var(--space-l); }
+table { border-collapse: collapse; width: 100%; min-width: 30rem; }
+.fvar th, .fvar td, .metrics th, .metrics td {
+  text-align: left;
+  padding: var(--space-xs) var(--space-s) var(--space-xs) 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: var(--step--1);
+}
+.fvar thead th {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom-color: var(--rule);
+}
+.fvar td:not(:nth-child(2)), .metrics td:first-of-type {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.fvar tr.is-key { background: var(--accent-2); }
+.fvar tr.is-key b { color: var(--accent); }
+.metrics th { font-weight: 600; width: 12rem; }
+.metrics td:last-child { color: var(--ink-2); }
+
+/* ── beat 3 · the straightening ────────────────────────────────── */
+.read {
+  width: var(--page);
+  margin-inline: auto;
+  padding-block: var(--space-3xl);
+  border-top: 1px solid var(--rule-soft);
+  display: grid;
+  gap: var(--space-l);
+}
+.read__col {
+  max-width: var(--measure);
+  font-variation-settings:
+    "opsz" var(--ax-opsz), "wght" var(--ax-wght),
+    "SOFT" var(--ax-soft), "WONK" var(--ax-wonk);
+  contain: layout paint style;
+}
+.read__col > * + * { margin-top: var(--space-m); }
+.read__title {
+  font-size: var(--step-2);
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+.read__lead { font-size: var(--step-1); line-height: 1.45; }
+.read__col p { line-height: 1.62; }
+
+.read__rail { font-family: var(--mono); }
+.rail__label {
+  font-size: var(--step--2);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--space-xs);
+}
+.rail__vals { display: grid; gap: var(--space-2xs); }
+.rail__vals > div { display: flex; justify-content: space-between; gap: var(--space-s); }
+.rail__vals dt { font-size: var(--step--2); color: var(--ink-3); }
+.rail__vals dd {
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+.rail__track {
+  margin-top: var(--space-m);
+  height: 2px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.rail__fill {
+  display: block; height: 100%; width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+@media (min-width: 62rem) {
+  .read {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: var(--space-2xl);
+    align-items: start;
+  }
+  .read__rail { position: sticky; top: var(--space-xl); }
+}
+
+/* ── beat 4 · axis rows ────────────────────────────────────────── */
+.axes { margin-top: var(--space-l); display: grid; gap: var(--space-s); }
+.axis {
+  display: grid;
+  gap: var(--space-xs) var(--space-l);
+  padding-block: var(--space-m);
+  border-top: 1px solid var(--rule-soft);
+  align-items: center;
+}
+.axis.is-key { border-top-color: var(--accent); }
+.axis__tag { font-family: var(--mono); font-size: var(--step-0); font-weight: 400; }
+.axis__tag code { background: none; padding: 0; }
+.axis.is-key .axis__tag code { color: var(--accent); }
+.axis__name {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.axis__name span { display: block; text-transform: none; letter-spacing: .04em; }
+.axis__spec {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -.01em;
+  contain: layout paint style;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+.axis__out {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  text-align: right;
+}
+
+@media (min-width: 52rem) {
+  .axis {
+    grid-template-columns: 9rem minmax(0, 1fr) 12rem 3.5rem;
+  }
+  .axis__spec { text-align: left; }
+}
+
+/* ── beat 6 · the two states ───────────────────────────────────── */
+.states__grid {
+  display: grid;
+  gap: var(--space-l);
+  margin-top: var(--space-l);
+}
+.state {
+  border: 1px solid var(--rule);
+  padding: var(--space-m);
+  background: var(--paper-2);
+}
+.state__spec {
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -.015em;
+  margin-bottom: var(--space-m);
+  word-break: break-word;
+}
+.state--wonk { border-color: var(--accent); background: var(--accent-2); }
+.state--wonk .state__spec {
+  color: var(--accent);
+  font-variation-settings: "opsz" 9, "wght" 900, "SOFT" 0, "WONK" 1;
+}
+.state--true .state__spec {
+  font-variation-settings: "opsz" 144, "wght" 300, "SOFT" 100, "WONK" 0;
+}
+.state figcaption {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .06em;
+  color: var(--ink-2);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-xs);
+}
+/* --ink-3 measured 4.47:1 here: the card ground is --paper-2, not --paper,
+   which costs just enough to miss the floor. */
+.state figcaption span { display: block; margin-top: var(--space-3xs); color: var(--ink-2); }
+
+@media (min-width: 48rem) {
+  .states__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── beat 7 · colophon ─────────────────────────────────────────── */
+.colophon__grid { display: grid; gap: var(--space-l); margin-top: var(--space-l); }
+.creds > div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-s);
+  padding-block: var(--space-2xs);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.creds dt {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.creds dd { font-size: var(--step--1); }
+.colophon__note p { max-width: 46ch; color: var(--ink-2); font-size: var(--step--1); line-height: 1.65; }
+.colophon__note p + p { margin-top: var(--space-s); }
+.cta {
+  display: inline-block;
+  margin-top: var(--space-m);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.cta:hover { color: var(--accent); }
+
+@media (min-width: 56rem) {
+  .colophon__grid { grid-template-columns: 1.1fr 1fr; column-gap: var(--space-2xl); }
+}
+
+/* ---- footer ---- */
+.foot {
+  width: var(--page);
+  margin-inline: auto;
+  padding-block: var(--space-l) var(--space-2xl);
+  border-top: 1px solid var(--rule-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+}
+.foot a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* ---- reveal baseline: visible by default, JS opts in ---- */
+[data-reveal] { opacity: 1; }
+.js [data-reveal] { opacity: 0; transform: translateY(12px); }
+.js [data-reveal].is-in {
+  opacity: 1; transform: none;
+  transition: opacity var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+
+/* ---- reduced motion: the page stops moving, the idea does not ---- */
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .js [data-reveal].is-in { opacity: 1; transform: none; transition: none; }
+  .hero__word, .read__col { will-change: auto; }
+  .rail__fill { transform: scaleX(1); }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

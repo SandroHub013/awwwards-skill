@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wonk — the axis Fraunces ships switched on</title>
+<meta name="description" content="A type specimen for one number: WONK, the Fraunces axis whose default value is 1. The typeface is crooked as shipped, and you have to ask for the straight version. Built with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="wonk — the axis Fraunces ships switched on">
+<meta property="og:description" content="WONK's default value is 1. Fraunces is crooked as shipped; correctness is the thing you have to ask for.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/wonk/">
+
+<!-- No font preload on purpose. Measured on Fast 3G it took bandwidth from the
+     stylesheet and pushed first paint from 1.1s to 3.0s. The fallback face is
+     metric-matched to Fraunces, so swap costs nothing and the wait costs a lot. -->
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia,serif'>w</text></svg>">
+</head>
+<body>
+
+<a class="skip" href="#read">Skip to the reading</a>
+
+<header class="head">
+  <a class="head__back" href="../../">
+    <span aria-hidden="true">&#8592;</span> awwwards<span class="dim">.skill</span>
+  </a>
+  <p class="head__meta">Demo 01 &middot; type specimen &middot; no WebGL</p>
+</header>
+
+<main>
+
+  <!-- ── beat 1 ── the word, the control ─────────────────────────── -->
+  <section class="hero" id="top">
+    <p class="eyebrow">Fraunces &middot; variable &middot; four axes</p>
+
+    <h1 class="hero__word" data-morph aria-label="wonk">
+      <span aria-hidden="true">wonk</span>
+    </h1>
+
+    <div class="hero__panel">
+      <p class="hero__claim">
+        One of its four axes is called <b>Wonky</b>. In the font&rsquo;s own
+        <code>fvar</code> table, its default value is <b data-hl>1</b>.
+      </p>
+
+      <div class="control">
+        <label class="control__label" for="wonk">
+          WONK <span class="control__hint">drag to straighten</span>
+        </label>
+        <input id="wonk" class="control__range" type="range"
+               min="0" max="1" step="0.01" value="1"
+               aria-describedby="wonk-out">
+        <output id="wonk-out" class="control__out" for="wonk">1.00</output>
+      </div>
+
+      <dl class="readout" aria-label="Live axis values">
+        <div><dt>opsz</dt><dd data-ax="opsz">9</dd></div>
+        <div><dt>wght</dt><dd data-ax="wght">900</dd></div>
+        <div><dt>SOFT</dt><dd data-ax="SOFT">0</dd></div>
+        <div><dt>WONK</dt><dd data-ax="WONK">1.00</dd></div>
+      </dl>
+    </div>
+
+    <p class="scroll-cue" aria-hidden="true">Scroll straightens it</p>
+  </section>
+
+  <!-- ── beat 2 ── the evidence ──────────────────────────────────── -->
+  <section class="section" id="evidence">
+    <div class="section__head">
+      <p class="eyebrow">The evidence</p>
+      <h2 class="section__title">Read out of the binary, not off a website</h2>
+    </div>
+
+    <p class="lede" data-reveal>
+      A variable font declares its axes in a table called <code>fvar</code>. Each axis
+      carries a minimum, a maximum, and the value you get when nobody asks for anything.
+      These four rows were parsed straight out of the <code>.ttf</code> shipped by the
+      project.
+    </p>
+
+    <div class="table-wrap" data-reveal>
+      <table class="fvar">
+        <caption class="sr-only">The four variation axes declared in the Fraunces fvar table</caption>
+        <thead>
+          <tr><th scope="col">Tag</th><th scope="col">Name</th>
+              <th scope="col">Min</th><th scope="col">Default</th><th scope="col">Max</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><code>opsz</code></th><td>Optical Size</td><td>9</td><td>9</td><td>144</td></tr>
+          <tr><th scope="row"><code>wght</code></th><td>Weight</td><td>100</td><td>900</td><td>900</td></tr>
+          <tr><th scope="row"><code>SOFT</code></th><td>Softness</td><td>0</td><td>0</td><td>100</td></tr>
+          <tr class="is-key"><th scope="row"><code>WONK</code></th><td>Wonky</td><td>0</td><td><b>1</b></td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note" data-reveal>
+      The default instance is named <b>Fraunces 9pt Black</b>. Set a page in Fraunces and
+      touch nothing else and you get the display cut, at its heaviest, with the wonk
+      switched on. Every other state is a request.
+    </p>
+  </section>
+
+  <!-- ── beat 3 ── the straightening ─────────────────────────────── -->
+  <section class="read" id="read">
+    <div class="read__rail" aria-hidden="true">
+      <p class="rail__label">Live</p>
+      <dl class="rail__vals">
+        <div><dt>opsz</dt><dd data-ax="opsz">9</dd></div>
+        <div><dt>wght</dt><dd data-ax="wght">900</dd></div>
+        <div><dt>SOFT</dt><dd data-ax="SOFT">0</dd></div>
+        <div><dt>WONK</dt><dd data-ax="WONK">1.00</dd></div>
+      </dl>
+      <div class="rail__track"><span class="rail__fill" data-rail-fill></span></div>
+    </div>
+
+    <div class="read__col" data-morph>
+      <h2 class="read__title">What a wonk is</h2>
+
+      <p class="read__lead">
+        The wonky forms are the ones a punchcutter would have corrected. A leg that kicks
+        out too far. A bowl that refuses to close on the line it should. An <i>e</i> whose
+        crossbar sits at an angle nobody asked for.
+      </p>
+
+      <p>
+        Set at display size those decisions read as voice. The letters have opinions; the
+        page has a temperature. This is what the typeface was drawn to do, and it is why
+        the default sits where it sits &mdash; the design is the wonky one, and the tidy
+        version is the accommodation.
+      </p>
+
+      <p>
+        Shrink the same forms to a paragraph and the argument inverts. A kicked leg at
+        nine points is not voice, it is noise, and it collects at the ends of lines where
+        the eye is already working hardest. The optical size axis exists for exactly this:
+        it redraws the letter for the size it will actually be set at, rather than scaling
+        one drawing up and down and hoping.
+      </p>
+
+      <p>
+        So the four axes are not four effects. They are one argument about how much
+        personality a letter can carry before it stops being a letter and starts being a
+        picture of one. You are watching that argument resolve as you read this: the type
+        under your eyes is straightening, softening, and moving from the display cut to
+        the text cut, one scroll at a time.
+      </p>
+
+      <p>
+        By the time this paragraph reaches its last line, <code>WONK</code> is at zero,
+        <code>SOFT</code> is at one hundred, and the optical size has travelled from nine
+        to one hundred and forty-four. Nothing has been swapped. It is one file, one
+        request, one continuous set of numbers &mdash; which is the whole reason variable
+        fonts are worth the trouble.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── beat 4 ── the axes, one at a time ───────────────────────── -->
+  <section class="section" id="axes">
+    <div class="section__head">
+      <p class="eyebrow">One at a time</p>
+      <h2 class="section__title">Each axis, alone, on the same word</h2>
+    </div>
+    <p class="lede" data-reveal>
+      Same eight letters, same file. Each row moves one axis and holds the other three
+      exactly where the font left them &mdash; so every difference you can see below is
+      attributable to a single number.
+    </p>
+
+    <ul class="axes" data-reveal>
+      <li class="axis">
+        <div class="axis__meta">
+          <h3 class="axis__tag"><code>opsz</code></h3>
+          <p class="axis__name">Optical Size <span>9 &ndash; 144</span></p>
+        </div>
+        <p class="axis__spec" data-spec="opsz">Handgloves</p>
+        <input class="axis__range" type="range" min="9" max="144" step="1" value="144"
+               data-axis="opsz" aria-label="Optical Size, 9 to 144">
+        <output class="axis__out" data-out="opsz">144</output>
+      </li>
+      <li class="axis">
+        <div class="axis__meta">
+          <h3 class="axis__tag"><code>wght</code></h3>
+          <p class="axis__name">Weight <span>100 &ndash; 900</span></p>
+        </div>
+        <p class="axis__spec" data-spec="wght">Handgloves</p>
+        <input class="axis__range" type="range" min="100" max="900" step="1" value="300"
+               data-axis="wght" aria-label="Weight, 100 to 900">
+        <output class="axis__out" data-out="wght">300</output>
+      </li>
+      <li class="axis">
+        <div class="axis__meta">
+          <h3 class="axis__tag"><code>SOFT</code></h3>
+          <p class="axis__name">Softness <span>0 &ndash; 100</span></p>
+        </div>
+        <p class="axis__spec" data-spec="SOFT">Handgloves</p>
+        <input class="axis__range" type="range" min="0" max="100" step="1" value="100"
+               data-axis="SOFT" aria-label="Softness, 0 to 100">
+        <output class="axis__out" data-out="SOFT">100</output>
+      </li>
+      <li class="axis is-key">
+        <div class="axis__meta">
+          <h3 class="axis__tag"><code>WONK</code></h3>
+          <p class="axis__name">Wonky <span>0 &ndash; 1</span></p>
+        </div>
+        <p class="axis__spec" data-spec="WONK">Handgloves</p>
+        <input class="axis__range" type="range" min="0" max="1" step="0.01" value="0"
+               data-axis="WONK" aria-label="Wonky, 0 to 1">
+        <output class="axis__out" data-out="WONK">0.00</output>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ── beat 5 ── the numbers ───────────────────────────────────── -->
+  <section class="section" id="metrics">
+    <div class="section__head">
+      <p class="eyebrow">Measured, not quoted</p>
+      <h2 class="section__title">What is actually in the file</h2>
+    </div>
+
+    <div class="table-wrap" data-reveal>
+      <table class="metrics">
+        <caption class="sr-only">Metrics parsed from the Fraunces variable font binary</caption>
+        <tbody>
+          <tr><th scope="row">Units per em</th><td>2000</td><td>the grid every outline is drawn on</td></tr>
+          <tr><th scope="row">Glyphs</th><td>698</td><td>in the Latin build parsed here</td></tr>
+          <tr><th scope="row">x-height</th><td>964</td><td>48.2% of the em &mdash; large, which is why it holds at text size</td></tr>
+          <tr><th scope="row">Cap height</th><td>1400</td><td>70.0% of the em</td></tr>
+          <tr><th scope="row">Ascender</th><td>1956</td><td>hhea, 97.8% of the em</td></tr>
+          <tr><th scope="row">Descender</th><td>&minus;510</td><td>hhea, 25.5% of the em</td></tr>
+          <tr><th scope="row">Named instances</th><td>6</td><td>the presets, out of a continuous space</td></tr>
+          <tr><th scope="row">Latin subset</th><td>121,016 B</td><td>one file, every state on this page</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note" data-reveal>
+      Those ascender and descender numbers are doing quiet work here: the fallback face is
+      declared with <code>ascent-override: 97.80%</code> and
+      <code>descent-override: 25.50%</code>, so the line boxes are identical before and
+      after the webfont arrives and the layout never jumps.
+    </p>
+  </section>
+
+  <!-- ── beat 6 ── the idea, without motion ──────────────────────── -->
+  <section class="section states" id="states">
+    <div class="section__head">
+      <p class="eyebrow">The whole idea, standing still</p>
+      <h2 class="section__title">As shipped, and as asked for</h2>
+    </div>
+
+    <div class="states__grid">
+      <figure class="state state--wonk">
+        <p class="state__spec" aria-hidden="true">Rafflesia</p>
+        <figcaption>
+          <b>WONK 1</b> &middot; SOFT 0 &middot; opsz 9 &middot; wght 900
+          <span>What you get by typing nothing.</span>
+        </figcaption>
+      </figure>
+      <figure class="state state--true">
+        <p class="state__spec" aria-hidden="true">Rafflesia</p>
+        <figcaption>
+          <b>WONK 0</b> &middot; SOFT 100 &middot; opsz 144 &middot; wght 300
+          <span>What you get by asking.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p class="note" data-reveal>
+      This page has a signature move, and it is the scroll. But the point survives it: if
+      motion is off, or JavaScript never runs, the two states sit here side by side and
+      the argument is still on the table. That is the test a concept has to pass.
+    </p>
+  </section>
+
+  <!-- ── beat 7 ── colophon ──────────────────────────────────────── -->
+  <section class="section colophon" id="colophon">
+    <div class="section__head">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">Credits, and what this is for</h2>
+    </div>
+
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Typeface</dt><dd>Fraunces</dd></div>
+        <div><dt>Drawn by</dt><dd>Undercase Type &mdash; Phaedra Charles, Flavia Zimbardi</dd></div>
+        <div><dt>Licence</dt><dd><a href="fonts/OFL.txt">SIL Open Font License 1.1</a></dd></div>
+        <div><dt>Copyright</dt><dd>2020 The Fraunces Project Authors</dd></div>
+        <div><dt>Source</dt><dd><a href="https://github.com/undercasetype/Fraunces" rel="noreferrer">undercasetype/Fraunces</a></dd></div>
+        <div><dt>Published</dt><dd>Google Fonts, 29 October 2020</dd></div>
+      </dl>
+
+      <div class="colophon__note">
+        <p>
+          Every number on this page was parsed out of the font binary rather than copied
+          from a specimen site &mdash; the axes from <code>fvar</code>, the metrics from
+          <code>head</code>, <code>hhea</code> and <code>OS/2</code>. If a figure here is
+          wrong, the file disagrees with it.
+        </p>
+        <p>
+          Built as a demonstration of the <a href="../../">awwwards skill</a> for Claude
+          Code: no framework, one webfont, one idea.
+        </p>
+        <a class="cta" href="../../">Read the method &#8594;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Fraunces is used under the SIL Open Font License 1.1. This page is a demo, not a product.</p>
+  <p><a href="#top">Back to the top</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
