@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>petrini — a specimen book that repaints itself</title>
+<meta name="description" content="A build study: four brand systems by Riccardo Petrini, presented so that whichever identity you are reading takes over the whole page — palette, display face and chrome. Zero images, zero dependencies. Built with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f4efe4">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="petrini — a specimen book that repaints itself">
+<meta property="og:description" content="Four brand systems, one at a time, each one taking over the page it is described on. A study built with the awwwards skill.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/petrini/">
+<!-- The card is the hero, captured from the page itself at 1200×630 — the one
+     place a screenshot belongs on a site that ships no images. -->
+<meta property="og:image" content="https://sandrohub013.github.io/awwwards-skill/demos/petrini/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Four systems. One page at a time. — the study's title set in a serif display face on linen.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Critical CSS inline: the LCP element is the hero display line, so the first
+     screen must paint without waiting on a stylesheet round trip. Everything
+     below the fold — the chapters, the specimen tables, the rail's expanded
+     state — arrives with styles.css. The token block is duplicated on purpose:
+     it is what the chrome reads before JS exists. -->
+<style>
+  @property --bg        { syntax: "<color>"; inherits: true; initial-value: #f4efe4 }
+  @property --surf      { syntax: "<color>"; inherits: true; initial-value: #ece5d6 }
+  @property --ink       { syntax: "<color>"; inherits: true; initial-value: #221f1a }
+  @property --ink-muted { syntax: "<color>"; inherits: true; initial-value: #5d574c }
+  @property --line      { syntax: "<color>"; inherits: true; initial-value: #cdc4b1 }
+  @property --accent    { syntax: "<color>"; inherits: true; initial-value: #8a4b2f }
+
+  :root{
+    --bg:oklch(95% .012 85); --surf:oklch(91% .018 84); --ink:oklch(21% .012 70);
+    --ink-muted:oklch(48% .015 72); --line:oklch(80% .018 82); --accent:oklch(48% .11 45);
+
+    --serif:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --display-family:var(--serif);
+    --display-weight:400; --display-track:-.035em;
+
+    --step--1:clamp(.79rem,.76rem + .12vw,.86rem);
+    --step-0:clamp(1rem,.96rem + .2vw,1.13rem);
+    --step-1:clamp(1.33rem,1.24rem + .42vw,1.6rem);
+    --step-2:clamp(1.78rem,1.58rem + .9vw,2.4rem);
+    --display:clamp(2.9rem,1rem + 8.4vw,11rem);
+
+    --gutter:clamp(1.15rem,.6rem + 2.2vw,3.5rem);
+    --page:min(100% - var(--gutter)*2,1280px);
+    --space-s:1rem; --space-m:1.5rem; --space-l:2.5rem;
+    --space-xl:4rem; --space-3xl:clamp(5.5rem,10vw,11rem);
+
+    --dur-fast:.18s; --dur-base:.45s; --dur-slow:.9s; --dur-scene:1.2s;
+    --ease-out:cubic-bezier(.22,1,.36,1); --ease-inout:cubic-bezier(.65,.05,.36,1);
+
+    /* The takeover itself: seven properties travelling on one curve. Declared
+       here and not in styles.css so a theme change during the stylesheet's
+       flight still animates rather than snapping. */
+    transition:--bg var(--dur-scene) var(--ease-inout),--surf var(--dur-scene) var(--ease-inout),
+      --ink var(--dur-scene) var(--ease-inout),--ink-muted var(--dur-scene) var(--ease-inout),
+      --line var(--dur-scene) var(--ease-inout),--accent var(--dur-scene) var(--ease-inout);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,h2,h3,p,dl,dd,dt,figure,ul,li,hr{margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:var(--step-0);line-height:1.6;overflow-x:hidden;text-wrap:pretty}
+  ::selection{background:var(--accent);color:var(--bg)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .skip{position:absolute;left:1rem;top:-4.5rem;z-index:90;background:var(--ink);
+    color:var(--bg);padding:.6rem 1rem;text-decoration:none}
+  .skip:focus{top:1rem}
+  .head{position:fixed;inset-inline:0;top:0;z-index:60;width:var(--page);margin-inline:auto;
+    padding-block:1.15rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:baseline;
+    justify-content:space-between;font-family:var(--mono);font-size:var(--step--1);
+    color:var(--ink);mix-blend-mode:normal}
+  .head a{color:inherit;text-decoration:none}
+  .head a:hover{color:var(--accent)}
+  .dim{color:var(--ink-muted)}
+  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    width:var(--page);margin-inline:auto;padding-block:clamp(6rem,14vh,9rem) var(--space-xl)}
+  .eyebrow{font-family:var(--mono);font-size:var(--step--1);letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-muted)}
+  .hero__title{font-family:var(--display-family);font-weight:var(--display-weight);
+    font-size:var(--display);line-height:.94;letter-spacing:var(--display-track);
+    margin-top:var(--space-m);margin-left:-.055em;text-wrap:balance}
+  .hero__title em{font-style:italic;color:var(--accent)}
+  /* Line-mask reveal, built above the fold and therefore inline. Only transform
+     moves — the headline is the LCP element, so it must paint at full opacity
+     on the first frame and travel afterwards. */
+  .hero__title .mask{display:block;overflow:hidden;padding-bottom:.05em}
+  .hero__title .line{display:block;transform:translateY(106%)}
+  .hero__title.is-set .line{transform:none;
+    transition:transform var(--dur-slow) var(--ease-out)}
+  .hero__title.is-set .mask:nth-child(2) .line{transition-delay:.07s}
+  .hero__title.is-set .mask:nth-child(3) .line{transition-delay:.14s}
+  .hero__lede{margin-top:var(--space-l);max-width:44ch;font-size:var(--step-1);
+    line-height:1.4;color:var(--ink-muted)}
+  .hero__meta{margin-top:var(--space-xl);font-family:var(--mono);font-size:var(--step--1);
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+
+  /* Everything below is duplicated from styles.css, and has to be. The rail is
+     the first element in the body and is position:fixed — unstyled it renders as
+     a list in normal flow at the top of the page and pushes the whole hero down.
+     Same for the two mobile rules: the header meta line and the hero arrow are
+     hidden below 720px, and finding that out only after the stylesheet arrives
+     is a layout shift. Measured before this block: CLS 0.107 on a throttled
+     phone. After: 0.00. */
+  .rail{position:fixed;z-index:70;right:clamp(.9rem,2vw,1.8rem);top:50%;transform:translateY(-50%)}
+  .rail__list{list-style:none;display:flex;flex-direction:column;gap:.15rem;align-items:flex-end}
+  .rail__dot{appearance:none;background:none;border:0;cursor:pointer;color:var(--ink-muted);
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;display:flex;
+    align-items:center;gap:.6rem;justify-content:flex-end;min-height:44px;padding:0 .35rem}
+  .rail__label{max-width:0;overflow:hidden;white-space:nowrap;opacity:0}
+  @media (max-width:720px){
+    .rail{top:auto;bottom:0;right:0;left:0;transform:none;
+      border-top:1px solid var(--line);
+      padding:.3rem max(var(--gutter),env(safe-area-inset-left)) max(.3rem,env(safe-area-inset-bottom))}
+    .rail__list{flex-direction:row;justify-content:space-between;gap:.25rem}
+    .rail__dot{flex-direction:column;gap:.15rem;justify-content:center;min-width:44px;
+      font-size:.62rem;letter-spacing:.06em;text-align:center}
+    .rail__label{max-width:none;opacity:1;overflow:visible;max-inline-size:11ch;white-space:nowrap;line-height:1.15}
+    .head__meta{display:none}
+    .hero__arrow{display:none}
+  }
+</style>
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f4efe4'/><rect x='4' y='4' width='24' height='24' fill='none' stroke='%238a4b2f' stroke-width='3'/><rect x='13' y='13' width='6' height='6' fill='%238a4b2f'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#work">Skip to the four identities</a>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Study 10 &middot; specimen index &middot; no images, no dependencies</p>
+</header>
+
+<!-- The rail is the index and the control surface. Buttons, not anchors: they
+     move focus to the section heading as well as scrolling, which anchors alone
+     do inconsistently across browsers when smooth scrolling is involved.
+     It sits before <main> in the DOM because a keyboard user reached it after
+     every prose link when it was last — an index nobody can get to early is
+     not an index. Position is fixed, so source order costs no layout. -->
+<nav class="rail" aria-label="Identities">
+  <ul class="rail__list">
+    <li><button type="button" class="rail__dot" data-goto="biobox" data-preview="biobox">
+      <span class="rail__n">01</span><span class="rail__label">BioBox</span></button></li>
+    <li><button type="button" class="rail__dot" data-goto="bussola" data-preview="bussola">
+      <span class="rail__n">02</span><span class="rail__label">La Bussola</span></button></li>
+    <li><button type="button" class="rail__dot" data-goto="borromeo" data-preview="borromeo">
+      <span class="rail__n">03</span><span class="rail__label">San Carlo</span></button></li>
+    <li><button type="button" class="rail__dot" data-goto="fallimenti" data-preview="fallimenti">
+      <span class="rail__n">04</span><span class="rail__label">Fallimenti</span></button></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- BEAT 0 — the designer's own voice, unbranded. This is the baseline the
+       four identities overwrite, so it has to be quiet and still be good. -->
+  <section class="hero" aria-labelledby="hero-t">
+    <p class="eyebrow">Riccardo Petrini &middot; Italy &middot; branding, packaging, print</p>
+    <h1 class="hero__title" id="hero-t" data-split>
+      Four systems.<br>One page<br><em>at a time.</em>
+    </h1>
+    <p class="hero__lede">
+      A brand identity is not a logo. It is a set of rules strong enough to take over
+      everything it touches &mdash; so this page lets each one take over this page.
+    </p>
+    <p class="hero__meta">
+      Scroll, or pick an identity<span class="hero__arrow" aria-hidden="true">&nbsp;&#8594;</span>
+    </p>
+  </section>
+
+  <!-- BEAT 1 — the thesis, stated before it is proved. One accent rule is the
+       only visual event; the anchor of the beat per 05-motion §Choreography. -->
+  <section class="thesis" id="work" aria-labelledby="thesis-t">
+    <div class="thesis__inner">
+      <p class="eyebrow" data-reveal>The argument</p>
+      <h2 class="thesis__title" id="thesis-t" data-reveal>
+        These four projects have nothing in common. That is the portfolio.
+      </h2>
+      <hr class="rule" data-anchor aria-hidden="true">
+      <div class="thesis__cols">
+        <p data-reveal>
+          Eco packaging, a 1930s pizzeria, a parish church, and a bankruptcy-auction
+          firm. Put them in a grid and they read as noise. Put them one at a time,
+          each holding the whole screen on its own terms, and they read as range.
+        </p>
+        <p data-reveal>
+          Every colour and every typeface named below is the one specified in the
+          original case. Nothing on this page is a reproduction of the finished
+          artwork &mdash; each project is set as a specimen, not a portfolio shot.
+          <a href="#colophon">Why, in the colophon.</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEATS 2-5 — the takeovers. Each chapter carries its own theme locally, so
+       with JS disabled the identities still paint; JS only lifts the active
+       theme to :root so the fixed chrome and the rail travel with it. -->
+
+  <section class="chapter" data-theme="biobox" id="biobox" aria-labelledby="biobox-t">
+    <div class="chapter__inner">
+      <p class="chapter__idx"><span class="chapter__n">01</span><span class="dim">&nbsp;/ 04</span></p>
+      <p class="chapter__sector">Food packaging &middot; identity and packaging system</p>
+      <h2 class="lockup" id="biobox-t">BioBox</h2>
+      <hr class="rule rule--chapter" data-anchor aria-hidden="true">
+      <div class="chapter__cols">
+        <div class="chapter__note">
+          <p data-reveal>
+            Eco-conscious food packaging, built on a cube-and-leaf mark: the box is the
+            product and the mark is the box. Green appears once, against linen and
+            charcoal, which is what keeps it from reading as supermarket &ldquo;natural&rdquo;.
+          </p>
+          <p data-reveal>
+            Three faces, three jobs. A heavy display cut for the name, a text face for
+            shelf copy, a neutral grotesk for the small print &mdash; the discipline that
+            makes a packaging system survive contact with legal text.
+          </p>
+        </div>
+        <dl class="spec" data-reveal>
+          <div class="spec__row">
+            <dt>Palette</dt>
+            <dd><ul class="swatches">
+              <li><i style="--sw:oklch(48% .11 148)"></i>Green</li>
+              <li><i style="--sw:oklch(93% .017 88)"></i>Linen</li>
+              <li><i style="--sw:oklch(27% .014 150)"></i>Charcoal</li>
+            </ul></dd>
+          </div>
+          <div class="spec__row"><dt>Typefaces</dt><dd>Blenny Black &middot; Mala &middot; New Order</dd></div>
+          <div class="spec__row"><dt>Tools</dt><dd>Illustrator, Photoshop</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" data-theme="bussola" id="bussola" aria-labelledby="bussola-t">
+    <div class="chapter__inner">
+      <p class="chapter__idx"><span class="chapter__n">02</span><span class="dim">&nbsp;/ 04</span></p>
+      <p class="chapter__sector">Pizzeria &middot; identity, mascot, signage</p>
+      <h2 class="lockup" id="bussola-t">La Bussola</h2>
+      <hr class="rule rule--chapter" data-anchor aria-hidden="true">
+      <div class="chapter__cols">
+        <div class="chapter__note">
+          <p data-reveal>
+            A 1930s register, taken seriously rather than as pastiche: a drawn mascot,
+            a fat high-contrast display face, and red held against beige and black so
+            the whole thing reads at signage distance.
+          </p>
+          <p data-reveal>
+            The date is the brief. Pick the era, then commit to its type, its colour and
+            its drawing &mdash; a retro identity fails the moment one element is
+            contemporary.
+          </p>
+        </div>
+        <dl class="spec" data-reveal>
+          <div class="spec__row">
+            <dt>Palette</dt>
+            <dd><ul class="swatches">
+              <li><i style="--sw:oklch(48% .18 29)"></i>Red</li>
+              <li><i style="--sw:oklch(88% .036 79)"></i>Beige</li>
+              <li><i style="--sw:oklch(19% .012 40)"></i>Black</li>
+            </ul></dd>
+          </div>
+          <div class="spec__row"><dt>Typefaces</dt><dd>Ohno Blazeface &middot; Agenda One</dd></div>
+          <div class="spec__row"><dt>Tools</dt><dd>Illustrator, Photoshop</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" data-theme="borromeo" id="borromeo" aria-labelledby="borromeo-t">
+    <div class="chapter__inner">
+      <p class="chapter__idx"><span class="chapter__n">03</span><span class="dim">&nbsp;/ 04</span></p>
+      <p class="chapter__sector">Parish &middot; institutional identity, liturgical print</p>
+      <h2 class="lockup lockup--two" id="borromeo-t">San&nbsp;Carlo<br><span>Borromeo</span></h2>
+      <hr class="rule rule--chapter" data-anchor aria-hidden="true">
+      <div class="chapter__cols">
+        <div class="chapter__note">
+          <p data-reveal>
+            An identity for a parish, with the liturgical materials that go with it.
+            Red and gold are not a colour choice here &mdash; they are the calendar. The
+            palette had to be inherited, then made to work in a booklet.
+          </p>
+          <p data-reveal>
+            This is the only project on the page with two accents, and the only one where
+            two accents are correct. Everywhere else it would be decoration. The gold set
+            in type here is darker than the gold in the sample beside it: print gold is a
+            metallic that catches the light, and on a screen the same value measured
+            1.96:1 against linen &mdash; below the 3:1 that large text has to hold.
+          </p>
+        </div>
+        <dl class="spec" data-reveal>
+          <div class="spec__row">
+            <dt>Palette</dt>
+            <dd><ul class="swatches">
+              <li><i style="--sw:oklch(44% .17 28)"></i>Red</li>
+              <li><i style="--sw:oklch(74% .12 85)"></i>Gold</li>
+              <li><i style="--sw:oklch(94% .02 88)"></i>Linen</li>
+            </ul></dd>
+          </div>
+          <div class="spec__row"><dt>Typefaces</dt><dd>Playfair Display &middot; Montserrat</dd></div>
+          <div class="spec__row"><dt>Tools</dt><dd>Illustrator, InDesign</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" data-theme="fallimenti" id="fallimenti" aria-labelledby="fallimenti-t">
+    <div class="chapter__inner">
+      <p class="chapter__idx"><span class="chapter__n">04</span><span class="dim">&nbsp;/ 04</span></p>
+      <p class="chapter__sector">Bankruptcy auctions &middot; rebrand</p>
+      <h2 class="lockup lockup--wide" id="fallimenti-t">Centro<br>Fallimenti</h2>
+      <hr class="rule rule--chapter" data-anchor aria-hidden="true">
+      <div class="chapter__cols">
+        <div class="chapter__note">
+          <p data-reveal>
+            A rebrand for a sector nobody wants to look at, solved by refusing to be
+            sombre about it: a geometric mark, acid green and orange on black, and a
+            grotesk with enough width to hold a long compound name.
+          </p>
+          <p data-reveal>
+            It is the one dark identity in the set, so it inverts the page &mdash; header,
+            rail, focus ring and text selection all follow the tokens, because they all
+            read the same six variables.
+          </p>
+        </div>
+        <dl class="spec" data-reveal>
+          <div class="spec__row">
+            <dt>Palette</dt>
+            <dd><ul class="swatches">
+              <li><i style="--sw:oklch(86% .21 128)"></i>Acid green</li>
+              <li><i style="--sw:oklch(70% .18 55)"></i>Orange</li>
+              <li><i style="--sw:oklch(17% .012 260)"></i>Black</li>
+            </ul></dd>
+          </div>
+          <div class="spec__row"><dt>Typefaces</dt><dd>Futura &middot; Segoe UI</dd></div>
+          <div class="spec__row"><dt>Tools</dt><dd>Illustrator</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEAT 6 — the page lets go and returns to neutral. Also where the study
+       states plainly what it is and what it is not. -->
+  <section class="colophon" id="colophon" aria-labelledby="colophon-t">
+    <div class="colophon__inner">
+      <p class="eyebrow" data-reveal>Colophon</p>
+      <h2 class="colophon__title" id="colophon-t" data-reveal>What this is, and what it is not.</h2>
+      <hr class="rule" data-anchor aria-hidden="true">
+      <div class="colophon__cols">
+        <div data-reveal>
+          <h3>The work</h3>
+          <p>
+            The four identities are the work of <strong>Riccardo Petrini</strong>, published
+            as <em>Graphic Design Portfolio 2026</em> on 29 July 2026. Palettes, typeface
+            specifications, sectors and tools on this page are taken from that case.
+            <a href="https://www.behance.net/gallery/253504203/Graphic-Design-Portfolio-2026" rel="noopener">See the original on Behance</a>.
+          </p>
+        </div>
+        <div data-reveal>
+          <h3>The substitutions</h3>
+          <p>
+            No mark, packaging render, illustration or photograph from the original is
+            reproduced here, and the four specified type families are not licensed for
+            this build. Names are set in the system stack instead; the identity shift is
+            carried by the contrast between families, and the substitution is declared
+            rather than disguised.
+          </p>
+        </div>
+        <div data-reveal>
+          <h3>The build</h3>
+          <p>
+            One HTML file, one stylesheet, one script. No framework, no font requests, no
+            raster assets &mdash; the largest element on the page is a text node. Made with
+            the <a href="../../">awwwards skill</a> as a test of whether its method holds
+            when the imagery budget is zero.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Work &copy; Riccardo Petrini. This page is a build study, not a commissioned site.</p>
+  <p><a href="../../">awwwards.skill</a> &middot; <a href="https://github.com/SandroHub013/awwwards-skill" rel="noopener">source</a></p>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>
