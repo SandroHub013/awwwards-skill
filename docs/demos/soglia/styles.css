@@ -1,0 +1,92 @@
+/* soglia — non-critical styles (route nav, hint, epilogue, footer).
+   Critical first-screen CSS is inline in index.html. */
+
+/* ── route nav (scene dots) — positioning is inline critical CSS ── */
+.route::before{content:"";position:absolute;left:50%;top:22px;bottom:22px;width:2px;
+  transform:translateX(-50%);background:var(--terra);opacity:.28}
+.route__dot{position:relative;border:0;background:transparent;cursor:pointer;
+  width:14px;height:14px;display:grid;place-items:center}
+.route__dot i{width:9px;height:9px;border-radius:50%;
+  background:color-mix(in srgb,var(--terra) 40%,transparent);
+  transition:transform .3s,background .3s,box-shadow .3s}
+.route__dot:hover i{transform:scale(1.25);background:var(--terra)}
+.route__dot.is-active i{background:var(--terra);transform:scale(1.4);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--terra) 22%,transparent)}
+.route__dot:focus-visible{outline:2px solid var(--terra);outline-offset:4px;border-radius:50%}
+.route__label{position:absolute;right:24px;top:50%;transform:translateY(-50%) translateX(6px);
+  white-space:nowrap;font-size:.78rem;font-weight:600;color:var(--ink);
+  background:color-mix(in srgb,var(--dawn) 85%,transparent);backdrop-filter:blur(6px);
+  padding:5px 11px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  border:1px solid color-mix(in srgb,var(--terra) 14%,transparent)}
+.route__dot:hover .route__label,.route__dot.is-active .route__label,
+.route__dot:focus-visible .route__label{opacity:1;transform:translateY(-50%) translateX(0)}
+
+/* ── scroll hint — positioning is inline critical CSS ───────────── */
+.hint{display:flex;flex-direction:column;align-items:center;gap:10px;
+  font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  transition:opacity .3s}
+.hint i{width:22px;height:34px;border-radius:12px;
+  border:2px solid color-mix(in srgb,var(--ink) 28%,transparent);position:relative}
+.hint i::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:7px;
+  border-radius:2px;background:var(--terra);transform:translateX(-50%);
+  animation:wheel 1.7s ease-in-out infinite}
+@keyframes wheel{0%{opacity:0;transform:translateX(-50%) translateY(0)}40%{opacity:1}
+  100%{opacity:0;transform:translateX(-50%) translateY(11px)}}
+
+/* ── copy links ─────────────────────────────────────────────────── */
+.copy a{color:var(--terra);pointer-events:auto}
+
+/* ── epilogue ───────────────────────────────────────────────────── */
+.epilogo{position:relative;z-index:2;background:var(--dawn);
+  padding:clamp(4rem,10vh,7rem) 0;border-top:1px solid color-mix(in srgb,var(--terra) 18%,transparent)}
+.epilogo__inner{width:var(--page);margin-inline:auto;max-width:46rem}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--terra)}
+.epilogo__title{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.05;
+  letter-spacing:-.015em;margin:.6rem 0 1.4rem;text-wrap:balance}
+.epilogo__lead{font-size:clamp(1.05rem,1.5vw,1.25rem);line-height:1.6;color:var(--ink)}
+.epilogo p{margin:0 0 1.1rem;color:var(--ink-2);max-width:62ch}
+.epilogo__lead{color:var(--ink)}
+.epilogo a{color:var(--terra)}
+.seammap{display:block;width:100%;max-width:760px;height:auto;margin:2rem 0}
+.sm-dive{fill:color-mix(in srgb,var(--terra) 14%,var(--dawn));stroke:var(--terra);stroke-width:1}
+.sm-door{fill:var(--dawn);stroke:var(--terra);stroke-width:2}
+.seammap text{fill:var(--ink-2)}
+.facts{display:grid;gap:0;margin:2rem 0;border-top:1px solid color-mix(in srgb,var(--terra) 18%,transparent)}
+.facts>div{display:grid;grid-template-columns:9rem 1fr;gap:1rem;padding:.8rem 0;
+  border-bottom:1px solid color-mix(in srgb,var(--terra) 18%,transparent)}
+.facts dt{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);padding-top:.2rem}
+.facts dd{margin:0;color:var(--ink-2)}
+.facts dd b{color:var(--ink)}
+.epilogo__note{font-size:.92rem}
+
+/* ── footer ─────────────────────────────────────────────────────── */
+.foot{position:relative;z-index:2;background:var(--dawn);width:var(--page);margin-inline:auto;
+  padding:2rem 0 3rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:baseline;
+  justify-content:space-between;font-family:var(--mono);font-size:.85rem;
+  border-top:1px solid color-mix(in srgb,var(--terra) 18%,transparent)}
+.foot a{color:inherit;text-decoration:none}
+
+/* ── small screens ──────────────────────────────────────────────── */
+@media (max-width:860px){
+  .route{right:6px;gap:16px;padding:14px 6px}
+  .route__dot{width:28px;height:28px}
+  .route__label{display:none}
+  .copylayer::before{width:100%;height:62%;top:auto;bottom:0;
+    background:linear-gradient(0deg,color-mix(in srgb,var(--dawn) 92%,transparent) 8%,
+      color-mix(in srgb,var(--dawn) 60%,transparent) 46%,transparent 100%)}
+  .copy{left:var(--gutter);right:var(--gutter);bottom:clamp(5rem,14vh,8rem);max-width:none}
+  .head__meta{display:none}
+}
+@media (hover:none) and (pointer:coarse){
+  .copy{bottom:calc(clamp(4.5rem,12vh,7rem) + env(safe-area-inset-bottom))}
+  .hint{bottom:calc(20px + env(safe-area-inset-bottom))}
+}
+
+/* ── reduced motion ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  .hint i::after{animation:none}
+  .scene__video{transition:none}
+}

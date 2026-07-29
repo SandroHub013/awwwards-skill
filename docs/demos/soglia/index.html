@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>soglia — every seam is a doorway</title>
+<meta name="description" content="One continuous camera flight through a Tuscan hill town at dawn, scrubbed by the scroll bar. The town is geometry, not footage — rendered offline, cut at three doorways, and the last frame of each clip is the first frame of the next. Built with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="soglia — every seam is a doorway">
+<meta property="og:description" content="A scroll-scrubbed camera flight, rendered not filmed. The film is cut three times; every cut lands in a doorway, so there is no cut at all.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/soglia/">
+
+<link rel="preload" as="image" href="media/s0-porta.poster.avif" type="image/avif" fetchpriority="high">
+
+<!-- Critical CSS inline, same reasoning as the reel demo: the first screen must
+     paint before the stylesheet round trip. The LCP element is the first
+     scene's still, preloaded above and declared in the HTML — like reel, no
+     <video> exists until JS decides the network can afford it. -->
+<style>
+  :root{--dawn:oklch(93% 0.03 80);--dawn-2:oklch(88% 0.045 75);--ink:oklch(24% 0.02 50);
+    --ink-2:oklch(42% 0.02 55);--ink-3:oklch(56% 0.02 60);--terra:oklch(52% 0.12 45);
+    --gutter:clamp(1.15rem,.6rem + 2.1vw,3rem);--page:min(100% - var(--gutter)*2,1280px);
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,h2,p,figure,ul{margin:0;padding:0}
+  body{background:var(--dawn);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+  .head{position:fixed;inset-inline:0;top:0;z-index:60;width:var(--page);margin-inline:auto;
+    padding-block:1.25rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:baseline;
+    justify-content:space-between;font-family:var(--mono);font-size:.9rem}
+  .head a{color:inherit;text-decoration:none}.dim{color:var(--ink-3)}
+  .head__meta{font-size:.72rem;color:var(--ink-2);letter-spacing:.10em;text-transform:uppercase}
+  .skip{position:absolute;left:1rem;top:-4rem;z-index:80;background:var(--ink);color:var(--dawn);padding:.5rem 1rem}
+  .skip:focus{top:1rem}
+  .flight{position:relative;z-index:1;height:1010svh} /* 4×1.6 + 3×0.9 + 1 — app.js only fine-tunes, so no layout shift */
+  .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--dawn)}
+  .scene{position:absolute;inset:0;opacity:0;margin:0}
+  .scene__still,.scene__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 45%}
+  .scene__video{opacity:0;transition:opacity .3s}
+  .scene.has-clip .scene__video{opacity:1}
+  .copylayer{position:absolute;inset:0;z-index:20;pointer-events:none}
+.copylayer::before{content:"";position:absolute;inset:0;width:min(58vw,780px);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--dawn) 88%,transparent) 0%,
+    color-mix(in srgb,var(--dawn) 70%,transparent) 34%,
+    color-mix(in srgb,var(--dawn) 30%,transparent) 62%,transparent 100%)}
+  .copy{position:absolute;left:var(--gutter);bottom:clamp(4.5rem,12vh,7rem);max-width:26rem;opacity:0}
+  .copy__num{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;color:var(--ink-2)}
+  .copy__eyebrow{display:block;margin-top:.9rem;font-weight:700;font-size:.8rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--terra)}
+  .copy__title{font-size:clamp(2.1rem,4.6vw,3.6rem);line-height:1.02;margin:.5rem 0 0;
+    letter-spacing:-.015em;text-wrap:balance}
+  .copy__body{margin-top:.9rem;font-size:clamp(.98rem,1.2vw,1.1rem);line-height:1.55;
+    color:var(--ink-2);max-width:38ch}
+  .copy--card .copy__title{font-size:clamp(2.6rem,6vw,4.6rem)}
+  [data-copy="0"]{opacity:1} /* the landing card paints with the first frame; read() overrides on first layout */
+  .bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:70;background:color-mix(in srgb,var(--terra) 14%,transparent)}
+  .bar i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--terra)}
+  /* positioning for route + hint is critical too: unstyled they sit in flow
+     inside the stage and jump when styles.css arrives (measured CLS 0.064) */
+  .route{position:absolute;right:clamp(14px,2.4vw,30px);top:50%;transform:translateY(-50%);
+    z-index:40;display:flex;flex-direction:column;gap:22px;padding:18px 10px;margin:0}
+  .hint{position:absolute;left:50%;bottom:26px;z-index:30;transform:translateX(-50%);margin:0}
+</style>
+<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f2e3d0'/><path d='M30 88 V42 a20 20 0 0 1 40 0 V88 Z' fill='none' stroke='%23b0654a' stroke-width='8'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#epilogo">Skip the flight, read how it is made</a>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 09 &middot; scroll-scrub &middot; rendered, not filmed</p>
+</header>
+
+<div class="bar" aria-hidden="true"><i data-bar></i></div>
+
+<main>
+
+  <!-- ── the flight ─────────────────────────────────────────────── -->
+  <section class="flight" data-flight aria-label="A camera flight through a hill town at dawn. Scroll to advance.">
+    <div class="stage" data-stage>
+
+      <!-- scene 0's still is declared, not injected: it is the LCP element and
+           the no-JS fallback. app.js claims it for the first segment. -->
+      <figure class="scene" data-scene="s0-porta" style="opacity:1">
+        <img class="scene__still" src="media/s0-porta.poster.avif" width="1920" height="1080"
+             fetchpriority="high" decoding="async"
+             alt="A Tuscan town gate at dawn, cypresses along a dirt road, the arch open.">
+      </figure>
+
+      <div class="copylayer" data-copylayer>
+        <article class="copy copy--card" data-copy="0">
+          <p class="copy__num">una ripresa sola</p>
+          <h1 class="copy__title">soglia</h1>
+          <p class="copy__body">A hill town at dawn, in one continuous take. The film is cut
+            three times &mdash; and every cut lands in a doorway, so there is no cut at all.
+            Scroll to fly in.</p>
+        </article>
+
+        <article class="copy" data-copy="1">
+          <p class="copy__num">02 / 04</p>
+          <span class="copy__eyebrow">la strada</span>
+          <h2 class="copy__title">Laundry is out before the people are</h2>
+          <p class="copy__body">The street climbs toward the light. Shutters are still shut;
+            the first door you hear is the one you are about to pass through.</p>
+        </article>
+
+        <article class="copy" data-copy="2">
+          <p class="copy__num">03 / 04</p>
+          <span class="copy__eyebrow">la piazza</span>
+          <h2 class="copy__title">Every town keeps its living room outdoors</h2>
+          <p class="copy__body">The fountain got here before you did. Two caf&eacute; tables
+            wait for nobody in particular, which is the whole point of them.</p>
+        </article>
+
+        <article class="copy" data-copy="3">
+          <p class="copy__num">04 / 04</p>
+          <span class="copy__eyebrow">la bottega</span>
+          <h2 class="copy__title">Someone is making a chair the slow way</h2>
+          <p class="copy__body">One back slat fitted, two to go. The camera stops where the
+            work is. <a href="#epilogo">How the seam works &darr;</a></p>
+        </article>
+      </div>
+
+      <nav class="route" data-route aria-label="Scenes">
+        <button class="route__dot" data-jump="0"><i></i><span class="route__label">la porta</span></button>
+        <button class="route__dot" data-jump="1"><i></i><span class="route__label">la strada</span></button>
+        <button class="route__dot" data-jump="2"><i></i><span class="route__label">la piazza</span></button>
+        <button class="route__dot" data-jump="3"><i></i><span class="route__label">la bottega</span></button>
+      </nav>
+
+      <p class="hint" data-hint aria-hidden="true"><span>scroll to fly in</span><i></i></p>
+    </div>
+  </section>
+
+  <!-- ── the epilogue: how the seam works ───────────────────────── -->
+  <section class="epilogo" id="epilogo">
+    <div class="epilogo__inner">
+      <p class="eyebrow">come &egrave; fatta</p>
+      <h2 class="epilogo__title">Every seam is a doorway</h2>
+
+      <p class="epilogo__lead">Nothing here was filmed &mdash; and nothing was generated.
+        The town is geometry: a gate, a street, a square and a workshop, built from boxes
+        and cones in one scene file, seeded once and rendered offline, frame by frame.
+        The camera path is a single spline through all four places.</p>
+
+      <p>The flight is one take. It becomes seven clips for one reason: a browser cannot
+        seek a video it has not loaded, and loading 39 seconds up front would blow the
+        first-view budget. So the take is cut into four scenes and three short
+        <i>connectors</i> &mdash; and every cut is placed inside a doorway, where the
+        frame is mostly dark and the camera moves forward. The last frame of each clip
+        and the first frame of the next are the same pixels, by construction: the
+        renderer wrote both from one continuous path. Played in sequence the join is not
+        a transition. It is just the next frame.</p>
+
+      <svg class="seammap" viewBox="0 0 760 120" role="img"
+           aria-label="Segment map: four scene clips joined by three connector clips, each connector drawn as a doorway.">
+        <g font-family="ui-monospace,Menlo,monospace" font-size="10" letter-spacing="1">
+          <rect x="10"  y="34" width="150" height="52" rx="3" class="sm-dive"/>
+          <text x="85" y="63" text-anchor="middle">LA PORTA</text>
+          <path d="M185 86 V56 a14 14 0 0 1 28 0 V86 Z" class="sm-door"/>
+          <text x="199" y="104" text-anchor="middle">arco</text>
+          <rect x="237" y="34" width="150" height="52" rx="3" class="sm-dive"/>
+          <text x="312" y="63" text-anchor="middle">LA STRADA</text>
+          <path d="M412 86 V56 a14 14 0 0 1 28 0 V86 Z" class="sm-door"/>
+          <text x="426" y="104" text-anchor="middle">vicolo</text>
+          <rect x="464" y="34" width="150" height="52" rx="3" class="sm-dive"/>
+          <text x="539" y="63" text-anchor="middle">LA PIAZZA</text>
+          <path d="M639 86 V56 a14 14 0 0 1 28 0 V86 Z" class="sm-door"/>
+          <text x="653" y="104" text-anchor="middle">varco</text>
+          <rect x="691" y="34" width="59"  height="52" rx="3" class="sm-dive"/>
+          <text x="720" y="60" text-anchor="middle" transform="rotate(-90 720 60)">BOTTEGA</text>
+        </g>
+      </svg>
+
+      <dl class="facts">
+        <div><dt>Footage</dt><dd><b>None.</b> One scene file, seeded (1410), no models, no textures, no AI</dd></div>
+        <div><dt>Render</dt><dd>936 frames, 24&thinsp;fps, headless Chrome + Three.js, baked on the repo&rsquo;s own machine</dd></div>
+        <div><dt>Clips</dt><dd>7 &mdash; four scenes, three doorways; the seam frame ships in both neighbours</dd></div>
+        <div><dt>Transport</dt><dd>Native scroll position, mapped &mdash; never hijacked. Keyboard and scrollbar stay honest</dd></div>
+        <div><dt>Seek</dt><dd>Clips load as blobs near the viewport only; seeks coalesce behind the decoder</dd></div>
+        <div><dt>Reduced motion</dt><dd>No video loads at all. The stills cross-dissolve; the town is still there</dd></div>
+      </dl>
+
+      <p class="epilogo__note">The technique is the point of the demo: scroll-scrubbed
+        camera flight with frame-locked connectors, kept inside the skill&rsquo;s budgets.
+        Self-scored in <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/docs/demos/soglia/SCORE.md">SCORE.md</a>;
+        asset provenance in <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/docs/demos/soglia/ledger.json">ledger.json</a>.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <a href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="dim">soglia &middot; a demo built with the skill, scored with the skill</p>
+</footer>
+
+<noscript><style>
+  .stage{position:relative;height:auto}
+  .copylayer,.route,.hint,.bar{position:static}
+  .copy{position:static;opacity:1;margin:2rem var(--gutter)}
+  .route,.hint,.bar{display:none}
+</style></noscript>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

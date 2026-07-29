@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>soglia — offline renderer</title>
+<style>html,body{margin:0}canvas{display:block}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js";
+import { buildTown, buildLights, buildSky, buildFlight, PAL } from "./scene.js";
+
+const params = new URLSearchParams(location.search);
+const W = +(params.get("w") || 1920), H = +(params.get("h") || 1080);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(1);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(PAL.fog, 0.009);
+scene.add(buildSky(THREE));
+
+const { root, updates } = buildTown(THREE);
+scene.add(root);
+buildLights(THREE, scene);
+
+const camera = new THREE.PerspectiveCamera(+(params.get("fov") || 42), W / H, 0.1, 700);
+const flight = buildFlight(THREE);
+const pos = new THREE.Vector3(), tgt = new THREE.Vector3();
+
+window.__render = (t01) => {
+  flight.at(t01, pos, tgt);
+  camera.position.copy(pos);
+  camera.lookAt(tgt);
+  const tSec = t01 * flight.totalSecs;
+  for (const u of updates) u(tSec);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL("image/png");
+};
+window.__ready = true;
+</script>
+</body>
+</html>
