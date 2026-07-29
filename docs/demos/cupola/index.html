@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cupola — nobody knew how to close it</title>
+<meta name="description" content="Brunelleschi's dome, laid one course at a time by the scroll bar. The profile comes from the quinto acuto rule, the beds lie on cones — the corda blanda — and the herringbone is computed, not drawn. Real-time Three.js, no models and no textures.">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="cupola — nobody knew how to close it">
+<meta property="og:description" content="A span of 45.5 m, open for a generation, and no timber in Tuscany long enough to centre it. Scroll lays the courses the way they were actually laid.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/cupola/">
+
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23efe7d8'/><path d='M14 78 L50 20 L86 78 Z' fill='%23b2603f'/></svg>">
+
+<!-- Only the connection is warmed, deliberately. `modulepreload` on three.js
+     was measured and rejected: it does collapse the request chain, but it also
+     compiles 600 KB of renderer before the browser has painted a word, which
+     put first paint at 1.7 s on a throttled load. The writing does not need
+     the renderer, so the renderer waits behind it. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+
+<a class="skip" href="#read">Skip to the reading</a>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 08 &middot; real-time &middot; Three.js</p>
+</header>
+
+<aside class="hud" data-hud aria-hidden="true">
+  <dl class="hud__grid">
+    <div><dt>Year</dt><dd data-h="year">1420</dd></div>
+    <div><dt>Laid to</dt><dd data-h="metres">0.0 m</dd></div>
+    <div><dt>Hole left</dt><dd data-h="opening">45.5 m</dd></div>
+  </dl>
+  <div class="hud__rule"><i data-rule></i></div>
+</aside>
+
+<main>
+
+  <section class="scene" data-scene>
+    <div class="panel panel--open">
+      <p class="eyebrow">Florence &middot; Santa Maria del Fiore</p>
+      <h1 class="title">Nobody knew<br>how to close it.</h1>
+      <p class="lede">
+        The hole over the crossing was 45.5 metres across and started 52 metres above the
+        floor. It had been left open for a generation, because the span was wider than any
+        vault standing in Europe and there was no accepted way to build it. This page lays
+        the courses that closed it, in the order and by the rules they were laid &mdash;
+        and it only moves while you do.
+      </p>
+      <p class="cue" data-cue>Scroll to build</p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Uno &middot; Quinto acuto</p>
+      <h2 class="beat">The profile is a rule, not a drawing</h2>
+      <p class="body">
+        Each rib is an arc whose radius is four fifths of the span, struck from a centre one
+        fifth in from the opposite springing. That is the whole specification. Feed it the
+        documented span of 45.5 m and it returns a rise of <b data-f="rise">33.7</b> m on its
+        own &mdash; which is what the dome measures. A pointed section leans on itself, so it
+        pushes outward far less than a hemisphere of the same span would.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Due &middot; Senza centine</p>
+      <h2 class="beat">There was no forest to hold it up</h2>
+      <p class="body">
+        A vault this size was built on a centring: a timber dome, full size, holding every
+        stone until the mortar set. For 45 metres that meant a scaffold nobody could source,
+        pay for or trust. So the shell had to stand on the day each course was laid, wet,
+        with nothing underneath it. Every rule that follows exists for that one reason.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Tre &middot; Spinapesce</p>
+      <h2 class="beat">Every fifth brick stands on end</h2>
+      <p class="body">
+        The herringbone. At intervals along each course a brick is set upright, spanning the
+        bed above it, and the upright shifts sideways from one course to the next. It breaks
+        the continuity of the mortar joints and gives the fresh bricks something to lean
+        against, so a ring can be closed before it has any strength of its own. Look at the
+        surface: the standing bricks are the ones stepping diagonally across the beds.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Quattro &middot; Corda blanda</p>
+      <h2 class="beat">The courses are not level</h2>
+      <p class="body">
+        The beds in the webs lie on cones coaxial with the dome, not on horizontal planes.
+        A course therefore runs higher where it meets a rib and sags in the middle of each
+        web, like a slack cord hung between two nails &mdash; which is what the masons called
+        it. In this model the sag is <b data-f="sag">52</b> cm at the springing and closes to
+        nothing at the eye. Once you have seen it you cannot look at the surface again
+        without seeing the dip.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Cinque &middot; Due gusci</p>
+      <h2 class="beat">Two domes, and sixteen ribs nobody sees</h2>
+      <p class="body">
+        There is an inner shell and an outer one, and they are held apart. Twenty-four ribs
+        stand between them: eight at the corners, under the white marble you can see from the
+        square, and sixteen more inside the sandwich that were never meant to be looked at.
+        The space they leave is the stair &mdash; the climb to the lantern goes up between
+        the two domes.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Sei &middot; Le catene</p>
+      <h2 class="beat">Rings, to stop it spreading</h2>
+      <p class="body">
+        A dome pushes outward at its base, and masonry has no tension to answer with. So the
+        shell is belted: sandstone beams about 43 cm in section, cramped end to end into an
+        octagonal ring like a length of railway track &mdash; and, at one level, a chain made
+        of chestnut. Timber, inside a dome of four million bricks.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Sette &middot; 1436</p>
+      <h2 class="beat">The ring closes</h2>
+      <p class="body">
+        Sixteen years of courses, and the opening in the readout counts itself down from
+        45.5 m to the six-metre eye the lantern would stand on. The cathedral was consecrated
+        on 25 March 1436, with the dome shut and no lantern on it yet. Everything above this
+        point belongs to men who had to finish somebody else&rsquo;s sentence.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">Otto &middot; La lanterna</p>
+      <h2 class="beat">And then twenty-five more years</h2>
+      <p class="body">
+        Brunelleschi won the competition for the lantern and died in 1446, a few months after
+        it was begun. Michelozzo finished it in 1461; Verrocchio&rsquo;s gilded copper ball
+        went up on top in 1469. From the pavement to the cross is about 116 m, and it is
+        still the largest masonry dome ever built.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="read">
+    <header class="section__head">
+      <p class="eyebrow">How it is built</p>
+      <h2 class="section__title">One number lays the whole dome</h2>
+    </header>
+
+    <div class="cols">
+      <div class="col">
+        <p>
+          The shape is not modelled by eye. <code>cornerRadius(y)</code> is the quinto acuto
+          arc &mdash; radius <code>0.8 &times; span</code>, centre <code>0.3 &times; span</code>
+          in from the axis &mdash; and every other point on the dome is derived from it: the
+          webs bow out from the chord between two ribs, the outer shell stands off the inner
+          one by a gap that closes with height, and the ribs are slabs standing in that gap.
+        </p>
+        <p>
+          The courses are one function too. <code>bedLevel(y, r) = y &minus; 0.30 r</code> is
+          constant over a cone, so it answers &ldquo;which course does this point belong
+          to?&rdquo; for any point in the masonry &mdash; and because a rib sits further from
+          the axis than the middle of a web, the same course arrives higher at the rib. The
+          corda blanda is that minus sign, and nothing else.
+        </p>
+      </div>
+      <div class="col">
+        <p>
+          The build is a single uniform: the highest bed laid so far. Both shells, all
+          twenty-four ribs and all four chains discard any fragment above it, so the dome
+          rises course by course without a single vertex being touched, and the brickwork,
+          the reveal and the readouts cannot disagree with each other &mdash; they are reading
+          the same number.
+        </p>
+        <p>
+          The bricks are not an image. Bed and head joints, the half-brick stagger between
+          courses and the upright bricks of the spinapesce are computed from where the pixel
+          falls in the masonry, in metres, and fade out when a course gets smaller than a
+          pixel. There is no texture, no model and no photograph anywhere in it: the page is
+          <b>23 KB</b> of its own code, and the rest of the weight is the renderer.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="cost">
+    <header class="section__head">
+      <p class="eyebrow">Measured, live</p>
+      <h2 class="section__title">What the frame costs</h2>
+      <p class="section__sub">Read off the renderer while you look at it.</p>
+    </header>
+
+    <dl class="counts" data-counts>
+      <div><dt>Draw calls</dt><dd data-c="calls">&mdash;</dd></div>
+      <div><dt>Triangles</dt><dd data-c="tris">&mdash;</dd></div>
+      <div><dt>Textures</dt><dd data-c="textures">&mdash;</dd></div>
+      <div><dt>Programs</dt><dd data-c="programs">&mdash;</dd></div>
+      <div><dt>Model &amp; texture bytes</dt><dd>0</dd></div>
+      <div><dt>Frame</dt><dd data-c="fps">&mdash;</dd></div>
+    </dl>
+
+    <p class="note">
+      Four surfaces carry the whole scene: two shells, the structure between them, and the
+      city underneath. Everything else &mdash; the pattern, the depth, the light, the haze
+      &mdash; is arithmetic in a fragment shader. The renderer is fetched after the first
+      paint rather than before it, because the writing does not need it and the measurement
+      said so.
+    </p>
+  </section>
+
+  <section class="section" id="numbers">
+    <header class="section__head">
+      <p class="eyebrow">The numbers</p>
+      <h2 class="section__title">What is documented, and what this model chose</h2>
+      <p class="section__sub">The first block is measured by other people. The second is a
+        drawing decision, and it is marked as one.</p>
+    </header>
+
+    <dl class="facts">
+      <div><dt>Inner span, corner to corner</dt><dd>45.5 m</dd></div>
+      <div><dt>Outer span</dt><dd>54.8 m</dd></div>
+      <div><dt>Springing, above the floor</dt><dd>about 52 m</dd></div>
+      <div><dt>Profile</dt><dd>quinto acuto &mdash; radius = 4/5 of the span</dd></div>
+      <div><dt>Rise the rule returns</dt><dd><b data-f="rise2">33.7</b> m</dd></div>
+      <div><dt>Ribs</dt><dd>24 &mdash; 8 at the corners, 16 in the webs</dd></div>
+      <div><dt>Bricks</dt><dd>more than 4 million</dd></div>
+      <div><dt>Weight lifted</dt><dd>about 37,000 tonnes</dd></div>
+      <div><dt>Built</dt><dd>1420&ndash;1436</dd></div>
+      <div><dt>Lantern</dt><dd>begun 1446, finished 1461</dd></div>
+      <div><dt>Ball</dt><dd>Verrocchio, 1469</dd></div>
+      <div><dt>To the cross</dt><dd>about 116 m</dd></div>
+    </dl>
+
+    <dl class="facts facts--ours">
+      <div><dt>Cone slope of the beds</dt><dd>0.30 &mdash; chosen, not published</dd></div>
+      <div><dt>Sag it produces</dt><dd><b data-f="sag2">52</b> cm at the springing</dd></div>
+      <div><dt>Course height</dt><dd>52 cm &mdash; a drawing convention</dd></div>
+      <div><dt>Eye of the dome</dt><dd>6 m &mdash; approximate</dd></div>
+      <div><dt>Shells</dt><dd>drawn as surfaces, without their thickness</dd></div>
+      <div><dt>City below</dt><dd>massing for scale, not a survey</dd></div>
+    </dl>
+
+    <p class="note">
+      Sources for the first block:
+      <a href="https://brunelleschi.imss.fi.it/itineraries/multimedia/TheDomeStructure.html">Museo
+      Galileo on the dome structure</a> (the quinto acuto rule, the weight, the brick count),
+      <a href="https://en.wikipedia.org/wiki/Florence_Cathedral">Wikipedia&rsquo;s Florence
+      Cathedral</a> (dates, ribs, herringbone, the sandstone chain), and
+      <a href="https://ilduomodifirenze.it/duomo-firenze-curiosita/">the Opera del Duomo</a>
+      for the 45.5 m and 54.8 m spans. The rule and the span agree with the measured rise to
+      within a metre, which is the only check available here and the reason the profile in
+      this page was derived rather than traced.
+    </p>
+  </section>
+
+  <section class="section colophon" id="colophon">
+    <header class="section__head">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">Credits, and what this is not</h2>
+    </header>
+
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Shape</dt><dd>Derived from the quinto acuto rule at the documented span</dd></div>
+        <div><dt>Courses</dt><dd>Cones, coaxial with the dome &mdash; the corda blanda</dd></div>
+        <div><dt>Brickwork</dt><dd>Computed per pixel, including the spinapesce</dd></div>
+        <div><dt>Assets</dt><dd><b>None.</b> No models, no textures, no images &mdash; three.js is the only dependency</dd></div>
+        <div><dt>Renderer</dt><dd>Three.js r185, four surfaces, custom shaders</dd></div>
+        <div><dt>Type</dt><dd>System stacks only &mdash; no webfont</dd></div>
+      </dl>
+
+      <div class="colophon__note">
+        <p>
+          This is a diagram of how the dome works, not a survey of the building. The
+          proportions come from published dimensions and the two construction rules are the
+          documented ones, but the courses, the ribs and the chains are placed by a program
+          written from reading, not from measurement on site &mdash; and Florence below is
+          massing for scale. Where a number was a choice rather than a source, it is in the
+          second table above.
+        </p>
+        <a class="cta" href="../../">Read the method &#8594;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Real-time, computed in your browser. A diagram of a building, not a record of one.</p>
+  <p><a href="#top">Back to the top</a></p>
+</footer>
+
+</body>
+</html>
