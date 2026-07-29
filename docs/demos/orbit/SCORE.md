@@ -55,6 +55,31 @@ shares one sphere and one shader with a `uKind` switch.
 - **The NASA fact sheet is gone**, and every URL under it returns the same SPA shell with
   a 200. A 200 is not a success; checking the parsed row count is what caught it.
 
+### Found after a first look, by someone else
+
+A viewer said the planets looked flat next to the `abyss` demo, and that arriving at each
+one felt like a cut. Both were right, and both had a specific cause.
+
+- **The planets were painted balls.** The noise tinted their colour but never bent the
+  normal, so light slid over a perfect sphere. `abyss` bends the normal along a noise
+  gradient, and porting that one block is most of the difference. Rocky worlds get strong
+  relief; gas giants get almost none, because they are fluid.
+- **The camera teleported.** It picked `planets[floor(seg)]` and let a position lerp hide
+  the jump — but the *target* was discontinuous, and no amount of smoothing repairs a
+  target that moves instantly. `local` was computed and then never used. The aim point is
+  now interpolated between two planets, with a dwell on each and a crossing at the end of
+  its panel, so the distance between worlds is something you watch rather than skip.
+- **Then every planet was a speck.** The camera offset multiplied the radius on two axes
+  and added more on a third — roughly 14× the radius. Distance is now *solved* for the
+  framing rather than guessed: `d = r / tan(F · fov/2)`. Measured, not eyeballed — Jupiter
+  went from 17% of frame height to 35%.
+- **Jupiter had no Great Red Spot** while the copy told children about it, and **Saturn's
+  rings were one solid disc** while the copy said they are billions of separate pieces.
+  A render that contradicts its own caption is worse than a plainer render; both are now
+  drawn, the rings with banding and the Cassini division.
+- **The Sun's halo was an opaque sphere at 16% opacity** and read as a muddy brown ring.
+  A corona has to fade to nothing at its edge, so it is a camera-facing shader instead.
+
 ## Scored
 
 **Design ×0.40 → 7.5.** Type is deliberately larger and the measure shorter than the other

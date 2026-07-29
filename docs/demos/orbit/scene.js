@@ -28,8 +28,8 @@ const VERT = /* glsl */ `
    programs and keeps the whole family looking like one drawing. */
 const FRAG = /* glsl */ `
   precision highp float;
-  uniform vec3 uA, uB, uC;
-  uniform float uKind, uTime, uLit;
+  uniform vec3 uA, uB, uC, uRim;
+  uniform float uKind, uTime, uLit, uCap, uSpot, uSpotX, uBump, uBumpF;
   varying vec3 vPos;
   varying vec3 vWorld;
   varying vec3 vNormalW;
@@ -49,29 +49,64 @@ const FRAG = /* glsl */ `
     vec3 col;
 
     if (uKind < 0.5) {
-      // rocky: craters and patches
-      float m = fbm(n * 5.0);
-      col = mix(uA, uB, smoothstep(0.35, 0.72, m));
-      col = mix(col, uC, smoothstep(0.72, 0.95, fbm(n * 12.0)) * 0.55);
+      // rocky: continents or craters, plus ice where it is cold
+      float m = fbm(n * 4.2);
+      col = mix(uA, uB, smoothstep(0.36, 0.70, m));
+      col = mix(col, uC, smoothstep(0.70, 0.94, fbm(n * 11.0)) * 0.5);
+      // polar caps — every rocky planet here has them, and children look for them
+      float cap = smoothstep(0.74, 0.93, abs(n.y) - fbm(n * 5.0) * 0.10);
+      col = mix(col, vec3(0.93, 0.95, 0.99), cap * uCap);
     } else if (uKind < 1.5) {
-      // banded: latitude stripes, warped so they are not ruled lines
-      float lat = n.y + fbm(n * 2.6) * 0.16;
-      float band = sin(lat * 17.0) * 0.5 + 0.5;
-      col = mix(uA, uB, smoothstep(0.32, 0.68, band));
-      col = mix(col, uC, smoothstep(0.80, 1.0, fbm(n * 3.4)) * 0.7);
+      // banded: latitude stripes, warped so they never read as ruled lines
+      float lat = n.y + fbm(n * 2.4) * 0.18;
+      float band = sin(lat * 15.0) * 0.5 + 0.5;
+      band = mix(band, sin(lat * 31.0) * 0.5 + 0.5, 0.35);   // finer belts inside
+      col = mix(uA, uB, smoothstep(0.30, 0.70, band));
+      col = mix(col, uC, smoothstep(0.78, 1.0, fbm(n * 3.2)) * 0.6);
+
+      /* The Great Red Spot. The copy on the page tells children about it, so
+         the planet has to actually have one — a render that contradicts its
+         own caption is worse than a plainer render. */
+      vec2 sp = vec2(atan(n.z, n.x), asin(clamp(n.y, -1.0, 1.0)));
+      vec2 d = vec2((sp.x - uSpotX) * 0.55, sp.y + 0.32);
+      float spot = 1.0 - smoothstep(0.0, 0.30, length(d));
+      col = mix(col, vec3(0.72, 0.30, 0.20), spot * uSpot);
     } else {
-      // icy: smooth, faintly mottled
-      float m = fbm(n * 3.0);
-      col = mix(uA, uB, smoothstep(0.40, 0.75, m));
+      // icy: smooth, faintly mottled, with a brighter pole
+      float m = fbm(n * 2.6);
+      col = mix(uA, uB, smoothstep(0.40, 0.78, m));
+      col = mix(col, uC, smoothstep(0.80, 1.0, abs(n.y)) * 0.35);
     }
 
     /* One sun, at the origin. The first version dotted a view-space normal
        against a world-space direction and every planet came out nearly black:
        the spaces have to match. */
+    vec3 N = normalize(vNormalW);
+
+    /* Bend the normal along the gradient of the same field that coloured the
+       surface, so the light agrees with what you can see. This one block is
+       the difference between a painted ball and a world. */
+    float e = 0.035;
+    float h0 = fbm(n * uBumpF);
+    vec3 grad = vec3(
+      fbm(n * uBumpF + vec3(e, 0.0, 0.0)) - h0,
+      fbm(n * uBumpF + vec3(0.0, e, 0.0)) - h0,
+      fbm(n * uBumpF + vec3(0.0, 0.0, e)) - h0) / e;
+    N = normalize(N - (grad - N * dot(grad, N)) * uBump);
+
     vec3 toSun = normalize(-vWorld);
-    float lam = max(dot(normalize(vNormalW), toSun), 0.0);
-    float sun = mix(0.22, 1.0, pow(lam, 0.65));
-    gl_FragColor = vec4(col * mix(1.0, sun, uLit), 1.0);
+    float lam = max(dot(N, toSun), 0.0);
+    // a soft terminator rather than a hard one: real ones are not knife edges
+    float sun = mix(0.18, 1.0, smoothstep(-0.12, 0.55, dot(N, toSun)) * 0.65 + pow(lam, 0.8) * 0.35);
+    col *= mix(1.0, sun, uLit);
+
+    /* Rim light along the lit limb. On a plain sphere this one term is most of
+       what separates "a ball" from "a world with air around it". */
+    vec3 V = normalize(cameraPosition - vWorld);
+    float rim = pow(1.0 - max(dot(N, V), 0.0), 3.0) * max(dot(N, toSun) + 0.35, 0.0);
+    col += uRim * rim * 0.9;
+
+    gl_FragColor = vec4(col, 1.0);
   }`;
 
 export function createOrbit({ canvas, data } = {}) {
@@ -103,12 +138,31 @@ export function createOrbit({ canvas, data } = {}) {
 
   /* ---- the sun ---- */
   const sunGeo = new THREE.SphereGeometry(1, 40, 28);
-  const sun = new THREE.Mesh(sunGeo, new THREE.MeshBasicMaterial({ color: 0xffcf6b }));
+  let sunCorona = null;
+  const sun = new THREE.Mesh(sunGeo, new THREE.MeshBasicMaterial({ color: 0xffe0a0 }));
   scene.add(sun);
   {
-    const halo = new THREE.Mesh(new THREE.SphereGeometry(1.55, 32, 20),
-      new THREE.MeshBasicMaterial({ color: 0xffb03a, transparent: true, opacity: 0.16 }));
-    sun.add(halo);
+    /* An opaque-ish sphere at 16% read as a muddy brown ring. A corona has to
+       fade to nothing at its edge, so it is a shader, and it faces the camera
+       so it never shows as a sphere silhouette. */
+    const corona = new THREE.Mesh(new THREE.PlaneGeometry(7, 7), new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main(){ vUv=uv;
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+      fragmentShader: `precision mediump float; varying vec2 vUv; uniform float uTime;
+        void main(){
+          float d = length(vUv - 0.5) * 2.0;
+          float core = pow(max(0.0, 1.0 - d * 3.2), 2.0);
+          float glow = pow(max(0.0, 1.0 - d), 3.4) * 0.55;
+          float flick = 0.94 + 0.06 * sin(uTime * 1.7);
+          vec3 c = mix(vec3(1.0, 0.62, 0.18), vec3(1.0, 0.90, 0.62), core);
+          gl_FragColor = vec4(c * (core + glow) * flick, (core + glow) * 0.95);
+        }`,
+    }));
+    corona.renderOrder = -1;
+    scene.add(corona);
+    sunCorona = corona;
   }
 
   /* ---- the planets ----
@@ -130,7 +184,13 @@ export function createOrbit({ canvas, data } = {}) {
     Neptune: [0x4a6fd0, 0x2f4aa0, 0x8fa8e8],
   };
 
-  const bodyGeo = new THREE.SphereGeometry(1, LOW ? 24 : 40, LOW ? 16 : 28);
+  /* Ice caps only where there are ice caps, and rim colour only where there is
+     an atmosphere to scatter it: Mercury has neither. */
+  const CAP = { Mercury: 0, Venus: 0, Earth: 0.9, Mars: 1.0, Jupiter: 0, Saturn: 0, Uranus: 0, Neptune: 0 };
+  const RIM = { Mercury: 0x000000, Venus: 0x6a5426, Earth: 0x2f6ea8, Mars: 0x5a3520,
+                Jupiter: 0x4a3a28, Saturn: 0x4a4130, Uranus: 0x2c5f68, Neptune: 0x24386f };
+
+  const bodyGeo = new THREE.SphereGeometry(1, LOW ? 32 : 56, LOW ? 20 : 36);
   const planets = [];
   const names = Object.keys(data).filter((k) => !k.startsWith("__"));
 
@@ -147,6 +207,13 @@ export function createOrbit({ canvas, data } = {}) {
         uKind: { value: KIND[name] },
         uTime: { value: 0 },
         uLit: { value: 1 },
+        uCap: { value: CAP[name] ?? 0 },
+        uSpot: { value: name === "Jupiter" ? 1 : 0 },
+        uSpotX: { value: 1.1 },
+        uRim: { value: new THREE.Color(RIM[name] ?? 0x000000) },
+        // rocky worlds are rough; gas and ice giants are smooth banded fluid
+        uBump:  { value: KIND[name] === 0 ? 0.55 : (KIND[name] === 1 ? 0.16 : 0.10) },
+        uBumpF: { value: KIND[name] === 0 ? 7.0  : (KIND[name] === 1 ? 3.0  : 2.4) },
       },
     });
     const mesh = new THREE.Mesh(bodyGeo, mat);
@@ -173,9 +240,24 @@ export function createOrbit({ canvas, data } = {}) {
 
     if (name === "Saturn") {
       const ring = new THREE.Mesh(
-        new THREE.RingGeometry(rWorld * 1.5, rWorld * 2.4, 64),
-        new THREE.MeshBasicMaterial({ color: 0xd9c396, side: THREE.DoubleSide,
-                                      transparent: true, opacity: 0.7 }));
+        new THREE.RingGeometry(rWorld * 1.35, rWorld * 2.5, 96, 1),
+        new THREE.ShaderMaterial({
+          side: THREE.DoubleSide, transparent: true, depthWrite: false,
+          uniforms: { uIn: { value: rWorld * 1.35 }, uOut: { value: rWorld * 2.5 } },
+          vertexShader: `varying vec3 vP; void main(){ vP=position;
+            gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+          fragmentShader: `precision mediump float; varying vec3 vP;
+            uniform float uIn, uOut;
+            void main(){
+              float t = (length(vP.xy) - uIn) / (uOut - uIn);      // 0 inner .. 1 outer
+              // banding, and the Cassini division: the rings are not one disc
+              float band = 0.55 + 0.45 * sin(t * 46.0);
+              float cassini = smoothstep(0.60, 0.66, t) * (1.0 - smoothstep(0.70, 0.76, t));
+              float a = (0.30 + band * 0.55) * (1.0 - cassini * 0.92);
+              a *= smoothstep(0.0, 0.06, t) * (1.0 - smoothstep(0.93, 1.0, t));
+              gl_FragColor = vec4(vec3(0.90, 0.83, 0.66) * (0.7 + band * 0.3), a);
+            }`,
+        }));
       ring.rotation.x = Math.PI / 2 - 0.42;
       mesh.add(ring);
     }
@@ -190,6 +272,9 @@ export function createOrbit({ canvas, data } = {}) {
 
   const camPos = new THREE.Vector3();
   const camAim = new THREE.Vector3();
+  const aimA = new THREE.Vector3();
+  const aimB = new THREE.Vector3();
+  const smoothstep = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
   const tmp = new THREE.Vector3();
 
   function update(dt) {
@@ -202,6 +287,10 @@ export function createOrbit({ canvas, data } = {}) {
       pl.mesh.rotation.y += dt * (pl.d.rot_days < 0 ? -0.35 : 0.35) / Math.abs(pl.d.rot_days) * 8;
     }
     sun.rotation.y += dt * 0.05;
+    if (sunCorona) {
+      sunCorona.material.uniforms.uTime.value += dt;
+      sunCorona.quaternion.copy(camera.quaternion);   // always face the viewer
+    }
 
     /* p runs 0..1 across the whole page. 0 = the sun, 1 = Neptune.
        In between it eases from one planet to the next and sits on each. */
@@ -211,22 +300,53 @@ export function createOrbit({ canvas, data } = {}) {
     state.focus = idx;
     const local = seg - idx;
 
-    const from = idx === 0 ? new THREE.Vector3(0, 0, 0) : null;
-    const target = planets[idx];
-    target.holder.getWorldPosition(camAim);
-    if (state.p < 0.02) camAim.set(0, 0, 0);
+    /* The camera travels BETWEEN planets instead of teleporting to the next
+       one. The first version picked planets[floor(seg)] and let a position
+       lerp hide the jump, which is why each arrival felt like a cut: the
+       *target* was discontinuous, and no amount of smoothing fixes a target
+       that moves instantly. `local` was even computed and then never used.
+       Now the aim point is itself interpolated, so the journey between two
+       worlds is something you watch rather than something you skip. */
+    const a = planets[idx];
+    const b = planets[Math.min(n - 1, idx + 1)];
+    a.holder.getWorldPosition(aimA);
+    b.holder.getWorldPosition(aimB);
 
-    // sit off to one side of whatever we are looking at, and pull back for
-    // the big ones so they still fit the frame
-    const r = state.p < 0.02 ? 1.0 : target.rWorld;
-    const back = Math.max(0.9, r * 4.2);
-    const ang = 0.6 + state.p * 2.2;
+    // ease so the camera lingers on a planet and hurries across the gap
+    /* Sit on a planet for three quarters of its panel, then cross. At 0.55 the
+       camera had already left by the time the panel was centred, so arriving at
+       #jupiter showed Jupiter from a fifth of the way to Saturn. */
+    const travel = local < 0.78
+      ? 0                                   // sitting on this planet
+      : smoothstep((local - 0.78) / 0.22);   // crossing to the next
+    camAim.copy(aimA).lerp(aimB, travel);
+
+    // the Sun is the first stop, so ease off it rather than starting beside it
+    if (state.p < 0.06) {
+      const t0 = smoothstep(state.p / 0.06);
+      camAim.multiplyScalar(t0);
+    }
+
+    const rA = a.rWorld, rB = b.rWorld;
+    const r = state.p < 0.03 ? 1.0 : rA + (rB - rA) * travel;
+
+    /* Distance is solved for the framing we want rather than guessed: to fill
+       a fraction F of the frame height, d = r / tan(F * fov / 2). The earlier
+       version multiplied an offset by 1.5 on two axes and added 0.9 on a third,
+       which compounded to ~14x the radius and left every planet a speck. */
+    const FILL = 0.42;
+    const half = THREE.MathUtils.degToRad(camera.fov) * 0.5;
+    const dist = Math.max(2.2, r / Math.tan(FILL * half));
+
+    // one continuous swing around the system rather than a per-planet reset
+    const ang = 0.55 + state.p * 3.1;
     camPos.set(
-      camAim.x + Math.cos(ang) * back * 1.5,
-      camAim.y + back * 0.55 + 0.15,
-      camAim.z + Math.sin(ang) * back * 1.5 + back * 0.9
+      camAim.x + Math.cos(ang) * dist * 0.82,
+      camAim.y + dist * 0.30,
+      camAim.z + Math.sin(ang) * dist * 0.82 + dist * 0.42
     );
-    camera.position.lerp(camPos, Math.min(1, dt * 3.4));
+    // slower follow while crossing, so the gap reads as distance covered
+    camera.position.lerp(camPos, Math.min(1, dt * (travel > 0 ? 2.4 : 4.0)));
     camera.lookAt(camAim);
   }
 
