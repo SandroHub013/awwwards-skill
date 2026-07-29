@@ -82,7 +82,7 @@ day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
 
 ## Built with it
 
-Six demo sites, each produced by running the method end to end, each scored against the
+Seven demo sites, each produced by running the method end to end, each scored against the
 same rubric with the numbers printed rather than implied:
 
 | | |
@@ -93,12 +93,15 @@ same rubric with the numbers printed rather than implied:
 | [**abyss**](https://sandrohub013.github.io/awwwards-skill/demos/abyss/) | A real-time water column. The dark is the default and the pointer aims the lamp. Four draw calls, zero textures, no assets at all. [Score](docs/demos/abyss/SCORE.md) |
 | [**ichi**](https://sandrohub013.github.io/awwwards-skill/demos/sakura/) | A samurai drawing a sword under cherry blossom, performed by the scroll bar. No model file — a bone hierarchy and a recursion. [Score](docs/demos/sakura/SCORE.md) |
 | [**il sistema solare**](https://sandrohub013.github.io/awwwards-skill/demos/orbit/) | A primary-school lesson: every drawing of the solar system is wrong, and this one says by how much. Real JPL data, in Italian. [Score](docs/demos/orbit/SCORE.md) |
+| [**gamut**](https://sandrohub013.github.io/awwwards-skill/demos/gamut/) | Scroll, and every colour your display cannot emit drains to grey. The 1931 measurements, 31 KB, no libraries. [Score](docs/demos/gamut/SCORE.md) |
 
 None uses stock imagery or placeholder copy. The first two are measured from primary
 sources: a font binary and the USGS catalog. The third is generated footage, which the
 skill would otherwise forbid — so its provenance is the subject of the page rather than a
 line in the footer. The fourth has no assets to source: every frame is arithmetic, and
-the renderer counters are read live on the page rather than typed.
+the renderer counters are read live on the page rather than typed. The last reads the CIE
+colour-matching functions and derives every matrix and percentage it prints from them,
+including the one in its own headline.
 
 ## What you get
 

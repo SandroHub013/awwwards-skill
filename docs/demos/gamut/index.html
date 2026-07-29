@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gamut — the colour your screen doesn't have</title>
+<meta name="description" content="The CIE 1931 chromaticity diagram drawn from the original measurements, with your own display's gamut cut out of it. Scroll and everything your screen cannot emit drains to grey.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="gamut — the colour your screen doesn't have">
+<meta property="og:description" content="Two thirds of what you can see, your display cannot send. This page draws the difference from the 1931 measurements.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/gamut/">
+<link rel="preload" href="./data/ciexyz31_1.csv" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="./color.js">
+<link rel="modulepreload" href="./diagram.js">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f4f2ee'/><path d='M18 84 L52 12 L88 62 Z' fill='none' stroke='%231a1a1c' stroke-width='7'/></svg>">
+</head>
+<body id="top">
+
+<a class="skip" href="#instrument">Skip to the diagram</a>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 07 &middot; colour &middot; no libraries</p>
+  <button class="surround" type="button" data-surround-toggle aria-pressed="false">
+    Surround <b data-surroundname>paper</b>
+  </button>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="intro__lead">
+      <p class="eyebrow">CIE 1931 &middot; measured, not styled</p>
+      <h1 class="title">Colour is bigger than your screen.</h1>
+      <p class="lede">
+        The shape below is not a picture of a display. It is every chromaticity a standard
+        human observer can distinguish, plotted from the colour-matching experiments the CIE
+        ran in <b>1931</b>. Those measurements ship as a 23&nbsp;KB table, and this page reads
+        it rather than quoting it.
+      </p>
+      <p class="lede verdict" data-verdict>
+        This page is asking your browser what your display can do, and how much of the shape
+        below it can actually mix. The answer replaces this line.
+      </p>
+      <p class="cue" data-cue>Scroll to cut</p>
+    </div>
+
+    <nav class="index" aria-label="Sections of this page">
+      <p class="index__label">Contents</p>
+      <ol class="index__list">
+        <li><a href="#cut"><i>01</i> The cut</a></li>
+        <li><a href="#probe"><i>02</i> The edge is a laser</a></li>
+        <li><a href="#gamuts"><i>03</i> Three triangles</a></li>
+        <li><a href="#display"><i>&mdash;</i> What your browser will admit</a></li>
+        <li><a href="#numbers"><i>&mdash;</i> Every number this page is built on</a></li>
+      </ol>
+      <dl class="index__spec">
+        <div><dt>measurements</dt><dd>471 rows, 23 KB</dd></div>
+        <div><dt>libraries</dt><dd>none</dd></div>
+        <div><dt>images, fonts</dt><dd>none</dd></div>
+      </dl>
+    </nav>
+  </section>
+
+  <div class="instrument" id="instrument">
+    <div class="stage">
+      <canvas class="stage__canvas" data-diagram role="img"
+              aria-label="The CIE 1931 chromaticity diagram: a horseshoe of colour with the triangle of the selected display gamut drawn inside it."></canvas>
+      <p class="stage__wait" data-wait>reading 471 measurements&hellip;</p>
+      <figure class="inset" data-inset hidden>
+        <canvas class="inset__canvas" aria-hidden="true"></canvas>
+        <figcaption>before the cut</figcaption>
+      </figure>
+      <div class="hud">
+        <p class="hud__state" data-state>Every colour a human eye can see</p>
+        <p class="hud__num"><span data-cov>&mdash;</span><span class="hud__unit">of the diagram</span></p>
+      </div>
+    </div>
+
+    <div class="flow">
+      <section class="step" id="cut" data-reveal>
+        <p class="step__num">01</p>
+        <h2 class="step__title">The cut</h2>
+        <p class="step__body">
+          A display has three lights in it. Every colour it emits is a mixture of those
+          three, and every mixture of three points lands inside the triangle they make.
+          That is not an engineering limit waiting to be lifted. It is what mixing means.
+        </p>
+        <p class="step__body">
+          Keep scrolling. Everything your display cannot mix drains to flat grey &mdash; not
+          darker, not duller, <b>grey</b>, because there is no honest way to show you what is
+          missing using the thing that is missing it.
+        </p>
+        <p class="step__body">
+          What is left is the triangle: <b data-covxy>&mdash;</b> of the diagram by area in
+          CIE&nbsp;1931 <i>xy</i>, and <b data-covuv>&mdash;</b> in the 1976 <i>u&prime;v&prime;</i>
+          diagram, which stretches the blues and compresses the greens so that equal
+          distances mean something nearer to equal difference.
+        </p>
+        <p class="step__aside">
+          Both are areas on a chart, and nobody sees area. They are the cheapest defensible
+          way to say <i>most of it</i>, which is the part that is true.
+        </p>
+      </section>
+
+      <section class="step" id="probe" data-reveal>
+        <p class="step__num">02</p>
+        <h2 class="step__title">The edge is a laser</h2>
+        <p class="step__body">
+          The outline of the horseshoe is monochromatic light: one wavelength, no mixture.
+          A laser. A sodium street lamp, which is 589&nbsp;nm and almost nothing else. Drag
+          along it and watch what your screen is asked to do.
+        </p>
+
+        <div class="probe">
+          <label class="probe__label" for="nm">Wavelength</label>
+          <input class="probe__range" id="nm" type="range" min="380" max="700" step="1"
+                 value="520" data-nm>
+          <output class="probe__value" for="nm" data-nmout>520 nm</output>
+        </div>
+
+        <dl class="readout">
+          <div>
+            <dt>chromaticity <i>x</i>, <i>y</i></dt>
+            <dd data-xy>&mdash;</dd>
+          </div>
+          <div>
+            <dt>tristimulus <span class="bar">x</span> <span class="bar">y</span> <span class="bar">z</span></dt>
+            <dd data-xyz>&mdash;</dd>
+          </div>
+          <div>
+            <dt>linear <span data-linspace>sRGB</span></dt>
+            <dd data-lin>&mdash;</dd>
+          </div>
+          <div>
+            <dt>sent to the panel, 8-bit</dt>
+            <dd data-clip>&mdash;</dd>
+          </div>
+        </dl>
+
+        <p class="swatchLine">
+          <span class="swatch" data-swatch></span>
+          <span class="swatchLine__cap" data-swatchcap>
+            the substitute, at the wavelength above
+          </span>
+        </p>
+
+        <p class="step__body" data-negline>
+          A negative number is not a dark colour. It is an instruction to <i>remove</i> light
+          that was never added, and no channel can do it. The channel clips to zero and you
+          are handed the nearest mixture instead &mdash; a different colour, under the same name.
+        </p>
+        <p class="step__aside">
+          The swatch is that substitute. This page cannot show you the wavelength itself, and
+          neither can any other page you have ever opened.
+        </p>
+      </section>
+
+      <section class="step" id="gamuts" data-reveal>
+        <p class="step__num">03</p>
+        <h2 class="step__title">Three triangles</h2>
+        <p class="step__body">
+          Switch the cut. The triangle moves; the horseshoe does not.
+        </p>
+
+        <fieldset class="choice" data-choice>
+          <legend class="sr-only">Cut with which gamut</legend>
+          <label class="choice__opt">
+            <input type="radio" name="gamut" value="srgb" checked>
+            <span class="choice__name">sRGB</span>
+            <span class="choice__num" data-cov-srgb>&mdash;</span>
+          </label>
+          <label class="choice__opt">
+            <input type="radio" name="gamut" value="p3">
+            <span class="choice__name">Display P3</span>
+            <span class="choice__num" data-cov-p3>&mdash;</span>
+          </label>
+          <label class="choice__opt">
+            <input type="radio" name="gamut" value="rec2020">
+            <span class="choice__name">Rec. 2020</span>
+            <span class="choice__num" data-cov-rec2020>&mdash;</span>
+          </label>
+        </fieldset>
+
+        <p class="step__body">
+          sRGB is what a web page was permitted to say for twenty-five years. Display P3 is
+          the same construction with red and green pushed outward, shipped on every Apple
+          screen since the 2015 iMac and on most OLED phones since. <b>Rec.&nbsp;2020</b> puts
+          its three corners on the locus itself &mdash; its primaries are monochromatic,
+          630, 532 and 467&nbsp;nm, which is why no consumer display emits them and why its
+          triangle is a specification rather than a screen.
+        </p>
+        <p class="step__aside">
+          The percentages are computed on this page from the same file that draws the
+          horseshoe, not copied from a marketing sheet.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <section class="section" id="display">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Your machine</p>
+      <h2 class="section__title">What your browser will admit</h2>
+    </header>
+
+    <div class="panel" data-reveal>
+      <dl class="specs">
+        <div><dt>reported gamut</dt><dd data-spec-gamut>&mdash;</dd></div>
+        <div><dt>dynamic range</dt><dd data-spec-hdr>&mdash;</dd></div>
+        <div><dt>colour depth</dt><dd data-spec-depth>&mdash;</dd></div>
+        <div><dt>device pixel ratio</dt><dd data-spec-dpr>&mdash;</dd></div>
+        <div><dt>canvas painting in</dt><dd data-spec-paint>&mdash;</dd></div>
+        <div><dt>diagram resolution</dt><dd>800 &times; 900 samples</dd></div>
+      </dl>
+
+      <div class="test">
+        <div class="test__pair">
+          <span class="test__chip test__chip--p3"></span>
+          <span class="test__chip test__chip--srgb"></span>
+        </div>
+        <p class="test__cap">
+          <b>Left:</b> the reddest red in Display P3. <b>Right:</b> the reddest red in sRGB.
+        </p>
+        <p class="test__body">
+          If the two squares match, either your display is sRGB or your browser is not
+          addressing anything wider. If the left one is visibly deeper, your screen has been
+          holding that colour back from every page that never asked for it.
+        </p>
+      </div>
+    </div>
+
+    <div class="cols" data-reveal>
+      <p class="body">
+        None of this is a measurement. The browser repeats what the operating system claims
+        about the panel, and the operating system repeats what the panel claims about itself.
+        Nothing here reads your ICC profile, and no web page can measure a screen: that
+        needs a colorimeter stuck to the glass.
+      </p>
+      <p class="body">
+        The <b>surround</b> switch in the corner is not a theme. A colour's appearance depends
+        on what surrounds it &mdash; the same patch reads lighter against graphite and duller
+        against paper &mdash; which is why ISO&nbsp;3664 specifies the room a print is judged
+        in before it says anything about the print. Choosing a background is a colorimetric
+        decision before it is a stylistic one.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="numbers">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">The inputs</p>
+      <h2 class="section__title">Every number this page is built on</h2>
+      <p class="section__sub">
+        Three primaries and a white point per gamut, straight from the specifications. The
+        matrices are derived from them in <code>color.js</code>, because a pasted matrix
+        cannot be checked against the figures printed here.
+      </p>
+    </header>
+
+    <div class="table-wrap" data-reveal>
+      <table class="data">
+        <caption class="sr-only">Primaries and white point of each gamut, and the share of the CIE 1931 locus each covers</caption>
+        <thead>
+          <tr>
+            <th scope="col">Gamut</th>
+            <th scope="col">Red <i>x, y</i></th>
+            <th scope="col">Green <i>x, y</i></th>
+            <th scope="col">Blue <i>x, y</i></th>
+            <th scope="col">White</th>
+            <th scope="col">of locus, <i>xy</i></th>
+            <th scope="col">of locus, <i>u&prime;v&prime;</i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">sRGB</th>
+            <td>0.640, 0.330</td><td>0.300, 0.600</td><td>0.150, 0.060</td><td>D65</td>
+            <td data-tab-srgb-xy>&mdash;</td><td data-tab-srgb-uv>&mdash;</td>
+          </tr>
+          <tr>
+            <th scope="row">Display P3</th>
+            <td>0.680, 0.320</td><td>0.265, 0.690</td><td>0.150, 0.060</td><td>D65</td>
+            <td data-tab-p3-xy>&mdash;</td><td data-tab-p3-uv>&mdash;</td>
+          </tr>
+          <tr>
+            <th scope="row">Rec. 2020</th>
+            <td>0.708, 0.292</td><td>0.170, 0.797</td><td>0.131, 0.046</td><td>D65</td>
+            <td data-tab-rec2020-xy>&mdash;</td><td data-tab-rec2020-uv>&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="creds" data-reveal>
+      <div>
+        <dt>Observer</dt>
+        <dd>CIE 1931 2&deg; standard observer, <i>x&#772; y&#772; z&#772;</i> at 1&nbsp;nm, 360&ndash;830&nbsp;nm
+          &mdash; <a href="http://cvrl.ioo.ucl.ac.uk/database/data/cmfs/ciexyz31_1.csv">cvrl.org</a>,
+          retrieved 29 July 2026, shipped unmodified in <code>data/</code></dd>
+      </div>
+      <div><dt>sRGB</dt><dd>IEC 61966-2-1, primaries of ITU-R BT.709</dd></div>
+      <div><dt>Display P3</dt><dd>SMPTE ST 431-2 primaries, D65 white, sRGB transfer function</dd></div>
+      <div><dt>Rec. 2020</dt><dd>ITU-R BT.2020</dd></div>
+      <div><dt>White</dt><dd>D65 at <i>x</i>&nbsp;0.3127, <i>y</i>&nbsp;0.3290</dd></div>
+    </dl>
+  </section>
+
+  <section class="section colophon" id="colophon">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">What this page is not</h2>
+    </header>
+
+    <div class="colophon__grid" data-reveal>
+      <div class="colophon__note">
+        <p>
+          <b>The horseshoe is a lie about itself.</b> It is drawn in your display's own
+          colour space, so every chromaticity outside your gamut was already substituted
+          before it reached your eye. A picture of the colours you cannot see, made of the
+          colours you can. That is not a bug to fix; it is the subject.
+        </p>
+        <p>
+          <b>The standard observer is seventeen people.</b> Wright measured ten and Guild
+          measured seven, in London, in the 1920s, and the average of those two experiments
+          has defined colour for industry ever since. It is a good model. It is not you, and
+          if you are one of the roughly 8% of men with a colour vision deficiency it is
+          further from you still.
+        </p>
+        <p>
+          <b>No measurement happens here.</b> The panel above reports claims, not readings.
+          A calibrated display and an uncalibrated one make the same claims to a browser.
+        </p>
+      </div>
+      <div class="colophon__note">
+        <p>
+          <b>Built with nothing.</b> No framework, no animation library, no webfont, no
+          image. One HTML file, one stylesheet, three modules, and the 23&nbsp;KB of 1931
+          measurements. The colour field is <b>334,292</b> chromaticities converted once;
+          scrolling moves a clipping path across it and recomputes nothing.
+        </p>
+        <p>
+          <b>The page is deliberately grey.</b> Nothing on it is coloured except the thing
+          being measured, so that no border, heading or hover state competes with the only
+          image that carries information.
+        </p>
+        <a class="cta" href="../../">How this site was built &#8594;</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Colour-matching data &copy; Colour &amp; Vision Research Laboratory, UCL. A demonstration, not a calibration tool.</p>
+  <p><a href="#top">Back to the top</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
