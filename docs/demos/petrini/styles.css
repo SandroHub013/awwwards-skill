@@ -1,0 +1,262 @@
+/* petrini — a specimen book that repaints itself.
+   Tokens and the first screen live inline in index.html; this file styles
+   everything from the thesis down, plus the four theme instantiations.
+
+   One rule governs the whole stylesheet: no component owns a colour. Every
+   surface, ink and accent reads the six root custom properties, which is what
+   lets one scroll gesture repaint the header, the rail, the focus ring, the
+   text selection and the scrollbar in a single 1.2s move. */
+
+/* ─── THEMES ──────────────────────────────────────────────────────────────
+   Same six roles, four times. Declared on the chapter so the identities paint
+   with JS disabled; app.js copies the active set up to :root for the chrome.
+   Authored in OKLCH so each ramp stays perceptually even and the hue does not
+   drift when lightness moves (04-color-and-layout §Build roles, not a palette). */
+
+[data-theme="biobox"]{
+  --bg:oklch(93.5% .017 88); --surf:oklch(89% .024 90); --ink:oklch(27% .014 150);
+  --ink-muted:oklch(46% .022 152); --line:oklch(80% .028 130); --accent:oklch(48% .11 148);
+  --display-family:var(--sans); --display-weight:700; --display-track:-.045em;
+}
+[data-theme="bussola"]{
+  --bg:oklch(88% .036 79); --surf:oklch(83% .045 74); --ink:oklch(19% .012 40);
+  --ink-muted:oklch(40% .028 38); --line:oklch(72% .05 60); --accent:oklch(48% .18 29);
+  --display-family:var(--serif); --display-weight:700; --display-track:-.03em;
+}
+[data-theme="borromeo"]{
+  --bg:oklch(94% .02 88); --surf:oklch(90% .03 86); --ink:oklch(25% .026 55);
+  --ink-muted:oklch(45% .034 58); --line:oklch(78% .07 82); --accent:oklch(44% .17 28);
+  /* Two golds, and the split is the point. --accent-2 is the palette's actual
+     gold, used for samples and ornament. --accent-2-ink is the same hue dropped
+     to L .52, because real gold on linen measured 1.96:1 as display text and
+     large text needs 3:1. Print gold is a metallic that catches light; a screen
+     has to earn the same presence with a darker ochre. */
+  --accent-2:oklch(74% .12 85); --accent-2-ink:oklch(52% .13 82);
+  --display-family:var(--serif); --display-weight:400; --display-track:-.02em;
+}
+[data-theme="fallimenti"]{
+  --bg:oklch(17% .012 260); --surf:oklch(23% .018 258); --ink:oklch(95% .012 120);
+  --ink-muted:oklch(72% .02 122); --line:oklch(34% .03 200); --accent:oklch(86% .21 128);
+  --accent-2:oklch(70% .18 55);
+  --display-family:var(--sans); --display-weight:600; --display-track:-.02em;
+}
+/* The dark identity is the one place a light-on-dark scrim is needed for the
+   grain, and the one place the browser UI has to be told. */
+[data-theme="fallimenti"] .lockup{ -webkit-text-stroke:0 }
+
+/* ─── SURFACE ─────────────────────────────────────────────────────────────
+   One static turbulence tile at 3.5% over flat fills, never redrawn per frame
+   (04-color-and-layout §Making color feel expensive). Fixed, so it does not
+   scroll with the content and never becomes a compositing cost. */
+body::after{
+  content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--surf)}
+::-webkit-scrollbar-thumb{background:var(--accent)}
+html{scrollbar-color:var(--accent) var(--surf);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em;
+  text-decoration-color:var(--accent);transition:color var(--dur-fast) var(--ease-out)}
+a:hover{color:var(--accent)}
+
+.head{transition:color var(--dur-scene) var(--ease-inout)}
+.head__meta{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
+
+.hero__meta{margin-top:var(--space-xl);font-family:var(--mono);font-size:var(--step--1);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+/* The arrow points at the rail. On a phone the rail is a bottom bar, so the
+   arrow would be pointing at nothing — the words carry it alone there. */
+@media (max-width:720px){ .hero__arrow{display:none} }
+
+/* ─── THE RULE ────────────────────────────────────────────────────────────
+   The anchor of every beat: one hairline that draws from the left edge. It is
+   the only element on the page that moves for its own sake, and it earns it by
+   being the thing that signals "a new system starts here".
+
+   Both the rule and the reveals below are gated on .js — the class is set by a
+   one-line inline script, so a page without JS ships everything visible rather
+   than everything at opacity 0. */
+.rule{
+  border:0;height:2px;background:var(--accent);margin-block:var(--space-l);
+  transform-origin:0 50%;
+}
+.rule--chapter{margin-block:clamp(1.5rem,3.5vw,2.75rem)}
+.js .rule[data-anchor]{transform:scaleX(0)}
+.js .is-drawn .rule[data-anchor]{transform:scaleX(1);
+  transition:transform var(--dur-slow) var(--ease-out)}
+
+/* ─── REVEAL ──────────────────────────────────────────────────────────────
+   One pattern, everywhere, once. 20px and 0.45s — anything further or slower
+   reads as a template (05-motion §The scroll-reveal baseline). */
+.js [data-reveal]{opacity:0;transform:translate3d(0,20px,0)}
+.js .is-in[data-reveal],.js .is-in [data-reveal]{opacity:1;transform:none;
+  transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out)}
+.js .is-in [data-reveal]:nth-child(2){transition-delay:.07s}
+.js .is-in [data-reveal]:nth-child(3){transition-delay:.14s}
+
+/* ─── BEAT 1 · THESIS ─────────────────────────────────────────────────────── */
+.thesis{width:var(--page);margin-inline:auto;padding-block:var(--space-3xl)}
+.thesis__title{font-family:var(--serif);font-weight:400;font-size:var(--step-2);
+  line-height:1.12;letter-spacing:-.02em;max-width:34ch;margin-top:var(--space-s);
+  text-wrap:balance}
+.thesis__cols{display:grid;gap:var(--space-l) clamp(2rem,5vw,5rem);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr))}
+.thesis__cols p{max-width:52ch;color:var(--ink-muted)}
+
+/* ─── BEATS 2-5 · CHAPTERS ────────────────────────────────────────────────
+   Full-bleed is the deliberate grid break: the identity has to own the whole
+   viewport or the takeover is just a coloured card. Inner content returns to
+   the same 1280px measure as every other section. */
+.chapter{
+  background:var(--bg);color:var(--ink);
+  min-height:100svh;display:flex;align-items:center;
+  padding-block:clamp(4.5rem,12vh,8rem);
+  scroll-margin-top:0;
+}
+.chapter__inner{width:var(--page);margin-inline:auto}
+.chapter__idx{font-family:var(--mono);font-size:var(--step--1);letter-spacing:.12em}
+.chapter__n{color:var(--accent);font-weight:700}
+.chapter__sector{margin-top:.55rem;font-family:var(--mono);font-size:.72rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted)}
+
+/* The lockup is the project name set as type, not as artwork — the substitution
+   the colophon declares. Edge-to-edge fluid sizing locks it to both margins. */
+.lockup{
+  font-family:var(--display-family);font-weight:var(--display-weight);
+  font-size:clamp(2.7rem,1rem + 8vw,9.5rem);line-height:.9;
+  letter-spacing:var(--display-track);margin-top:.35em;margin-left:-.05em;
+  text-wrap:balance;font-synthesis:none;
+}
+.lockup--two span{color:var(--accent-2-ink,var(--accent))}
+.lockup--wide{font-size:clamp(2.4rem,1rem + 6.6vw,8rem)}
+
+.chapter__cols{
+  display:grid;gap:var(--space-l) clamp(2rem,6vw,6rem);align-items:start;
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+}
+.chapter__note p{max-width:46ch;color:var(--ink-muted)}
+.chapter__note p + p{margin-top:var(--space-s)}
+
+/* ─── SPECIMEN TABLE ──────────────────────────────────────────────────────── */
+.spec{border-top:1px solid var(--line);font-size:var(--step--1)}
+.spec__row{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:var(--space-s);
+  padding-block:.85rem;border-bottom:1px solid var(--line);align-items:center}
+.spec dt{font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-muted);font-size:.7rem}
+.spec dd{font-family:var(--mono);letter-spacing:.02em}
+.swatches{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem 1.1rem}
+.swatches li{display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+/* Border, not shadow. It is mixed from the theme's own ink rather than --line:
+   on the dark identity a --line border left the "Black" swatch invisible, and a
+   swatch you cannot see is a broken specimen. 40% ink reads on all four. */
+.swatches i{inline-size:1.15rem;block-size:1.15rem;background:var(--sw);
+  border:1px solid color-mix(in oklch,var(--ink) 40%,transparent);flex:none}
+
+/* ─── BEAT 6 · COLOPHON ───────────────────────────────────────────────────── */
+.colophon{width:var(--page);margin-inline:auto;padding-block:var(--space-3xl)}
+.colophon__title{font-family:var(--serif);font-weight:400;font-size:var(--step-2);
+  line-height:1.14;letter-spacing:-.02em;margin-top:var(--space-s);max-width:30ch}
+.colophon__cols{display:grid;gap:var(--space-l) clamp(2rem,5vw,4.5rem);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr))}
+.colophon h3{font-family:var(--mono);font-size:.72rem;font-weight:400;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:.6rem}
+.colophon p{color:var(--ink-muted);max-width:44ch}
+
+/* ─── RAIL ────────────────────────────────────────────────────────────────
+   Desktop: a fixed index on the right. It is the orientation device as well as
+   the jump control, so the active row stays legible at all four themes. */
+.rail{position:fixed;z-index:70;right:clamp(.9rem,2vw,1.8rem);top:50%;
+  transform:translateY(-50%)}
+.rail__list{list-style:none;display:flex;flex-direction:column;gap:.15rem;
+  align-items:flex-end}
+.rail__dot{
+  appearance:none;background:none;border:0;cursor:pointer;color:var(--ink-muted);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;
+  display:flex;align-items:center;gap:.6rem;justify-content:flex-end;
+  min-height:44px;padding:0 .35rem;
+  transition:color var(--dur-fast) var(--ease-out);
+}
+.rail__n{position:relative;padding-bottom:2px}
+/* The active marker is a rule under the number, not a filled circle: it matches
+   the one motion idiom the rest of the page uses. */
+.rail__n::after{content:"";position:absolute;inset-inline:0;bottom:0;height:1px;
+  background:var(--accent);transform:scaleX(0);transform-origin:100% 50%;
+  transition:transform var(--dur-base) var(--ease-out)}
+.rail__label{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;
+  transition:max-width var(--dur-base) var(--ease-inout),opacity var(--dur-fast) linear}
+.rail__dot:hover,.rail__dot:focus-visible{color:var(--ink)}
+.rail__dot:hover .rail__label,.rail__dot:focus-visible .rail__label{max-width:12rem;opacity:1}
+.rail__dot[aria-current="true"]{color:var(--ink)}
+.rail__dot[aria-current="true"] .rail__n::after{transform:scaleX(1)}
+/* The active state is the rule under the number, not an expanded label. A
+   persistent label was measured overlapping the specimen table at 1440 — and
+   the rail sits over content, so it may never claim horizontal space it has
+   not been given. */
+
+/* ─── FOOT ────────────────────────────────────────────────────────────────── */
+.foot{width:var(--page);margin-inline:auto;padding-block:var(--space-l) var(--space-xl);
+  border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.5rem 2rem;
+  justify-content:space-between;font-family:var(--mono);font-size:var(--step--1);
+  color:var(--ink-muted)}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────────
+   Designed, not shrunk (13-responsive). The rail becomes a bottom bar with the
+   labels always on — there is no hover on touch, so nothing may depend on it. */
+@media (max-width:900px){
+  .chapter__cols{grid-template-columns:minmax(0,1fr)}
+  .spec{margin-top:var(--space-s)}
+}
+@media (max-width:720px){
+  .rail{top:auto;bottom:0;right:0;left:0;transform:none;
+    background:color-mix(in oklch,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-top:1px solid var(--line);
+    padding:.3rem max(var(--gutter),env(safe-area-inset-left)) max(.3rem,env(safe-area-inset-bottom))}
+  .rail__list{flex-direction:row;justify-content:space-between;gap:.25rem}
+  .rail__dot{flex-direction:column;gap:.15rem;justify-content:center;min-width:44px;
+    font-size:.62rem;letter-spacing:.06em;text-align:center}
+  /* 11ch is the longest rail label. Held on one line so the four cells share a
+     baseline — wrapping made the bar look like four different components. */
+  .rail__label{max-width:none;opacity:1;overflow:visible;
+    max-inline-size:11ch;white-space:nowrap;line-height:1.15}
+  .rail__dot[aria-current="true"]{color:var(--accent)}
+  .chapter{padding-block:clamp(4rem,10vh,6rem) 7.5rem}
+  .foot{padding-bottom:7.5rem}
+  /* The studio meta line wrapped to two lines and pushed the hero off the first
+     screen. It is orientation for a desktop juror, not information — on a phone
+     the screen is better spent on the headline. */
+  .head__meta{display:none}
+}
+/* Chrome and footer links are 20px and 15px line boxes — fine for a mouse, under
+   the 44px floor for a thumb. Measured, then given the height rather than
+   assumed to be exempt: the WCAG 2.5.8 spacing exception covers links inside a
+   paragraph, not standalone navigation. */
+@media (pointer:coarse){
+  .head__back,.foot a{display:inline-flex;align-items:center;min-height:44px}
+}
+/* 360px is the floor where four labels still fit without truncating. Above it
+   the bar names the identities; below it the numbers stand alone, which is why
+   they are the thing the active state marks. */
+@media (max-width:360px){
+  .rail__label{display:none}
+  .rail__dot{font-size:.72rem}
+}
+
+/* ─── REDUCED MOTION ──────────────────────────────────────────────────────
+   Not a dead page: the takeover still happens, at 0.15s, because the identity
+   change is information. What is removed is travel — no rule scaling, no
+   reveal translation, no smooth scroll (05-motion §Reduced motion). */
+@media (prefers-reduced-motion:reduce){
+  :root{--dur-scene:.15s;--dur-slow:.15s;--dur-base:.15s}
+  /* Reveals are dropped entirely, not shortened. Measured with
+     --force-prefers-reduced-motion: jumping straight to §03 left every element
+     in the skipped sections at opacity 0, because their observer had never
+     fired. A reader who does not want motion should not have their content
+     gated behind a scroll event at all. */
+  .js [data-reveal]{opacity:1;transform:none;transition:none}
+  .js .rule[data-anchor],.js .is-drawn .rule[data-anchor]{transform:none}
+  .rail__label{transition:none}
+}
