@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ichi — one cut, at your speed</title>
+<meta name="description" content="A samurai drawing a sword, performed by the scroll bar. Real-time Three.js, no model file and no textures — the figure is a bone hierarchy and the grove is a recursion.">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="ichi — one cut, at your speed">
+<meta property="og:description" content="Iai is a single motion. Here it is a single scroll, and it moves only while you do.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/sakura/">
+
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f2e7e1'/><circle cx='50' cy='50' r='15' fill='%23e8a6b8'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#read">Skip to the reading</a>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 05 &middot; real-time &middot; Three.js</p>
+</header>
+
+<aside class="hud" data-hud aria-hidden="true">
+  <p class="hud__stage" data-stage>Kamae</p>
+  <div class="hud__rule"><i data-rule></i></div>
+</aside>
+
+<main>
+
+  <section class="scene" data-scene>
+    <div class="panel panel--open">
+      <p class="eyebrow">Iaijutsu &middot; one motion</p>
+      <h1 class="title">One cut,<br>at your speed.</h1>
+      <p class="lede">
+        Iai is the art of drawing and cutting as a single action. It is not measured in
+        how fast it looks &mdash; it is measured in whether anything was wasted. This page
+        performs one, and it only moves while you do.
+      </p>
+      <p class="cue" data-cue>Scroll to draw</p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">&#19968; &middot; Kamae</p>
+      <h2 class="beat">The stance costs nothing and decides everything</h2>
+      <p class="body">
+        Before anything moves, the weight settles and the left hand finds the mouth of the
+        scabbard. Nothing here is fast. The whole technique is built so that the fast part
+        can be short.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">&#20108; &middot; Nukitsuke</p>
+      <h2 class="beat">The draw is the cut</h2>
+      <p class="body">
+        There is no separate moment where the blade comes out and then a second one where
+        it is used. The blade leaves the saya already travelling along the line it will
+        finish on. That is the whole idea, and it is why the motion has no corner in it.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="mark">&#19977; &middot; Zanshin</p>
+      <h2 class="beat">The stillness afterwards is part of it</h2>
+      <p class="body">
+        Zanshin is the held awareness after the technique is finished &mdash; not a pose
+        for the audience but the part where you are still paying attention. In this page it
+        is the last stretch of scroll, where almost nothing changes and the petals keep
+        falling.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="read">
+    <header class="section__head">
+      <p class="eyebrow">How it is built</p>
+      <h2 class="section__title">A rig, not a model file</h2>
+    </header>
+
+    <div class="cols">
+      <div class="col">
+        <p>
+          There is no <code>.glb</code> here. The figure is a hierarchy of empty transforms
+          &mdash; hips, spine, neck, two shoulders, two elbows, two hips, two knees &mdash;
+          with tapered boxes hung off them, exactly the way a real rig works, minus the
+          file. Five poses are authored as joint angles and the scroll interpolates between
+          them with a smootherstep, so the draw has no corner where a keyframe sits.
+        </p>
+        <p>
+          The silhouette does the rest. Ukiyo-e carries a figure on its outline, and an
+          outline needs a fraction of the geometry that a lit character does: what has to
+          be right is the proportion &mdash; the topknot, the sleeve, the flare of the
+          hakama, the length of the blade.
+        </p>
+      </div>
+      <div class="col">
+        <p>
+          The grove is a recursion. One function grows a branch, splits it two or three
+          ways, and stops after five levels; the blossom is a point at every tip. Depth is
+          not lighting, it is <i>air</i>: near trees are drawn in ink, far ones in a wash,
+          and fog fades the furthest into the paper.
+        </p>
+        <p>
+          Everything on this page is a line, a point or a flat-coloured box. No lights, no
+          shadow maps, no post-processing, no texture files &mdash; which is why it starts
+          the moment the script does and holds its frame rate on a phone.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="cost">
+    <header class="section__head">
+      <p class="eyebrow">Measured, live</p>
+      <h2 class="section__title">What the frame costs</h2>
+      <p class="section__sub">Read off the renderer while you look at it.</p>
+    </header>
+
+    <dl class="counts" data-counts>
+      <div><dt>Draw calls</dt><dd data-c="calls">&mdash;</dd></div>
+      <div><dt>Line segments</dt><dd data-c="lines">&mdash;</dd></div>
+      <div><dt>Points</dt><dd data-c="points">&mdash;</dd></div>
+      <div><dt>Triangles</dt><dd data-c="tris">&mdash;</dd></div>
+      <div><dt>Textures</dt><dd data-c="textures">&mdash;</dd></div>
+      <div><dt>Frame</dt><dd data-c="fps">&mdash;</dd></div>
+    </dl>
+
+    <p class="note">
+      The triangle count is low because almost nothing here is a surface. A grove of
+      cherry trees drawn as lines is cheaper than one lit sphere, and it looks more like a
+      print, which is the point rather than the excuse.
+    </p>
+  </section>
+
+  <section class="section colophon" id="colophon">
+    <header class="section__head">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="section__title">Credits, and what this is not</h2>
+    </header>
+
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Figure</dt><dd>Bone hierarchy built in code; 5 authored poses</dd></div>
+        <div><dt>Grove</dt><dd>Recursive branching, seeded so it is the same for everyone</dd></div>
+        <div><dt>Assets</dt><dd><b>None.</b> No models, no textures, no images</dd></div>
+        <div><dt>Renderer</dt><dd>Three.js r185, flat colour, fog for depth</dd></div>
+        <div><dt>Type</dt><dd>System stacks only &mdash; no webfont</dd></div>
+      </dl>
+
+      <div class="colophon__note">
+        <p>
+          This is a drawing of a technique, not a record of one. The poses were authored by
+          eye against the shape iai is described as having, by someone who does not
+          practise it &mdash; so treat the sequence as an illustration and not as
+          instruction.
+        </p>
+        <a class="cta" href="../../">Read the method &#8594;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Real-time, computed in your browser. A demo, not a record of a martial art.</p>
+  <p><a href="#top">Back to the top</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
