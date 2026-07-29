@@ -43,7 +43,7 @@ five runs for FCP/LCP.
 | Scene clip 1080p AV1 | < 1.5MB | **0.51–1.10 MB** |
 | Scene clip 1080p H.264 | — | **1.09–1.56 MB** |
 | Connector 1080p AV1 | — | **0.39–0.68 MB** |
-| Mobile clip 720p H.264 | — | **0.51–0.86 MB** |
+| Mobile clip 720p H.264 | — | **0.38–0.84 MB** |
 | Poster AVIF | < 150KB | **5.8–12.3KB** |
 | Console errors (desktop + mobile drives) | 0 | **0** |
 

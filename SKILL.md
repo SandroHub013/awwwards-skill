@@ -57,7 +57,8 @@ quieter. Read `references/05-motion.md` §Signature moment.
 Pick the stack from the decision matrix, install the scroll spine, then build sections.
 Read `references/06-stack.md`, `references/07-scroll.md`, and — only if the concept needs
 3D — `references/08-webgl.md`; if the concept is video-led (reels, post-production),
-`references/17-video.md`.
+`references/17-video.md`; if the concept is a scroll-driven camera flight,
+`references/19-scroll-scrub.md`.
 Starter code: `assets/templates/`.
 
 ### Phase 4 — Craft pass
@@ -114,6 +115,7 @@ These are hard rules. Violating any one of them caps the site below 7.
 | `references/16-submission.md` | Phase 7. Submission playbook and timing |
 | `references/17-video.md` | Phase 3, video-led concepts. Encoding, HLS, previews, custom player |
 | `references/18-deepdive.md` | Phase 0, or on request. Dissect an awarded site into a reusable idea card |
+| `references/19-scroll-scrub.md` | Phase 2-3. Scroll-scrubbed camera flight, when the film is the concept |
 
 ## Reviewing an existing site
 

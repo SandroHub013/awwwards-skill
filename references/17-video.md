@@ -166,7 +166,8 @@ not in the repo.
 - WebGL video texture distortion when a plain MP4 plays the same concept — GPU cost
   without a reason (see `references/08-webgl.md` for when the texture IS the reason).
 - Scroll-jacked scrubbing: the wheel fights the user to advance a film. If the concept is
-  "scroll drives the edit", keep native scroll position and map, never hijack.
+  "scroll drives the edit", keep native scroll position and map, never hijack — the
+  conforming pattern is `references/19-scroll-scrub.md`.
 - `preload="auto"` on twenty cards: the browser cancels most of it and you pay INP for
   the contention.
 - Player chrome that auto-hides and takes the sound toggle with it.
