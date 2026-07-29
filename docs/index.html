@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>awwwards skill — build websites to jury standard</title>
-<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and seven demo sites built with it.">
+<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 18 reference guides, a runnable browser audit and eight demo sites built with it.">
 <meta name="theme-color" content="#0b0b0d">
 <link rel="canonical" href="https://sandrohub013.github.io/awwwards-skill/">
 <meta property="og:type" content="website">
@@ -94,13 +94,14 @@
   <section class="section" id="demos">
     <header class="section__head" data-reveal>
       <p class="eyebrow">Built with it</p>
-      <h2 class="section__title">Seven sites, no stock anything</h2>
+      <h2 class="section__title">Eight sites, no stock anything</h2>
       <p class="section__sub">Each was produced by running the method in this repo end to
         end, and each is scored against the same rubric with the numbers published rather
         than implied. Three are built on primary sources &mdash; a font binary, a public
         earthquake catalog, and the 1931 measurements that define colour. One is generated
-        footage and says so in its headline rather than its footer. The rest have no assets
-        at all: they compute every frame while you watch.</p>
+        footage and says so in its headline rather than its footer. One derives its whole
+        geometry from the two setting-out rules a fifteenth-century site actually used. The
+        rest have no assets at all: they compute every frame while you watch.</p>
     </header>
 
     <ul class="demos">
@@ -248,6 +249,27 @@
               it lands on 33.5% because that is what the polygon says.</p>
             <p class="demo__meta">
               <span>Instrument</span><span>31 KB, 6 requests</span><span>CIE 1931 data</span>
+            </p>
+          </div>
+        </a>
+      </li>
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/cupola/">
+          <figure class="demo__shot">
+            <img src="./media/demo-cupola.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The cupola demo: Brunelleschi's dome in terracotta with white marble
+                      ribs and its lantern, standing over the roofs of Florence beside
+                      Giotto's campanile.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">08 &middot; architecture &middot; Three.js</p>
+            <h3 class="demo__title">cupola</h3>
+            <p class="demo__line">Nobody knew how to close a hole 45.5&nbsp;m wide, so scroll
+              lays the courses that did &mdash; the profile from the <i>quinto acuto</i> rule,
+              the beds on cones rather than level, the herringbone computed per pixel.</p>
+            <p class="demo__meta">
+              <span>Architectural</span><span>5 draw calls</span><span>zero assets</span>
             </p>
           </div>
         </a>

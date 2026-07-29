@@ -82,7 +82,7 @@ day** Site of the Day · **> 7** Developer Award, re-scored by a developer jury.
 
 ## Built with it
 
-Seven demo sites, each produced by running the method end to end, each scored against the
+Eight demo sites, each produced by running the method end to end, each scored against the
 same rubric with the numbers printed rather than implied:
 
 | | |
@@ -94,6 +94,7 @@ same rubric with the numbers printed rather than implied:
 | [**ichi**](https://sandrohub013.github.io/awwwards-skill/demos/sakura/) | A samurai drawing a sword under cherry blossom, performed by the scroll bar. No model file — a bone hierarchy and a recursion. [Score](docs/demos/sakura/SCORE.md) |
 | [**il sistema solare**](https://sandrohub013.github.io/awwwards-skill/demos/orbit/) | A primary-school lesson: every drawing of the solar system is wrong, and this one says by how much. Real JPL data, in Italian. [Score](docs/demos/orbit/SCORE.md) |
 | [**gamut**](https://sandrohub013.github.io/awwwards-skill/demos/gamut/) | Scroll, and every colour your display cannot emit drains to grey. The 1931 measurements, 31 KB, no libraries. [Score](docs/demos/gamut/SCORE.md) |
+| [**cupola**](https://sandrohub013.github.io/awwwards-skill/demos/cupola/) | Brunelleschi's dome, laid one course at a time by the scroll bar — the *quinto acuto* profile, beds on cones, herringbone computed per pixel. [Score](docs/demos/cupola/SCORE.md) |
 
 None uses stock imagery or placeholder copy. The first two are measured from primary
 sources: a font binary and the USGS catalog. The third is generated footage, which the
@@ -101,7 +102,8 @@ skill would otherwise forbid — so its provenance is the subject of the page ra
 line in the footer. The fourth has no assets to source: every frame is arithmetic, and
 the renderer counters are read live on the page rather than typed. The last reads the CIE
 colour-matching functions and derives every matrix and percentage it prints from them,
-including the one in its own headline.
+including the one in its own headline. The last builds its geometry from the rules the
+masons set out with, and prints the numbers it chose separately from the ones it was given.
 
 ## What you get
 
