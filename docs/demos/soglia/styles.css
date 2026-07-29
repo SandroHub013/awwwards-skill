@@ -34,6 +34,25 @@
 @keyframes wheel{0%{opacity:0;transform:translateX(-50%) translateY(0)}40%{opacity:1}
   100%{opacity:0;transform:translateX(-50%) translateY(11px)}}
 
+/* ── autoplay toggle ────────────────────────────────────────────── */
+.auto{position:absolute;right:clamp(14px,2.4vw,30px);bottom:26px;z-index:50;
+  width:44px;height:44px;border-radius:50%;cursor:pointer;
+  border:1.5px solid color-mix(in srgb,var(--terra) 45%,transparent);
+  background:color-mix(in srgb,var(--dawn) 82%,transparent);backdrop-filter:blur(6px);
+  color:var(--terra);display:grid;place-items:center;
+  transition:background .25s,transform .2s}
+.auto:hover{background:var(--dawn);transform:scale(1.06)}
+.auto:focus-visible{outline:2px solid var(--terra);outline-offset:3px}
+.auto svg{width:16px;height:16px;grid-area:1/1}
+.auto[aria-pressed="true"] .auto__play{display:none}
+.auto[aria-pressed="false"] .auto__pause{display:none}
+@media (hover:none) and (pointer:coarse){
+  .auto{bottom:calc(20px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  .auto{display:none}
+}
+
 /* ── copy links ─────────────────────────────────────────────────── */
 .copy a{color:var(--terra);pointer-events:auto}
 

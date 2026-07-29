@@ -17,19 +17,19 @@ const CROSSFADE = 0.12;                // seam dissolve width, in vh
 // A connector's still is the NEXT scene's poster: under reduced motion the
 // stills alone must tell the journey, so the dissolve walks scene to scene.
 const SEGMENTS = [
-  { id: "s0-porta",   kind: "dive", w: DIVE_W, still: "s0-porta",
+  { id: "s0-porta",   kind: "dive", w: DIVE_W, secs: 7.0, still: "s0-porta",
     alt: "A Tuscan town gate at dawn, cypresses along a dirt road, the arch open." },
-  { id: "c0-arco",    kind: "conn", w: CONN_W, still: "s1-strada",
+  { id: "c0-arco",    kind: "conn", w: CONN_W, secs: 3.5, still: "s1-strada",
     alt: "The main street seen through the gate arch, laundry lines across it." },
-  { id: "s1-strada",  kind: "dive", w: DIVE_W, still: "s1-strada",
+  { id: "s1-strada",  kind: "dive", w: DIVE_W, secs: 7.0, still: "s1-strada",
     alt: "The main street climbing between plastered houses, laundry overhead." },
-  { id: "c1-vicolo",  kind: "conn", w: CONN_W, still: "s2-piazza",
+  { id: "c1-vicolo",  kind: "conn", w: CONN_W, secs: 3.5, still: "s2-piazza",
     alt: "The square and the church facade framed by a dark passage." },
-  { id: "s2-piazza",  kind: "dive", w: DIVE_W, still: "s2-piazza",
+  { id: "s2-piazza",  kind: "dive", w: DIVE_W, secs: 7.5, still: "s2-piazza",
     alt: "The square: church, fountain, café tables, a lantern over one door." },
-  { id: "c2-varco",   kind: "conn", w: CONN_W, still: "s3-bottega",
+  { id: "c2-varco",   kind: "conn", w: CONN_W, secs: 3.5, still: "s3-bottega",
     alt: "The workshop doorway, a lit workbench beyond it." },
-  { id: "s3-bottega", kind: "dive", w: DIVE_W, still: "s3-bottega",
+  { id: "s3-bottega", kind: "dive", w: DIVE_W, secs: 7.0, still: "s3-bottega",
     alt: "The workshop: a half-made chair on the bench, dust in the light shaft." },
 ];
 const DIVES = SEGMENTS.filter((s) => s.kind === "dive");
@@ -97,7 +97,14 @@ function loadClip(s) {
       v.muted = true; v.playsInline = true; v.preload = "auto";
       v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
       v.src = URL.createObjectURL(blob);
-      v.addEventListener("loadedmetadata", () => { s.ready = true; read(); });
+      v.addEventListener("loadedmetadata", () => {
+        // start at the CURRENT scroll position, not frame 0 — a clip that
+        // arrives mid-segment must never replay frames the user already saw
+        s.cur = s.target;
+        try { v.currentTime = clamp(s.cur, 0, 0.999) * (v.duration || 1); } catch {}
+        s.ready = true;
+        read();
+      });
       // reveal only once a real frame has painted — on iOS a seeked-but-never
       // played muted video stays blank
       v.addEventListener("seeked", () => s.el.classList.add("has-clip"), { once: true });
@@ -127,13 +134,14 @@ function jumpTo(i) {
 dots.forEach((d, i) => d.addEventListener("click", () => jumpTo(i)));
 
 // ── read: scroll position → targets, opacities, chrome. Runs on scroll+rAF ──
-let ticking = false, activeIndex = -1;
+let ticking = false, activeIndex = -1, currentSeg = null;
 function read() {
   const y = window.scrollY || window.pageYOffset;
   const fade = CROSSFADE * vh;
 
   let ci = 0;
   for (let i = 0; i < SEGMENTS.length; i++) if (y >= SEGMENTS[i].start) ci = i;
+  currentSeg = SEGMENTS[ci];
 
   for (let i = 0; i < SEGMENTS.length; i++) {
     const s = SEGMENTS[i];
@@ -183,11 +191,37 @@ function read() {
   ticking = false;
 }
 
-// ── raf: chase the target with the decoder. Never queue behind a seek ───────
+// ── raf: two modes. Autoplay: the active segment plays natively (buttery,
+// decode-ahead) with drift correction; everything else stays parked. Manual
+// scroll: chase the target with seeks, never queueing behind the decoder ─────
 function raf() {
   const eps = isMobile() ? 0.02 : 0.008; // seconds; coarser on phones = fewer decodes
   for (const s of SEGMENTS) {
     if (!s.video || !s.ready) continue;
+
+    if (auto.on && s === currentSeg) {
+      const dur = s.video.duration || 1;
+      const expected = clamp(s.target, 0, 0.999) * dur;
+      if (s.video.paused) {
+        try { s.video.currentTime = expected; } catch {}
+        const p = s.video.play(); if (p && p.catch) p.catch(() => {});
+      } else {
+        const diff = expected - s.video.currentTime;
+        if (Math.abs(diff) > 0.15) { try { s.video.currentTime = expected; } catch {} }
+        else if (Math.abs(s.video.playbackRate - 1) > 0.001 || Math.abs(diff) > 0.02) {
+          s.video.playbackRate = clamp(1 + diff * 0.5, 0.92, 1.08);
+        }
+      }
+      s.cur = s.target;
+      continue;
+    }
+
+    if (!s.video.paused) {
+      // handoff back to scrub mode: freeze where playback actually got to
+      try { s.video.pause(); } catch {}
+      s.video.playbackRate = 1;
+      s.cur = clamp(s.video.currentTime / (s.video.duration || 1));
+    }
     if (s.video.seeking) continue;
     if (!s.visible && Math.abs(s.cur - s.target) < 0.002) continue;
     s.cur += (s.target - s.cur) * (reduce ? 1 : 0.18);
@@ -195,6 +229,7 @@ function raf() {
     const t = clamp(s.cur, 0, 0.999) * dur;
     if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch {} }
   }
+  autoStep();
   requestAnimationFrame(raf);
 }
 
@@ -210,6 +245,68 @@ function onResize() {
 window.addEventListener("resize", onResize);
 window.addEventListener("orientationchange", layout);
 window.addEventListener("load", layout);
+
+// ── autoplay: the film runs itself at its baked pace ─────────────────────────
+// The document really scrolls — the scrollbar keeps telling the truth, and any
+// user input that would move the page (wheel, touch drag, arrow keys) pauses.
+const FILM_SECS = SEGMENTS.reduce((a, s) => a + s.secs, 0);
+{
+  let t0acc = 0;
+  for (const s of SEGMENTS) { s.t0 = t0acc; t0acc += s.secs; }
+}
+const timeToY = (t) => {
+  for (const s of SEGMENTS) {
+    if (t <= s.t0 + s.secs || s === SEGMENTS[SEGMENTS.length - 1])
+      return s.start + clamp((t - s.t0) / s.secs) * (s.end - s.start);
+  }
+  return totalW * vh;
+};
+const yToTime = (y) => {
+  for (const s of SEGMENTS) {
+    if (y <= s.end || s === SEGMENTS[SEGMENTS.length - 1])
+      return s.t0 + clamp((y - s.start) / (s.end - s.start)) * s.secs;
+  }
+  return FILM_SECS;
+};
+
+const autoBtn = document.querySelector("[data-auto]");
+const auto = { on: false, t0: 0, base: 0, wasOn: false };
+function setAuto(on) {
+  if (reduce) on = false;
+  if (on === auto.on) return;
+  auto.on = on;
+  if (on) { auto.base = yToTime(window.scrollY || 0); auto.t0 = performance.now(); }
+  autoBtn.setAttribute("aria-pressed", String(on));
+  autoBtn.setAttribute("aria-label", on ? "Pause the flight (spacebar)" : "Resume the flight (spacebar)");
+  hint.querySelector("span").textContent = on ? "space to pause" : "space to fly";
+}
+autoBtn.addEventListener("click", (e) => { e.stopPropagation(); setAuto(!auto.on); });
+window.addEventListener("keydown", (e) => {
+  if (e.code !== "Space" || e.target.closest("a,button,input,textarea,[contenteditable]")) return;
+  e.preventDefault();
+  setAuto(!auto.on);
+});
+// any input that would move the page means the user is driving now
+window.addEventListener("wheel", () => setAuto(false), { passive: true });
+window.addEventListener("touchmove", () => setAuto(false), { passive: true });
+window.addEventListener("keydown", (e) => {
+  if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(e.code)) setAuto(false);
+});
+document.addEventListener("click", (e) => {
+  if (auto.on && !e.target.closest("a,button")) setAuto(false);
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { auto.wasOn = auto.on; setAuto(false); }
+  else if (auto.wasOn) setAuto(true);
+});
+function autoStep() {
+  if (!auto.on) return;
+  const t = auto.base + (performance.now() - auto.t0) / 1000;
+  if (t >= FILM_SECS) { window.scrollTo(0, totalW * vh); setAuto(false); return; }
+  window.scrollTo(0, timeToY(t));
+}
+// starts on load, from the top, unless reduced motion
+window.addEventListener("load", () => { if (!reduce && (window.scrollY || 0) < 10) setAuto(true); });
 
 layout();
 requestAnimationFrame(raf);

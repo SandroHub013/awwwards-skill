@@ -16,6 +16,9 @@ INPUT:     scrollY, read and mapped — the wheel is never intercepted. The
 FRAME-LOCK: 936 frames baked from ONE camera path, cut at three doorways.
            The seam frame ships in both neighbours, so the join is not a
            transition; it is the next frame.
+AUTOPLAY:  the film runs itself at its baked 39s pace. The document really
+           scrolls — scrollbar, keyboard and deep links still tell the truth —
+           and click, wheel, touch drag or spacebar hands control back.
 FALLBACK:  a clip that cannot load leaves its designed still; the journey
            survives on posters alone
 MOBILE:    a second 720×1280 render at fov 55 — native portrait, not a crop
@@ -111,16 +114,28 @@ sidestepped entirely.
   stops: the visible segment is the right one at every stop, clips load only
   within ±1.6 viewport heights, `has-clip` follows the first painted frame,
   zero console errors on both.
+- **Autoplay** — scripted drive: starts on load and advances on its own;
+  wheel pauses and the page stays put; spacebar resumes from the same spot;
+  click on empty stage pauses; the button resumes. Zero page errors.
+- **Scrub frame rate** — rAF deltas over a full 8s manual sweep: 56.6 fps
+  average on desktop (1080p AV1), 59.4 on a mobile viewport (720p H.264);
+  hitches cluster at clip initialisation, not during seeks. In autoplay the
+  active segment runs on native playback instead of seek storms: 59.9 fps,
+  1.0% long frames, drift correction holding `playbackRate` within ±0.8%.
+- **No replayed frames on clip arrival** — a clip that finishes loading
+  mid-segment seeks to the current scroll position before its first painted
+  frame, instead of revealing at frame 0 and catching up.
 - **`prefers-reduced-motion`** — emulated: no `<video>` is ever created, the
-  stills cross-dissolve through all four scenes.
-- **Keyboard** — Tab reaches the route dots, Enter jumps to the scene.
+  stills cross-dissolve through all four scenes, and autoplay never starts.
+- **Keyboard** — Tab reaches the route dots, Enter jumps to the scene;
+  spacebar toggles the flight without scrolling the page.
 - **Frame-lock** — the seam frame (e.g. frame 252) is the same PNG encoded
   into both neighbours, by construction of the render, not by hope.
 
 ## Not verified
 
-- INP and sustained frame rate under a real trace; scrub smoothness on a
-  physical phone decoder (the `-g 4` mobile encode is doctrine, not measurement)
+- INP; scrub smoothness on a physical phone decoder (the `-g 4` mobile encode
+  is confirmed on a desktop GPU, not on a phone)
 - Safari and Firefox — the AV1/H.264 selection is `canPlayType`-driven and
   Chrome-tested only
 - iOS priming — implemented from the scroll-world pattern, exercised on no

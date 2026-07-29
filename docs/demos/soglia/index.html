@@ -62,6 +62,8 @@
   .route{position:absolute;right:clamp(14px,2.4vw,30px);top:50%;transform:translateY(-50%);
     z-index:40;display:flex;flex-direction:column;gap:22px;padding:18px 10px;margin:0}
   .hint{position:absolute;left:50%;bottom:26px;z-index:30;transform:translateX(-50%);margin:0}
+  .auto{position:absolute;right:clamp(14px,2.4vw,30px);bottom:26px;z-index:50;
+    width:44px;height:44px;border-radius:50%;margin:0;padding:0}
 </style>
 <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="styles.css"></noscript>
@@ -134,6 +136,14 @@
       </nav>
 
       <p class="hint" data-hint aria-hidden="true"><span>scroll to fly in</span><i></i></p>
+
+      <button class="auto" data-auto aria-pressed="false" aria-label="Resume the flight (spacebar)">
+        <svg class="auto__play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5l8 5.5-8 5.5z" fill="currentColor"/></svg>
+        <svg class="auto__pause" viewBox="0 0 16 16" aria-hidden="true">
+          <rect x="3.5" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/>
+          <rect x="9.3" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
     </div>
   </section>
 
@@ -182,6 +192,7 @@
         <div><dt>Render</dt><dd>936 frames, 24&thinsp;fps, headless Chrome + Three.js, baked on the repo&rsquo;s own machine</dd></div>
         <div><dt>Clips</dt><dd>7 &mdash; four scenes, three doorways; the seam frame ships in both neighbours</dd></div>
         <div><dt>Transport</dt><dd>Native scroll position, mapped &mdash; never hijacked. Keyboard and scrollbar stay honest</dd></div>
+        <div><dt>Autoplay</dt><dd>The film runs itself at its baked 39&thinsp;s pace &mdash; the document really scrolls. Click, wheel or spacebar hands control back</dd></div>
         <div><dt>Seek</dt><dd>Clips load as blobs near the viewport only; seeks coalesce behind the decoder</dd></div>
         <div><dt>Reduced motion</dt><dd>No video loads at all. The stills cross-dissolve; the town is still there</dd></div>
       </dl>
