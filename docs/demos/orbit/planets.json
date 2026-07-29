@@ -1,0 +1,72 @@
+{
+ "Mercury": {
+  "radius_km": 2439.4,
+  "mass_1e24kg": 0.330103,
+  "density": 5.4289,
+  "rot_days": 58.6462,
+  "orbit_years": 0.2408467,
+  "au": 0.38709927
+ },
+ "Venus": {
+  "radius_km": 6051.8,
+  "mass_1e24kg": 4.86731,
+  "density": 5.243,
+  "rot_days": -243.018,
+  "orbit_years": 0.61519726,
+  "au": 0.72333566
+ },
+ "Earth": {
+  "radius_km": 6371.0084,
+  "mass_1e24kg": 5.97217,
+  "density": 5.5134,
+  "rot_days": 0.99726968,
+  "orbit_years": 1.0000174,
+  "au": 1.00000261
+ },
+ "Mars": {
+  "radius_km": 3389.5,
+  "mass_1e24kg": 0.641691,
+  "density": 3.934,
+  "rot_days": 1.02595676,
+  "orbit_years": 1.8808476,
+  "au": 1.52371034
+ },
+ "Jupiter": {
+  "radius_km": 69911,
+  "mass_1e24kg": 1898.125,
+  "density": 1.3262,
+  "rot_days": 0.41354,
+  "orbit_years": 11.862615,
+  "au": 5.202887
+ },
+ "Saturn": {
+  "radius_km": 58232,
+  "mass_1e24kg": 568.317,
+  "density": 0.6871,
+  "rot_days": 0.44401,
+  "orbit_years": 29.447498,
+  "au": 9.53667594
+ },
+ "Uranus": {
+  "radius_km": 25362,
+  "mass_1e24kg": 86.8099,
+  "density": 1.27,
+  "rot_days": -0.71833,
+  "orbit_years": 84.016846,
+  "au": 19.18916464
+ },
+ "Neptune": {
+  "radius_km": 24622,
+  "mass_1e24kg": 102.4092,
+  "density": 1.638,
+  "rot_days": 0.67125,
+  "orbit_years": 164.79132,
+  "au": 30.06992276
+ },
+ "__source": {
+  "physical": "JPL Solar System Dynamics — Planetary Physical Parameters (ssd.jpl.nasa.gov/planets/phys_par.html)",
+  "orbital": "JPL SSD — Approximate Positions of the Planets, Keplerian elements (ssd.jpl.nasa.gov/planets/approx_pos.html)",
+  "retrieved": "2026-07-29",
+  "note": "radius = mean radius in km; au = semi-major axis; orbit_years = sidereal orbital period; rot_days = sidereal rotation period, negative = retrograde"
+ }
+}

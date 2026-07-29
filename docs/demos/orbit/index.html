@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Il sistema solare — una lezione che si scorre</title>
+<meta name="description" content="Il sistema solare pianeta per pianeta, in 3D, con i numeri veri della NASA JPL. Una lezione per la scuola primaria: perché ogni disegno del sistema solare è sbagliato, e di quanto.">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Il sistema solare — una lezione che si scorre">
+<meta property="og:description" content="Otto pianeti, i numeri veri del JPL, e la ragione per cui nessun disegno può essere in scala.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/orbit/">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2305060e'/><circle cx='34' cy='50' r='16' fill='%23ffcf6b'/><circle cx='76' cy='50' r='6' fill='%234a8fd0'/></svg>">
+</head>
+<body id="top">
+
+<a class="skip" href="#pianeti">Salta al primo pianeta</a>
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 06 &middot; lezione &middot; dati JPL</p>
+</header>
+
+<aside class="hud" data-hud aria-hidden="true">
+  <p class="hud__name" data-hudname>Il Sole</p>
+  <div class="hud__rule"><i data-rule></i></div>
+</aside>
+
+<main>
+  <section class="intro">
+    <p class="eyebrow">Scuola primaria &middot; dati reali</p>
+    <h1 class="title">Ogni disegno del sistema solare è sbagliato.</h1>
+    <p class="lede">
+      E non per pigrizia: <b>è impossibile farlo giusto</b>. Se disegni i pianeti della
+      dimensione giusta diventano puntini che non si vedono. Se disegni le distanze giuste,
+      i pianeti spariscono del tutto dal foglio.
+    </p>
+    <p class="lede">
+      Così ogni libro sceglie quale bugia raccontare. Questa pagina te le mostra tutte e
+      due, e ti dice esattamente di quanto sta barando.
+    </p>
+    <div class="warn">
+      <p><b>Qui i pianeti sono disegnati molto più grandi del vero.</b> Se fossero in scala
+      con le distanze, la Terra sarebbe più piccola di un granello di polvere sullo schermo.
+      Le <i>distanze</i> fra loro, invece, sono nelle proporzioni giuste.</p>
+    </div>
+    <p class="cue" data-cue>Scorri per partire dal Sole</p>
+  </section>
+
+  <section class="planets" id="pianeti">
+
+    <article class="planet" data-planet="0" id="mercury">
+      <p class="planet__num">01 &middot; Mercury</p>
+      <h2 class="planet__name">Mercurio</h2>
+      <p class="planet__hook">Il giorno più lungo dell’anno</p>
+      <p class="planet__body">Mercurio gira su se stesso così lentamente che un suo giorno dura <b>59 giorni terrestri</b> — ma fa il giro del Sole in appena 88. Se vivessi lì, il tuo compleanno arriverebbe prima che tu abbia finito una giornata.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Non ha aria. Di giorno la roccia diventa rovente, di notte gela: senza atmosfera non c’è niente che trattenga il calore.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>0,39<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>0,38<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>58,6 giorni</dd></div>
+        <div><dt>Un suo anno</dt><dd>88 giorni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="1" id="venus">
+      <p class="planet__num">02 &middot; Venus</p>
+      <h2 class="planet__name">Venere</h2>
+      <p class="planet__hook">Il pianeta che gira al contrario</p>
+      <p class="planet__body">Su Venere il Sole sorge a <b>ovest</b>. Ruota nella direzione opposta a quasi tutti gli altri, e lo fa così piano che un suo giorno dura più di un suo anno.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> È il pianeta più caldo di tutti — più caldo perfino di Mercurio, che è più vicino al Sole — perché le sue nuvole spesse intrappolano il calore.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>0,72<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>0,95<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>243,0 giorni (al contrario)</dd></div>
+        <div><dt>Un suo anno</dt><dd>225 giorni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="2" id="earth">
+      <p class="planet__num">03 &middot; Earth</p>
+      <h2 class="planet__name">Terra</h2>
+      <p class="planet__hook">L’unico posto dove sappiamo che c’è vita</p>
+      <p class="planet__body">La Terra è l’unico pianeta con acqua liquida in superficie, e l’unico dove abbiamo trovato qualcosa di vivo. Tutti gli altri numeri di questa pagina sono misurati partendo da qui.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Quando diciamo «un anno» intendiamo un giro della Terra attorno al Sole. Tutti gli anni di questa pagina sono contati in anni terrestri.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>150<span>milioni di km</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>6.371<span>km di raggio</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>23,9 ore</dd></div>
+        <div><dt>Un suo anno</dt><dd>1,0 anni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="3" id="mars">
+      <p class="planet__num">04 &middot; Mars</p>
+      <h2 class="planet__name">Marte</h2>
+      <p class="planet__hook">La montagna più alta del sistema solare</p>
+      <p class="planet__body">Marte è rosso perché la sua polvere è piena di ferro arrugginito. Ha un vulcano, l’Olympus Mons, alto circa <b>tre volte l’Everest</b>.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Un giorno su Marte dura quasi come il nostro: 24 ore e 37 minuti. È il pianeta la cui giornata assomiglia di più alla nostra.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>1,52<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>0,53<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>1,0 giorni</dd></div>
+        <div><dt>Un suo anno</dt><dd>1,9 anni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="4" id="jupiter">
+      <p class="planet__num">05 &middot; Jupiter</p>
+      <h2 class="planet__name">Giove</h2>
+      <p class="planet__hook">Una tempesta più grande della Terra</p>
+      <p class="planet__body">Giove è così grande che tutti gli altri pianeti messi insieme ci starebbero dentro. La sua Grande Macchia Rossa è una tempesta che va avanti da <b>secoli</b>, ed è più larga del nostro pianeta.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Non ha una superficie su cui atterrare: è quasi tutto gas. Scendendo, l’aria diventa sempre più densa finché non diventa liquida.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>5,20<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>10,97<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>9,9 ore</dd></div>
+        <div><dt>Un suo anno</dt><dd>11,9 anni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="5" id="saturn">
+      <p class="planet__num">06 &middot; Saturn</p>
+      <h2 class="planet__name">Saturno</h2>
+      <p class="planet__hook">Anelli di ghiaccio, non di roccia</p>
+      <p class="planet__body">Gli anelli di Saturno sembrano solidi, ma sono <b>miliardi di pezzi di ghiaccio</b>: da granelli di sabbia a massi grandi come una casa, tutti in orbita fianco a fianco.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Saturno è così leggero per la sua taglia che, se esistesse una vasca abbastanza grande, galleggerebbe sull’acqua.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>9,54<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>9,14<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>10,7 ore</dd></div>
+        <div><dt>Un suo anno</dt><dd>29,4 anni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="6" id="uranus">
+      <p class="planet__num">07 &middot; Uranus</p>
+      <h2 class="planet__name">Urano</h2>
+      <p class="planet__hook">Il pianeta sdraiato</p>
+      <p class="planet__body">Urano gira <b>coricato su un fianco</b>, come una palla che rotola invece di una trottola. Probabilmente qualcosa di enorme lo ha urtato tantissimo tempo fa.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Per questo le sue stagioni durano più di vent’anni ciascuna: un polo resta al sole per mezzo giro d’orbita.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>19,19<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>3,98<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>17,2 ore</dd></div>
+        <div><dt>Un suo anno</dt><dd>84,0 anni</dd></div>
+      </dl>
+    </article>
+
+    <article class="planet" data-planet="7" id="neptune">
+      <p class="planet__num">08 &middot; Neptune</p>
+      <h2 class="planet__name">Nettuno</h2>
+      <p class="planet__hook">I venti più veloci che conosciamo</p>
+      <p class="planet__body">Su Nettuno il vento soffia fino a <b>2.000 km all’ora</b>, più veloce di un aereo di linea. Ed è il più lontano: la luce del Sole ci mette più di quattro ore ad arrivarci.</p>
+      <p class="planet__fact"><b>Lo sapevi?</b> Non è stato trovato con un telescopio ma <b>con la matematica</b>: qualcuno calcolò dove doveva essere, e lì lo trovarono.</p>
+      <dl class="facts">
+        <div><dt>Distanza dal Sole</dt><dd>30,07<span>volte la nostra</span></dd></div>
+        <div><dt>Quanto è grande</dt><dd>3,86<span>volte la Terra</span></dd></div>
+        <div><dt>Un suo giorno</dt><dd>16,1 ore</dd></div>
+        <div><dt>Un suo anno</dt><dd>164,8 anni</dd></div>
+      </dl>
+    </article>
+  </section>
+
+  <section class="section" id="scala">
+    <header class="section__head">
+      <p class="eyebrow">La prova</p>
+      <h2 class="section__title">Quanto è grande davvero il vuoto</h2>
+    </header>
+    <p class="body body--wide">
+      Immagina di rimpicciolire il Sole finché non diventa una <b>palla da calcio</b>, larga
+      circa 22 centimetri. Nella stessa scala, allora:
+    </p>
+    <ul class="scaleList">
+      <li><b>La Terra</b> sarebbe un granello di 2 millimetri, a <b>24 metri</b> di distanza.</li>
+      <li><b>Giove</b> sarebbe una biglia di 2 centimetri, a <b>124 metri</b>.</li>
+      <li><b>Nettuno</b> sarebbe una capocchia di spillo, a <b>720 metri</b>: sette campi da calcio.</li>
+    </ul>
+    <p class="body body--wide">
+      Ecco perché nessun poster può essere in scala. Per disegnare il sistema solare per
+      davvero servirebbe un foglio lungo quasi un chilometro, e per quasi tutta la sua
+      lunghezza non ci sarebbe assolutamente niente da disegnare.
+    </p>
+  </section>
+
+  <section class="section" id="tabella">
+    <header class="section__head">
+      <p class="eyebrow">I numeri</p>
+      <h2 class="section__title">Tutti i dati, e da dove vengono</h2>
+      <p class="section__sub">
+        Nessuno di questi numeri è inventato o arrotondato a occhio: vengono dal
+        <b>Jet Propulsion Laboratory</b> della NASA, il laboratorio che costruisce le sonde.
+      </p>
+    </header>
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">Dati planetari dal JPL Solar System Dynamics</caption>
+        <thead>
+          <tr>
+            <th scope="col">Pianeta</th>
+            <th scope="col">Distanza (au)</th>
+            <th scope="col">Raggio (km)</th>
+            <th scope="col">Massa (10<sup>24</sup> kg)</th>
+            <th scope="col">Rotazione (giorni)</th>
+            <th scope="col">Orbita (anni)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Mercurio</th><td>0,387</td><td>2439,4</td><td>0,330</td><td>58,646</td><td>0,2408</td></tr>
+          <tr><th scope="row">Venere</th><td>0,723</td><td>6051,8</td><td>4,867</td><td>-243,018</td><td>0,6152</td></tr>
+          <tr><th scope="row">Terra</th><td>1,000</td><td>6371,0</td><td>5,972</td><td>0,997</td><td>1,0000</td></tr>
+          <tr><th scope="row">Marte</th><td>1,524</td><td>3389,5</td><td>0,642</td><td>1,026</td><td>1,8808</td></tr>
+          <tr><th scope="row">Giove</th><td>5,203</td><td>69.911,0</td><td>1898,125</td><td>0,414</td><td>11,8626</td></tr>
+          <tr><th scope="row">Saturno</th><td>9,537</td><td>58.232,0</td><td>568,317</td><td>0,444</td><td>29,4475</td></tr>
+          <tr><th scope="row">Urano</th><td>19,189</td><td>25.362,0</td><td>86,810</td><td>-0,718</td><td>84,0168</td></tr>
+          <tr><th scope="row">Nettuno</th><td>30,070</td><td>24.622,0</td><td>102,409</td><td>0,671</td><td>164,7913</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      <b>au</b> vuol dire «unità astronomica»: la distanza fra la Terra e il Sole. Dire che
+      Giove sta a 5,203 au significa che è cinque volte più lontano di noi. Una rotazione
+      negativa vuol dire che quel pianeta gira al contrario.
+    </p>
+  </section>
+
+  <section class="section colophon" id="colophon">
+    <header class="section__head">
+      <p class="eyebrow">Per chi insegna</p>
+      <h2 class="section__title">Fonti, e cosa questa pagina non fa</h2>
+    </header>
+    <div class="colophon__grid">
+      <dl class="creds">
+        <div><dt>Dati fisici</dt><dd>JPL Solar System Dynamics, Planetary Physical Parameters</dd></div>
+        <div><dt>Dati orbitali</dt><dd>JPL SSD, elementi kepleriani (semiasse maggiore)</dd></div>
+        <div><dt>Scaricati il</dt><dd>29 luglio 2026</dd></div>
+        <div><dt>Grafica</dt><dd>Nessuna immagine, nessun modello: ogni pianeta è una sfera e una formula</dd></div>
+      </dl>
+      <div class="colophon__note">
+        <p>
+          I pianeti sono <b>ingranditi</b> rispetto alle distanze, altrimenti sarebbero
+          invisibili; le distanze fra loro sono invece nelle proporzioni corrette. I colori
+          sono verosimili ma non fotografici, perché nascono da formule e non da foto delle
+          sonde.
+        </p>
+        <p>
+          Le lune non sono disegnate, e le orbite qui sono cerchi mentre in realtà sono
+          ellissi leggermente schiacciate. Se in classe vi servono i dati esatti, la tabella
+          qui sopra è quella del JPL, non una copia semplificata.
+        </p>
+        <a class="cta" href="../../">Come è fatto questo sito &#8594;</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Dati NASA/JPL, di pubblico dominio. Una dimostrazione, non un materiale didattico ufficiale.</p>
+  <p><a href="#top">Torna al Sole</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
