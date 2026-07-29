@@ -336,7 +336,11 @@ export function createOrbit({ canvas, data } = {}) {
        which compounded to ~14x the radius and left every planet a speck. */
     const FILL = 0.42;
     const half = THREE.MathUtils.degToRad(camera.fov) * 0.5;
-    const dist = Math.max(2.2, r / Math.tan(FILL * half));
+    /* The floor has to scale with the planet, not be a constant: 2.2 world
+       units is nothing next to Jupiter and a mile away from Mars, which is
+       why the small rocky worlds still came out as specks (Mars filled 9%
+       of frame height while Jupiter filled 35%). */
+    const dist = Math.max(r * 2.6, r / Math.tan(FILL * half));
 
     // one continuous swing around the system rather than a per-planet reset
     const ang = 0.55 + state.p * 3.1;
