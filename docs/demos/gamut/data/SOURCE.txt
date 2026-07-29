@@ -1,0 +1,15 @@
+ciexyz31_1.csv
+CIE 1931 2-degree XYZ colour-matching functions, 1 nm steps, 360-830 nm.
+
+Retrieved   29 July 2026
+From        http://cvrl.ioo.ucl.ac.uk/database/data/cmfs/ciexyz31_1.csv
+Publisher   Colour & Vision Research Laboratory, Institute of Ophthalmology, UCL (cvrl.org)
+Rows        471, one per nanometre, unmodified
+Columns     wavelength(nm), xbar, ybar, zbar
+
+The file ships here byte-identical to the download. Every chromaticity drawn on the page
+is computed from these rows at runtime; none of them is typed into the source.
+
+The 5 nm table at .../cmfs/ciexyz31.csv is the same functions sampled coarsely. The 1 nm
+file is used because the wavelength probe reads a row directly rather than interpolating
+between two.

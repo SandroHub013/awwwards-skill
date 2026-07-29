@@ -1,3 +1,7 @@
 * text=auto eol=lf
 *.ps1 text eol=crlf
 *.png binary
+
+# Retrieved data files ship exactly as downloaded, CRLF included: "byte-identical"
+# in a SOURCE.txt has to survive the checkout.
+docs/demos/*/data/*.csv -text
