@@ -1,0 +1,150 @@
+{
+  "demo": "soglia — every seam is a doorway",
+  "footage": "none — no filming, no AI generation",
+  "renderer": {
+    "scene": "render/scene.js — one file, seeded PRNG (mulberry32, seed 1410)",
+    "engine": "three.js 0.185.1 (MIT) via CDN, headless Chrome (puppeteer-core)",
+    "capture": "render/capture.mjs — deterministic per-frame bake, window.__render(t01)",
+    "passes": [
+      {
+        "name": "desktop",
+        "size": "1920x1080",
+        "fov": 42,
+        "frames": 936
+      },
+      {
+        "name": "mobile",
+        "size": "720x1280",
+        "fov": 55,
+        "frames": 936
+      }
+    ]
+  },
+  "encoder": "ffmpeg 8.1.2 — SVT-AV1 (desktop, -g 8), libx264 (desktop -g 8, mobile 720p -g 4), AVIF stills via libaom",
+  "frameLock": "each connector's first/last frame is the neighbouring scenes' seam frame — the same PNG encoded into both clips",
+  "cost_usd": 0,
+  "segments": [
+    {
+      "id": "s0-porta",
+      "kind": "scene",
+      "frames": [
+        0,
+        168
+      ],
+      "secs": 7,
+      "fps": 24,
+      "bytes": {
+        "av1": 929587,
+        "h264": 1289306,
+        "mobile_h264": 832601,
+        "poster": 9033,
+        "poster_mobile": 4564
+      }
+    },
+    {
+      "id": "c0-arco",
+      "kind": "connector",
+      "frames": [
+        168,
+        252
+      ],
+      "secs": 3.5,
+      "fps": 24,
+      "bytes": {
+        "av1": 675483,
+        "h264": 888943,
+        "mobile_h264": 510926
+      }
+    },
+    {
+      "id": "s1-strada",
+      "kind": "scene",
+      "frames": [
+        252,
+        420
+      ],
+      "secs": 7,
+      "fps": 24,
+      "bytes": {
+        "av1": 1099429,
+        "h264": 1333324,
+        "mobile_h264": 731335,
+        "poster": 11666,
+        "poster_mobile": 5699
+      }
+    },
+    {
+      "id": "c1-vicolo",
+      "kind": "connector",
+      "frames": [
+        420,
+        504
+      ],
+      "secs": 3.5,
+      "fps": 24,
+      "bytes": {
+        "av1": 466548,
+        "h264": 649876,
+        "mobile_h264": 384480
+      }
+    },
+    {
+      "id": "s2-piazza",
+      "kind": "scene",
+      "frames": [
+        504,
+        684
+      ],
+      "secs": 7.5,
+      "fps": 24,
+      "bytes": {
+        "av1": 1086788,
+        "h264": 1556074,
+        "mobile_h264": 838624,
+        "poster": 12274,
+        "poster_mobile": 5264
+      }
+    },
+    {
+      "id": "c2-varco",
+      "kind": "connector",
+      "frames": [
+        684,
+        768
+      ],
+      "secs": 3.5,
+      "fps": 24,
+      "bytes": {
+        "av1": 385913,
+        "h264": 815632,
+        "mobile_h264": 557116
+      }
+    },
+    {
+      "id": "s3-bottega",
+      "kind": "scene",
+      "frames": [
+        768,
+        935
+      ],
+      "secs": 7,
+      "fps": 24,
+      "bytes": {
+        "av1": 513238,
+        "h264": 1091408,
+        "mobile_h264": 728678,
+        "poster": 5801,
+        "poster_mobile": 3924
+      }
+    }
+  ],
+  "totals_bytes": {
+    "av1": 5156986,
+    "h264": 7624563,
+    "mobile_h264": 4583760,
+    "poster": 38774,
+    "poster_mobile": 19451
+  },
+  "technique_credit": "scroll-scrub segment chain (dive/connector interleave, blob-loaded clips, seek coalescing, iOS priming) adapted from oso95/scroll-world (MIT)",
+  "generated": "2026-07-29"
+}
