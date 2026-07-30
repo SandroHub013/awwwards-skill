@@ -1,0 +1,369 @@
+/* miliario — la Via Appia percorsa in orizzontale
+   Zero dipendenze. Un foglio di stile, mobile-first, due modalità di puntatore:
+   .js          → scena sticky, track orizzontale mosso dallo scroll verticale
+   [data-mode=touch] → la scena è uno scroller orizzontale nativo con snap */
+
+@property --bg        { syntax: "<color>"; inherits: true; initial-value: #f2ecdf }
+@property --ink       { syntax: "<color>"; inherits: true; initial-value: #26241f }
+@property --ink-muted { syntax: "<color>"; inherits: true; initial-value: #5d574c }
+@property --line      { syntax: "<color>"; inherits: true; initial-value: #cdc4b1 }
+@property --accent    { syntax: "<color>"; inherits: true; initial-value: #a0341f }
+@property --stone     { syntax: "<color>"; inherits: true; initial-value: #d9cfba }
+@property --sky       { syntax: "<color>"; inherits: true; initial-value: #f2ecdf }
+@property --sun       { syntax: "<color>"; inherits: true; initial-value: #e0d3ae }
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("fonts/cinzel-latin.woff2") format("woff2");
+  font-weight: 400 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Spectral";
+  src: url("fonts/spectral-400-latin.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Spectral";
+  src: url("fonts/spectral-400i-latin.woff2") format("woff2");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Spectral";
+  src: url("fonts/spectral-600-latin.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+:root {
+  --bg: #f2ecdf;          /* carta */
+  --ink: #26241f;         /* basalto / inchiostro */
+  --ink-muted: #5d574c;
+  --line: #cdc4b1;
+  --accent: #a0341f;      /* rosso pompeiano */
+  --stone: #d9cfba;       /* travertino */
+  --pino: #3f5138;        /* verde pino */
+  /* paesaggio (cielo e sole; le silhouette SVG hanno classi giorno/notte) */
+  --sky: #f2ecdf; --sun: #e0d3ae;
+
+  --display: "Cinzel", Georgia, "Times New Roman", serif;
+  --serif: "Spectral", Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+  --step--1: clamp(.78rem, .75rem + .12vw, .86rem);
+  --step-0: clamp(1rem, .96rem + .2vw, 1.1rem);
+  --step-1: clamp(1.25rem, 1.15rem + .5vw, 1.6rem);
+  --step-2: clamp(1.9rem, 1.5rem + 2vw, 3.4rem);
+  --display-size: clamp(2.9rem, min(1rem + 13vw, 15vh), 10.5rem);
+
+  --gutter: clamp(1.15rem, .6rem + 2.2vw, 3.5rem);
+  --head-h: 3.25rem;
+  --tabula-h: 2.75rem;
+
+  --dur-fast: .18s; --dur-base: .4s; --dur-slow: .9s; --dur-scene: 1.4s;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-inout: cubic-bezier(.65, .05, .36, 1);
+
+  /* il crepuscolo dell'interludio viaggia sulle stesse variabili */
+  transition: --bg var(--dur-scene) var(--ease-inout), --ink var(--dur-scene) var(--ease-inout),
+    --ink-muted var(--dur-scene) var(--ease-inout), --line var(--dur-scene) var(--ease-inout),
+    --accent var(--dur-scene) var(--ease-inout), --stone var(--dur-scene) var(--ease-inout),
+    --sky var(--dur-scene) var(--ease-inout), --sun var(--dur-scene) var(--ease-inout);
+}
+
+html.is-dusk {
+  --bg: #211f1a;
+  --ink: #e8e0cd;
+  --ink-muted: #a99f8a;
+  --line: #4a453a;
+  --accent: #c05a3a;
+  --stone: #35312a;
+  --sky: #211f1a; --sun: #a99f8a;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+body, h1, h2, h3, p, dl, dd, dt, figure, ul, ol, li, hr, table, caption, th, td { margin: 0; padding: 0 }
+html { -webkit-text-size-adjust: 100% }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--serif); font-size: var(--step-0); line-height: 1.6;
+  overflow-x: hidden; text-wrap: pretty;
+}
+::selection { background: var(--accent); color: var(--bg) }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+.dim { color: var(--ink-muted) }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  clip: rect(0 0 0 0); clip-path: inset(50%); overflow: hidden; white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: 1rem; top: -4.5rem; z-index: 90;
+  background: var(--ink); color: var(--bg); padding: .6rem 1rem; text-decoration: none;
+}
+.skip:focus { top: 1rem }
+
+/* ── chrome: header + tabula + hud ─────────────────────────────── */
+
+.head {
+  position: fixed; inset-inline: 0; top: 0; z-index: 60; height: var(--head-h);
+  padding-inline: var(--gutter); display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem;
+  font-family: var(--mono); font-size: var(--step--1); color: var(--ink);
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.head a { color: inherit; text-decoration: none }
+.head a:hover { color: var(--accent) }
+
+.tabula {
+  position: fixed; inset-inline: 0; top: var(--head-h); z-index: 60; height: var(--tabula-h);
+  display: flex; align-items: center; gap: 1rem; padding-inline: var(--gutter);
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.tabula__svg { flex: 1 1 auto; height: 100%; min-width: 0 }
+.tabula__under { stroke: var(--line); stroke-width: 2 }
+.tabula__route { stroke: var(--ink); stroke-width: 2 }
+.tabula__dots circle { fill: var(--bg); stroke: var(--ink); stroke-width: 1.5 }
+.tabula__dots circle.is-on { fill: var(--accent); stroke: var(--accent) }
+.tabula__stop {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-muted); white-space: nowrap;
+}
+
+.hud {
+  position: fixed; left: var(--gutter); z-index: 60;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  min-width: 11.5rem; padding: .85rem 1.1rem .95rem;
+  background: var(--stone); color: var(--ink);
+  border: 1px solid var(--ink);
+  box-shadow: inset 0 0 0 3px var(--stone), inset 0 0 0 4px var(--ink),
+    2px 3px 0 rgb(38 36 31 / .18);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.hud__label {
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.hud__mp {
+  font-family: var(--display); font-weight: 700; font-size: 2.1rem;
+  line-height: 1.1; letter-spacing: .06em; color: var(--accent); margin-top: .15rem;
+}
+.hud__km { font-family: var(--mono); font-size: var(--step--1); margin-top: .1rem }
+.hud__stop {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; margin-top: .4rem; padding-top: .4rem;
+  border-top: 1px solid var(--ink);
+}
+
+/* chrome nascosto quando il viaggio è finito e si legge il colophon */
+html.is-past .hud, html.is-past .tabula { opacity: 0; pointer-events: none }
+
+/* ── la scena ──────────────────────────────────────────────────── */
+
+.journey { position: relative }
+
+.scene {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  background: var(--sky);
+}
+.sun {
+  position: absolute; left: 74%; top: 17%; width: clamp(3.2rem, 9vh, 5.5rem);
+  aspect-ratio: 1; border-radius: 50%; background: var(--sun);
+}
+.layer { position: absolute; inset: 0; overflow: hidden }
+.layer__strip { position: absolute; top: 0; bottom: 0; left: 0; will-change: transform }
+.layer__day { display: flex; height: 100% }
+.layer__dusk { position: absolute; inset: 0; display: flex; opacity: 0 }
+.layer__strip svg { height: 100%; flex: none }
+/* giorno */
+.f-hills-far { fill: #e6dcc6 }
+.f-hills { fill: #d9cfba }
+.f-mid { fill: #3f5138; stroke: #a5916b }
+.f-mid .a { fill: #a5916b; stroke: none }
+.f-fore { fill: #7a6f5c }
+.f-fore ellipse { fill: #3f5138 }
+/* crepuscolo: duplicato in crossfade di opacità — zero repaint durante il passaggio */
+.g-hills-far { fill: #332f26 }
+.g-hills { fill: #3a352b }
+.g-mid { fill: #2c3827; stroke: #4d4736 }
+.g-mid .a { fill: #4d4736; stroke: none }
+.g-fore { fill: #59523f }
+.g-fore ellipse { fill: #2c3827 }
+
+.land { position: absolute; inset: 0; width: 100%; height: 100%; display: block }
+
+.track { position: absolute; inset: 0; will-change: transform }
+
+.panel {
+  position: absolute; top: 40%; width: min(26em, 78vw);
+  transform: translate(-50%, -50%);
+}
+.panel--high { top: 27% }
+.panel--low { top: 57% }
+
+.panel__eyebrow {
+  font-family: var(--mono); font-size: var(--step--1); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.panel__name {
+  font-family: var(--display); font-weight: 700; font-size: var(--step-2);
+  letter-spacing: .08em; text-transform: uppercase; line-height: 1.05;
+  margin-top: .5rem; text-wrap: balance;
+}
+.panel__name::after {
+  content: ""; display: block; width: 2.6rem; height: 2px;
+  background: var(--accent); margin-top: .7rem;
+}
+.panel__fact { margin-top: .8rem; max-width: 34ch; line-height: 1.55 }
+.panel__colo {
+  margin-top: 1.2rem; font-family: var(--mono); font-size: var(--step--1);
+  letter-spacing: .06em; color: var(--ink-muted);
+}
+
+/* hero */
+.panel--hero { top: 39%; width: min(40em, 88vw); text-align: left }
+.hero__title {
+  font-family: var(--display); font-weight: 700;
+  font-size: var(--display-size); line-height: .95; letter-spacing: .05em;
+  text-transform: uppercase; margin-top: 1rem; margin-left: -.04em;
+}
+.hero__title em { font-style: normal; color: var(--accent) }
+.hero__lede { margin-top: 1.1rem; font-size: var(--step-1); line-height: 1.35 }
+.hero__meta {
+  margin-top: 1.6rem; font-family: var(--mono); font-size: var(--step--1);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-muted);
+}
+.hero__cue {
+  display: inline-block; margin-top: .9rem; padding: .35rem .65rem;
+  font-family: var(--mono); font-size: var(--step--1);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--accent);
+  background: var(--stone); border: 1px solid var(--ink);
+}
+.hero__cue-arrow { display: inline-block }
+
+/* l'interludio scuro respira più largo */
+.panel--dark { width: min(30em, 82vw); text-align: center; top: 42% }
+.panel--dark .panel__name::after { margin-inline: auto }
+
+.panel--basoli { top: 24%; text-align: center; padding: .9rem 1.2rem }
+.panel--basoli .panel__name::after { margin-inline: auto }
+.panel--basoli .panel__fact { margin-inline: auto }
+/* il testo del pannello segue lo zoom: scuro sul cielo, chiaro sulla pietra,
+   con una lacca scura che compare quando la carreggiata riempie il quadro */
+.panel--basoli {
+  color: color-mix(in oklab, var(--ink), #f2ecdf calc(var(--zoom, 0) * 100%));
+  background: color-mix(in oklab, transparent, rgb(20 19 15 / .78) calc(var(--zoom, 0) * 100%));
+}
+.panel--basoli .panel__eyebrow { color: color-mix(in oklab, var(--ink-muted), #c9bda3 calc(var(--zoom, 0) * 100%)) }
+
+.panel--arrivo { width: min(30em, 82vw) }
+
+/* ── modalità touch: la scena È lo scroller orizzontale ────────── */
+
+html.js[data-mode="touch"] .journey { height: 100svh }
+html.js[data-mode="touch"] .scene {
+  position: relative; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+html.js[data-mode="touch"] .scene::-webkit-scrollbar { display: none }
+html.js[data-mode="touch"] .track { position: relative; height: 100%; inset: auto }
+html.js[data-mode="touch"] .panel { scroll-snap-align: center }
+html.js[data-mode="touch"] .scene:focus-visible { outline-offset: -3px }
+
+/* ── senza JS: il viaggio resta leggibile come documento ───────── */
+
+html:not(.js) .land, html:not(.js) .layer, html:not(.js) .sun, html:not(.js) .tabula { display: none }
+html:not(.js) .hud { position: static; margin: 1rem var(--gutter) }
+html:not(.js) .scene { position: static; height: auto; overflow: visible }
+html:not(.js) .track { position: static }
+html:not(.js) .panel {
+  position: static; transform: none; width: auto;
+  max-width: 40rem; margin: 0 auto; padding: 3rem var(--gutter);
+}
+html:not(.js) .panel + .panel { border-top: 1px solid var(--line) }
+
+/* ── colophon ──────────────────────────────────────────────────── */
+
+.colophon {
+  content-visibility: auto; contain-intrinsic-size: auto 60rem;
+  background: var(--bg); border-top: 1px solid var(--line);
+}
+.colophon__inner { max-width: 64rem; margin-inline: auto; padding: clamp(4rem, 9vw, 8rem) var(--gutter) }
+.eyebrow {
+  font-family: var(--mono); font-size: var(--step--1); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.colophon__title {
+  font-family: var(--display); font-weight: 700; font-size: var(--step-2);
+  letter-spacing: .08em; text-transform: uppercase; margin-top: .6rem;
+}
+.rule { border: 0; height: 2px; width: 4rem; background: var(--accent); margin: 1.4rem 0 2.2rem }
+
+.table-wrap { overflow-x: auto }
+.itin { width: 100%; max-width: 34rem; border-collapse: collapse; font-size: var(--step--1) }
+.itin caption {
+  text-align: left; font-family: var(--mono); letter-spacing: .08em;
+  color: var(--ink-muted); padding-bottom: .7rem; text-transform: uppercase; font-size: .72rem;
+}
+.itin th, .itin td { padding: .5rem .8rem .5rem 0; text-align: left; border-bottom: 1px solid var(--line) }
+.itin thead th {
+  font-family: var(--mono); font-weight: 400; letter-spacing: .14em;
+  text-transform: uppercase; font-size: .68rem; color: var(--ink-muted);
+}
+.itin tbody th { font-family: var(--display); font-weight: 700; letter-spacing: .05em; text-transform: uppercase }
+.itin td { font-family: var(--mono) }
+.itin td:last-child { color: var(--accent); font-weight: 700 }
+
+.colophon__cols {
+  margin-top: 3rem; display: grid; gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+}
+.colophon__cols h3 {
+  font-family: var(--display); font-size: 1rem; letter-spacing: .1em;
+  text-transform: uppercase; margin-bottom: .5rem;
+}
+.colophon__cols p { font-size: var(--step--1); line-height: 1.6; max-width: 44ch }
+.colophon__cols a, .foot a { color: inherit }
+.colophon__cols a:hover, .foot a:hover { color: var(--accent) }
+
+.foot {
+  display: flex; flex-wrap: wrap; gap: .5rem 2rem; justify-content: space-between;
+  padding: 1.4rem var(--gutter) max(1.4rem, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: var(--step--1); color: var(--ink-muted);
+  background: var(--bg);
+}
+
+/* ── schermi piccoli ───────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .head__meta { display: none }
+  .tabula__stop { display: none }
+  .hud { min-width: 9.5rem; padding: .65rem .85rem .75rem }
+  .hud__mp { font-size: 1.6rem }
+  .panel { top: 38% }
+  .panel--high { top: 26% }
+  .panel--low { top: 52% }
+}
+
+/* viewport bassi (telefono in orizzontale, finestre corte): l'hero si compatta */
+@media (max-height: 700px) {
+  .panel--hero { top: 50% }
+  .hero__lede { margin-top: .8rem }
+  .hero__meta { display: none } /* le stesse cifre sono nel miliario e nella Tabula */
+  .hud { min-width: 9rem; padding: .55rem .8rem .65rem }
+  .hud__mp { font-size: 1.5rem }
+  .panel--high { top: 24% }
+}
+@media (max-height: 480px) {
+  :root { --head-h: 2.5rem; --tabula-h: 2rem;
+    --display-size: clamp(2rem, min(1rem + 11vw, 13vh), 10.5rem) }
+  .hud { left: auto; right: var(--gutter) }
+}
+
+/* ── movimento ridotto ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none }
+  .hud, .tabula, .head { transition: none }
+}

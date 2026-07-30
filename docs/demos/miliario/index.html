@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>miliario — la Via Appia, percorsa in orizzontale</title>
+<meta name="description" content="Questo sito è la Via Appia da Roma a Brindisi, percorsa in orizzontale: lo scroll muove la strada sotto i piedi e il progresso si misura in miglia romane sui miliari, non in percentuali. Zero dipendenze, zero immagini — costruito con la awwwards skill.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f2ecdf">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="miliario — la Via Appia, percorsa in orizzontale">
+<meta property="og:description" content="563 km da Porta Appia a Brundisium. La strada scorre sotto i piedi, il progresso si legge sui miliari: MP CCCLXXXI, mai una percentuale.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/miliario/">
+<meta property="og:image" content="https://sandrohub013.github.io/awwwards-skill/demos/miliario/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Regina Viarum — titolo lapidario su carta, con la strada basaltica e un miliario.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preload" as="font" type="font/woff2" href="fonts/cinzel-latin.woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+
+<a class="skip" href="#itinerario">Salta all&rsquo;itinerario</a>
+
+<header class="head">
+  <a class="head__back" href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Studio 13 &middot; percorso orizzontale &middot; zero dipendenze</p>
+</header>
+
+<!-- La Tabula: l'itinerario come linea che si disegna. Il tracciato è lo
+     stesso identico path due volte: una guida chiara sotto, il disegno in
+     inchiostro sopra, il cui stroke-dashoffset è legato al progresso del
+     viaggio. Le tappe sono punti generati dal codice sulle frazioni reali
+     di percorso. -->
+<div class="tabula" aria-hidden="true">
+  <svg class="tabula__svg" viewBox="0 0 1000 36" preserveAspectRatio="none">
+    <path class="tabula__under" d="M20,24 Q500,6 980,20" fill="none"/>
+    <path class="tabula__route" d="M20,24 Q500,6 980,20" fill="none" data-route/>
+    <g class="tabula__dots" data-dots></g>
+  </svg>
+  <p class="tabula__stop" data-tabula-stop>ROMA &middot; PORTA APPIA</p>
+</div>
+
+<!-- Il miliario: la tavoletta HUD, sempre calcolata dallo scroll. -->
+<aside class="hud" aria-label="Miliario: posizione lungo la via">
+  <p class="hud__label">Miliarivm</p>
+  <p class="hud__mp"><span data-mp>I</span></p>
+  <p class="hud__km">km <span data-km>0</span> <span class="dim">circa</span></p>
+  <p class="hud__stop" data-stop aria-live="polite">Roma &middot; Porta Appia</p>
+</aside>
+
+<main id="main">
+
+  <section class="journey" data-journey aria-labelledby="hero-t">
+    <div class="scene" data-scene>
+      <!-- cielo, sole e quattro piani di parallasse: SVG generati dal codice,
+           colorati dalle stesse custom properties del crepuscolo -->
+      <div class="sun" data-sun aria-hidden="true"></div>
+      <div class="layer" data-layer="hillsFar" aria-hidden="true"></div>
+      <div class="layer" data-layer="hillsNear" aria-hidden="true"></div>
+      <div class="layer" data-layer="mid" aria-hidden="true"></div>
+      <div class="layer" data-layer="fore" aria-hidden="true"></div>
+      <canvas class="land" data-land aria-hidden="true"></canvas>
+
+      <div class="track" data-track>
+
+        <!-- BEAT 1 — hero -->
+        <article class="panel panel--hero" data-lead>
+          <p class="panel__eyebrow">312 a.C. &middot; Appio Claudio Cieco</p>
+          <h1 class="hero__title" id="hero-t">Regina<br>Viarum</h1>
+          <p class="hero__lede">La strada non scorre. Si percorre.</p>
+          <p class="hero__meta">Roma &#8594; Brundisium &middot; 563 km circa &middot; <span data-mp-for="563">MP CCCLXXXI</span></p>
+          <p class="hero__cue" data-cue>Scorri per camminare <span class="hero__cue-arrow" aria-hidden="true" data-cue-arrow>&#8595;</span></p>
+        </article>
+
+        <!-- BEAT 2 — partenza -->
+        <article class="panel" data-km="0">
+          <p class="panel__eyebrow"><span data-mp-for="0">MP I</span> &middot; km 0</p>
+          <h2 class="panel__name">Porta Appia</h2>
+          <p class="panel__fact">Nel 312 a.C. il censore Appio Claudio Cieco fa costruire
+            il primo tratto, da Roma a Capua: &egrave; la prima strada romana a portare
+            il nome del suo costruttore. La porta oggi si chiama San Sebastiano, e la
+            strada esce ancora da l&igrave;.</p>
+        </article>
+
+        <!-- BEAT 3 -->
+        <article class="panel panel--low" data-km="26">
+          <p class="panel__eyebrow"><span data-mp-for="26">MP XVIII</span> &middot; km 26 circa</p>
+          <h2 class="panel__name">Ariccia</h2>
+          <p class="panel__fact">Per non scendere nella valle, la strada la attraversava
+            su un viadotto di terrapieno alto fino a tredici metri. Il terrapieno di
+            Ariccia si vede ancora.</p>
+        </article>
+
+        <!-- BEAT 4 -->
+        <article class="panel panel--high" data-km="64">
+          <p class="panel__eyebrow"><span data-mp-for="64">MP XLIII</span> &middot; km 64 circa</p>
+          <h2 class="panel__name">Forum Appii</h2>
+          <p class="panel__fact">Stazione di posta nell&rsquo;Agro Pontino, dove la strada
+            correva affiancata da un canale navigabile. Orazio vi pass&ograve; nel 37 a.C.
+            e raccont&ograve; il tratto in barca, di notte, tra le rane e le zanzare.</p>
+        </article>
+
+        <!-- BEAT 5 -->
+        <article class="panel panel--low" data-km="104">
+          <p class="panel__eyebrow"><span data-mp-for="104">MP LXX</span> &middot; km 104 circa</p>
+          <h2 class="panel__name">Tarracina</h2>
+          <p class="panel__fact">Dove la rupe scendeva a mare, Traiano la fece tagliare
+            per tenere la strada bassa: un&rsquo;iscrizione ne misurava la profondit&agrave;.
+            Oggi &egrave; Terracina.</p>
+        </article>
+
+        <!-- BEAT 6 -->
+        <article class="panel panel--high" data-km="138">
+          <p class="panel__eyebrow"><span data-mp-for="138">MP XCIII</span> &middot; km 138 circa</p>
+          <h2 class="panel__name">Formiae</h2>
+          <p class="panel__fact">Nella sua villa di Formia, Cicerone fu raggiunto e ucciso
+            dai sicari di Antonio nel 43 a.C. Aveva chiesto di essere riportato a Roma,
+            lungo questa strada.</p>
+        </article>
+
+        <!-- BEAT 7 — interludio scuro -->
+        <article class="panel panel--dark" data-km="168">
+          <p class="panel__eyebrow">71 a.C. &middot; tra Capua e Roma</p>
+          <h2 class="panel__name">La notte della strada</h2>
+          <p class="panel__fact">Dopo la sconfitta di Spartaco, seimila prigionieri furono
+            crocifissi lungo il ciglio della strada, da Capua a Roma. La regina viarum
+            fu anche una via di monito.</p>
+        </article>
+
+        <!-- BEAT 8 -->
+        <article class="panel panel--low" data-km="196">
+          <p class="panel__eyebrow"><span data-mp-for="196">MP CXXXIII</span> &middot; km 196 circa</p>
+          <h2 class="panel__name">Capua</h2>
+          <p class="panel__fact">Qui finiva il tracciato del 312 a.C. Tutto ci&ograve; che
+            segue &egrave; un prolungamento: verso Benevento, verso l&rsquo;Adriatico,
+            verso l&rsquo;Oriente.</p>
+        </article>
+
+        <!-- BEAT 9 -->
+        <article class="panel panel--high" data-km="264">
+          <p class="panel__eyebrow"><span data-mp-for="264">MP CLXXIX</span> &middot; km 264 circa</p>
+          <h2 class="panel__name">Beneventum</h2>
+          <p class="panel__fact">Da qui la strada punta a oriente. Secoli dopo Traiano vi
+            apr&igrave; la via Traiana, una variante pi&ugrave; rapida, e la celebr&ograve;
+            con l&rsquo;arco che ancora porta il suo nome.</p>
+        </article>
+
+        <!-- BEAT 10 — interludio basoli -->
+        <article class="panel panel--high panel--basoli" data-km="340">
+          <p class="panel__eyebrow">Interludio &middot; la carreggiata</p>
+          <h2 class="panel__name">I basoli</h2>
+          <p class="panel__fact">La carreggiata era lastricata con poligoni di basalto,
+            posati leggermente convessi per far defluire la pioggia. Dove il traffico
+            era intenso, le ruote dei carri hanno lasciato solchi ancora visibili.</p>
+        </article>
+
+        <!-- BEAT 11 -->
+        <article class="panel panel--low" data-km="410">
+          <p class="panel__eyebrow"><span data-mp-for="410">MP CCLXXVII</span> &middot; km 410 circa</p>
+          <h2 class="panel__name">Venusia</h2>
+          <p class="panel__fact">Venosa, al confine tra Lucania e Apulia: qui nacque
+            Orazio, che della strada fu viaggiatore e cantore.</p>
+        </article>
+
+        <!-- BEAT 12 -->
+        <article class="panel panel--high" data-km="498">
+          <p class="panel__eyebrow"><span data-mp-for="498">MP CCCXXXVII</span> &middot; km 498 circa</p>
+          <h2 class="panel__name">Tarentum</h2>
+          <p class="panel__fact">La pi&ugrave; grande citt&agrave; della Magna Grecia.
+            Il suo porto guardava gi&agrave; a oriente: la strada stava diventando
+            una via per la Grecia.</p>
+        </article>
+
+        <!-- BEAT 13 — arrivo -->
+        <article class="panel panel--arrivo" data-km="563">
+          <p class="panel__eyebrow"><span data-mp-for="563">MP CCCLXXXI</span> &middot; km 563 circa</p>
+          <h2 class="panel__name">Brundisium</h2>
+          <p class="panel__fact">Due colonne segnavano il termine della strada sul porto.
+            Una croll&ograve; nel 1528; l&rsquo;altra sta ancora. Da qui le navi
+            partivano per Durazzo e per la Grecia.</p>
+          <p class="panel__colo">563 km circa &middot; <span data-mp-for="563">MP CCCLXXXI</span> &middot;
+            &laquo;regina viarum&raquo; &mdash; Stazio, <i>Silvae</i> II, 2</p>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Equivalente testuale del viaggio per screen reader: la stessa
+         informazione delle tappe disegnate, in forma di elenco statico. -->
+    <div class="sr-only">
+      <h2>Itinerario completo della Via Appia</h2>
+      <ol>
+        <li>Roma, Porta Appia &mdash; km 0, miglio I</li>
+        <li>Ariccia &mdash; km 26 circa, miglio XVIII</li>
+        <li>Forum Appii &mdash; km 64 circa, miglio XLIII</li>
+        <li>Tarracina (Terracina) &mdash; km 104 circa, miglio LXX</li>
+        <li>Formiae (Formia) &mdash; km 138 circa, miglio XCIII</li>
+        <li>Capua &mdash; km 196 circa, miglio CXXXIII</li>
+        <li>Beneventum (Benevento) &mdash; km 264 circa, miglio CLXXIX</li>
+        <li>Venusia (Venosa) &mdash; km 410 circa, miglio CCLXXVII</li>
+        <li>Tarentum (Taranto) &mdash; km 498 circa, miglio CCCXXXVII</li>
+        <li>Brundisium (Brindisi) &mdash; km 563 circa, miglio CCCLXXXI</li>
+      </ol>
+      <p>Un miglio romano (mille passus) equivale a 1.478 metri; 563 km corrispondono
+        a circa 381 miglia. Le distanze dell&rsquo;itinerario antico sono indicate come circa.</p>
+    </div>
+  </section>
+
+  <!-- BEAT 14 — colophon, flusso normale del documento -->
+  <section class="colophon" id="itinerario" aria-labelledby="itin-t">
+    <div class="colophon__inner">
+      <p class="eyebrow">Colophon</p>
+      <h2 class="colophon__title" id="itin-t">Itinerarium</h2>
+      <hr class="rule" aria-hidden="true">
+
+      <div class="table-wrap">
+        <table class="itin">
+          <caption>Le dieci tappe del percorso, con distanze e miglia romane</caption>
+          <thead>
+            <tr><th scope="col">Mansio</th><th scope="col">km <i>circa</i></th><th scope="col">MP</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Roma &middot; Porta Appia</th><td>0</td><td data-mp-for="0">I</td></tr>
+            <tr><th scope="row">Ariccia</th><td>26</td><td data-mp-for="26">XVIII</td></tr>
+            <tr><th scope="row">Forum Appii</th><td>64</td><td data-mp-for="64">XLIII</td></tr>
+            <tr><th scope="row">Tarracina</th><td>104</td><td data-mp-for="104">LXX</td></tr>
+            <tr><th scope="row">Formiae</th><td>138</td><td data-mp-for="138">XCIII</td></tr>
+            <tr><th scope="row">Capua</th><td>196</td><td data-mp-for="196">CXXXIII</td></tr>
+            <tr><th scope="row">Beneventum</th><td>264</td><td data-mp-for="264">CLXXIX</td></tr>
+            <tr><th scope="row">Venusia</th><td>410</td><td data-mp-for="410">CCLXXVII</td></tr>
+            <tr><th scope="row">Tarentum</th><td>498</td><td data-mp-for="498">CCCXXXVII</td></tr>
+            <tr><th scope="row">Brundisium</th><td>563</td><td data-mp-for="563">CCCLXXXI</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="colophon__cols">
+        <div>
+          <h3>Le misure</h3>
+          <p>Un <i>mille passus</i> &mdash; mille doppi passi &mdash; misura 1.478 metri;
+            ogni miglio la strada piantava un cippo di pietra con il suo numero.
+            563 km fanno 381 miglia: <b>MP CCCLXXXI</b>, e nessuna percentuale.
+            Le distanze tra le tappe seguono l&rsquo;itinerario antico e le fonti
+            moderne, e per questo sono segnate come <i>circa</i>.</p>
+        </div>
+        <div>
+          <h3>La costruzione</h3>
+          <p>Un file HTML, un foglio di stile, uno script. Nessuna dipendenza, nessuna
+            immagine: cielo, colline, acquedotti, pini, tombe, basoli e miliari sono
+            disegnati dal codice a ogni frame, da un seme deterministico &mdash; il 312,
+            come l&rsquo;anno. I caratteri sono Cinzel e Spectral, auto-ospitati, OFL.</p>
+        </div>
+        <div>
+          <h3>Le fonti</h3>
+          <p>I fatti delle tappe sono quelli tramandati: Appio Claudio e il 312 a.C.,
+            il viaggio di Orazio del 37 a.C. (<i>Sermones</i> I, 5), il taglio traianeo
+            del Pesco Montano, Cicerone a Formia nel 43 a.C., i seimila del 71 a.C.,
+            le colonne di Brindisi e il crollo del 1528.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>miliario &mdash; uno studio costruito con la <a href="../../">awwwards skill</a>.</p>
+  <p><a href="../../">&#8592; tutti i demo</a> &middot; <a href="https://github.com/SandroHub013/awwwards-skill" rel="noopener">sorgente</a></p>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>

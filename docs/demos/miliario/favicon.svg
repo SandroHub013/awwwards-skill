@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#f2ecdf"/>
+  <rect x="9" y="24" width="14" height="3" fill="#b0a588"/>
+  <path d="M12 24 V12 a4 4 0 0 1 8 0 V24 Z" fill="#d9cfba" stroke="#26241f" stroke-width="1.4"/>
+  <text x="16" y="19.5" font-family="Georgia, serif" font-size="6.5" font-weight="bold" text-anchor="middle" fill="#a0341f">MP</text>
+</svg>
