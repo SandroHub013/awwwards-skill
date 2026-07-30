@@ -78,6 +78,14 @@ number and changed nothing. Pixel-diffed over the word alone, `WONK 1` against `
 `opsz 60` for the same reason, and both controls have two stops rather than a hundred,
 because the second record is a threshold at **0.49** and not a ramp.
 
+Fixing the mechanism was not enough to make it *read*. Rendered side by side, the six
+substituted glyphs are not equal: `h m n s` change by a spur and a shoulder — a nuance
+at any size — while the **ampersand** swaps a conventional form for a looping one. The
+word `wonk` holds exactly one of the six, the `n`, which is the quietest kind of change
+the axis can make. So the specimen is now `handsome &`, which carries five of the six,
+and the hero control gained the ampersand beside it as its proof glyph. Three cards, one
+row: one column or three, never two and an orphan.
+
 ## Not verified
 
 - INP, and sustained frame rate under a real trace

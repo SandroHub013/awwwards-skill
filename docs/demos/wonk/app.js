@@ -48,8 +48,12 @@ if (!REDUCED) {
   const cells = document.querySelectorAll(".hero__panel [data-ax]");
 
   if (word && slider) {
+    /* Set on the section, not the word: the hero word and the ampersand beside
+       the control both read it, and the value still has exactly one owner. */
+    const owner = word.closest(".hero") || word;
+
     const paint = (wonk) => {
-      word.style.setProperty("--hx-wonk", wonk);
+      owner.style.setProperty("--hx-wonk", wonk);
       out.value = String(wonk);
       cells.forEach((c) => {
         const tag = c.dataset.ax;

@@ -48,12 +48,19 @@
 
       <div class="control">
         <label class="control__label" for="wonk">
-          WONK <span class="control__hint">watch the n</span>
+          WONK <span class="control__hint">two states</span>
         </label>
         <input id="wonk" class="control__range" type="range"
                min="0" max="1" step="1" value="1"
                aria-describedby="wonk-out">
         <output id="wonk-out" class="control__out" for="wonk">1</output>
+        <div class="control__readback">
+          <p class="control__proof" aria-hidden="true">&amp;</p>
+          <p class="control__proofnote">
+            The ampersand is one of the six glyphs this axis swaps, and the only
+            one that swaps loudly.
+          </p>
+        </div>
       </div>
 
       <dl class="readout" aria-label="Live axis values">
@@ -170,7 +177,7 @@
       <h2 class="section__title">Each axis, alone, on the same word</h2>
     </div>
     <p class="lede" data-reveal>
-      Same ten letters, same file. Each row moves one axis and holds the other three
+      Same specimen, same file. Each row moves one axis and holds the other three
       exactly where the font left them &mdash; so every difference you can see below is
       attributable to a single number.
     </p>
@@ -181,7 +188,7 @@
           <h3 class="axis__tag"><code>opsz</code></h3>
           <p class="axis__name">Optical Size <span>9 &ndash; 144</span></p>
         </div>
-        <p class="axis__spec" data-spec="opsz">Handgloves</p>
+        <p class="axis__spec" data-spec="opsz">handsome &amp;</p>
         <input class="axis__range" type="range" min="9" max="144" step="1" value="144"
                data-axis="opsz" aria-label="Optical Size, 9 to 144">
         <output class="axis__out" data-out="opsz">144</output>
@@ -191,7 +198,7 @@
           <h3 class="axis__tag"><code>wght</code></h3>
           <p class="axis__name">Weight <span>100 &ndash; 900</span></p>
         </div>
-        <p class="axis__spec" data-spec="wght">Handgloves</p>
+        <p class="axis__spec" data-spec="wght">handsome &amp;</p>
         <input class="axis__range" type="range" min="100" max="900" step="1" value="300"
                data-axis="wght" aria-label="Weight, 100 to 900">
         <output class="axis__out" data-out="wght">300</output>
@@ -201,7 +208,7 @@
           <h3 class="axis__tag"><code>SOFT</code></h3>
           <p class="axis__name">Softness <span>0 &ndash; 100</span></p>
         </div>
-        <p class="axis__spec" data-spec="SOFT">Handgloves</p>
+        <p class="axis__spec" data-spec="SOFT">handsome &amp;</p>
         <input class="axis__range" type="range" min="0" max="100" step="1" value="100"
                data-axis="SOFT" aria-label="Softness, 0 to 100">
         <output class="axis__out" data-out="SOFT">100</output>
@@ -211,7 +218,7 @@
           <h3 class="axis__tag"><code>WONK</code></h3>
           <p class="axis__name">Wonky <span>0 &ndash; 1</span></p>
         </div>
-        <p class="axis__spec" data-spec="WONK">Handgloves</p>
+        <p class="axis__spec" data-spec="WONK">handsome &amp;</p>
         <input class="axis__range" type="range" min="0" max="1" step="1" value="0"
                data-axis="WONK" data-base-opsz="60" aria-label="Wonky, 0 or 1">
         <output class="axis__out" data-out="WONK">0</output>
@@ -223,9 +230,10 @@
       <code>opsz</code> 60 rather than the shipped 9, because under 18 the substitution
       never fires and the row would prove nothing. It also has two stops instead of a
       hundred: the record that fires above 18 is a threshold at
-      <b data-hl>0.49</b>, not a ramp. The substitution reaches six glyphs and
-      <code>Handgloves</code> holds two of them, so watch the <i>n</i> and the <i>s</i>
-      &mdash; the capital <i>H</i> is not on the list.
+      <b data-hl>0.49</b>, not a ramp. The specimen carries five of the six glyphs the
+      substitution reaches &mdash; <i>h</i>, <i>n</i>, <i>s</i>, <i>m</i> and the
+      ampersand. Four of those change by a spur and a shoulder. The ampersand changes
+      into a different letter, which is why it is the one to watch.
     </p>
   </section>
 
@@ -241,7 +249,7 @@
         <caption class="sr-only">Metrics parsed from the Fraunces variable font binary</caption>
         <tbody>
           <tr><th scope="row">Units per em</th><td>2000</td><td>the grid every outline is drawn on</td></tr>
-          <tr><th scope="row">Glyphs</th><td>698</td><td>in the Latin build parsed here</td></tr>
+          <tr><th scope="row">Glyphs</th><td>245</td><td>in the Latin subset shipped with this page</td></tr>
           <tr><th scope="row">x-height</th><td>964</td><td>48.2% of the em &mdash; large, which is why it holds at text size</td></tr>
           <tr><th scope="row">Cap height</th><td>1400</td><td>70.0% of the em</td></tr>
           <tr><th scope="row">Ascender</th><td>1956</td><td>hhea, 97.8% of the em</td></tr>
@@ -269,25 +277,25 @@
 
     <div class="states__grid">
       <figure class="state state--gated">
-        <!-- Handsome, not a prettier word: n, s and m are three of the six
-             glyphs WONK swaps, so the card carries three times the evidence. -->
-        <p class="state__spec" aria-hidden="true">Handsome</p>
+        <!-- The specimen holds h n s m and the ampersand: five of the six glyphs
+             WONK swaps, and the ampersand is the one that reads across a room. -->
+        <p class="state__spec" aria-hidden="true">handsome &amp;</p>
         <figcaption>
           <b>WONK&nbsp;1</b> &middot; SOFT&nbsp;0 &middot; opsz&nbsp;9 &middot; wght&nbsp;900
-          <span>What you get by typing nothing. The wonk is on and the
-          <i>n</i>, <i>s</i> and <i>m</i> are all tidy.</span>
+          <span>What you get by typing nothing. The wonk is on and the ampersand
+          is the plain one.</span>
         </figcaption>
       </figure>
       <figure class="state state--wonk">
-        <p class="state__spec" aria-hidden="true">Handsome</p>
+        <p class="state__spec" aria-hidden="true">handsome &amp;</p>
         <figcaption>
           <b>WONK&nbsp;1</b> &middot; SOFT&nbsp;0 &middot; opsz&nbsp;60 &middot; wght&nbsp;900
-          <span>The same 1, one axis above the ceiling. Now those three
-          letters are allowed to kick.</span>
+          <span>The same 1, one axis above the ceiling. Now it is the looping
+          one, and nothing else about the request changed.</span>
         </figcaption>
       </figure>
       <figure class="state state--true">
-        <p class="state__spec" aria-hidden="true">Handsome</p>
+        <p class="state__spec" aria-hidden="true">handsome &amp;</p>
         <figcaption>
           <b>WONK&nbsp;0</b> &middot; SOFT&nbsp;100 &middot; opsz&nbsp;144 &middot; wght&nbsp;300
           <span>What you get by asking.</span>
