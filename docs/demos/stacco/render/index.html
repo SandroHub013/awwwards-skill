@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>stacco — offline renderer</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js";
+import { buildWorld, PAL } from "./scene.js";
+import { poseGirl, poseWolf } from "./actors.js";
+import { timeline, fovFor } from "./shots.js";
+
+const q = new URLSearchParams(location.search);
+const W = +(q.get("w") || 1920), H = +(q.get("h") || 804);
+const aspect = W / H;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(1);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const world = buildWorld(THREE);
+scene.add(world.root);
+scene.add(world.sky);
+scene.fog = new THREE.FogExp2(0x7d9294, 0.016);
+
+const camera = new THREE.PerspectiveCamera(30, aspect, 0.08, 460);
+const { rows, totalSecs, totalFrames } = timeline();
+
+/* The staging API a shot gets. Every actor is posed through here, so a shot
+   never touches the rig directly and cannot leave one half-posed for the next. */
+const hidden = new Set();
+const api = {
+  hide(actor) { actor.root.visible = false; },
+  girlWalk: (phase, o) => { world.girl.root.visible = true; poseGirl(world.girl, phase, o); },
+  girlDoorPose: (phase, o) => poseGirl(world.girlDoor, phase, o),
+  wolfWalk: (phase, o) => poseWolf(world.wolf, phase, o),
+  wolfBedPose: (phase, o) => poseWolf(world.wolfBed, phase, o),
+};
+
+const col = new THREE.Color();
+function applyGrade(g) {
+  world.sun.intensity = g.sunI;
+  world.sun.color.set(g.sunC);
+  world.hemi.intensity = g.hemiI;
+  world.hemi.color.set(g.hemiSky);
+  world.hemi.groundColor.set(g.hemiGround);
+  scene.fog.color.set(g.fog);
+  scene.fog.density = g.fogD;
+  const u = world.sky.material.uniforms;
+  u.top.value.set(g.skyTop);
+  u.horizon.value.set(g.skyHor);
+  u.glowAmt.value = g.glow;
+  u.sunDir.value.set(...g.sunDir).normalize();
+  renderer.toneMappingExposure = g.exposure;
+  world.shafts.visible = !!g.shafts;
+}
+
+/* Render one frame of one shot. `u` is the shot's own 0..1, never the film's —
+   a shot does not know where it sits in the edit, which is the point. */
+window.__renderFrame = (shotIndex, u) => {
+  const shot = rows[shotIndex];
+  applyGrade(shot.grade);
+
+  // reset the cast; each shot switches back on only what it stages
+  for (const a of [world.girl, world.wolf, world.wolfBed, world.girlDoor]) a.root.visible = false;
+  world.lights.eyeGlow.intensity = 0;
+  world.lights.doorL.intensity = 0;
+  world.lights.lampL.intensity = shotIndex === 8 ? 26 : 0;
+  world.lights.winA.intensity = shotIndex === 0 ? 16 : 0;
+  world.lights.winB.intensity = shotIndex === 7 ? 26 : 0;
+
+  const tSec = shot.startSec + u * shot.secs;
+  shot.stage(world, u, tSec, api);
+
+  /* Staging happens BEFORE the camera is placed, and the world matrices are
+     flushed in between, so a shot can aim at an actor's actual head rather than
+     at a number somebody typed and then had to keep in sync. */
+  world.root.updateMatrixWorld(true);
+  shot.after?.(world, THREE);
+  const c = shot.cam(u, world, THREE);
+  camera.fov = fovFor(shot, aspect);
+  camera.updateProjectionMatrix();
+  camera.up.set(...(c.up || [0, 1, 0]));
+  const off = aspect < 1.4 ? (shot.mOff || [0, 0, 0]) : [0, 0, 0];
+  camera.position.set(c.pos[0] + off[0], c.pos[1] + off[1], c.pos[2] + off[2]);
+  camera.lookAt(c.tgt[0], c.tgt[1], c.tgt[2]);
+  if (c.roll) camera.rotateZ(c.roll);
+
+  // the shadow box follows the shot, so 2048 texels cover 68 m instead of 200
+  const f = new THREE.Vector3(c.tgt[0], c.tgt[1], c.tgt[2]);
+  world.sun.target.position.copy(f);
+  world.sun.position.set(
+    f.x + shot.grade.sunDir[0] * 78,
+    f.y + shot.grade.sunDir[1] * 78,
+    f.z + shot.grade.sunDir[2] * 78);
+  world.sun.target.updateMatrixWorld();
+
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL("image/png");
+};
+
+// exposed for the shot-check harness: it reads real world positions back out
+window.__probe = (name) => {
+  const o = { girl: world.girl.neck, head: world.wolf.head, snout: world.wolf.snout,
+    eye: world.wolf.eyeR, wolfRoot: world.wolf.root, cam: camera }[name];
+  const v = new THREE.Vector3();
+  o.getWorldPosition(v);
+  return [+v.x.toFixed(3), +v.y.toFixed(3), +v.z.toFixed(3)];
+};
+
+window.__shots = rows.map((r) => ({ id: r.id, frames: r.frames, secs: r.secs }));
+window.__meta = { totalSecs, totalFrames, W, H };
+window.__ready = true;
+</script>
+</body>
+</html>

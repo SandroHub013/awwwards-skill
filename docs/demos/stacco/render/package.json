@@ -1,0 +1,16 @@
+{
+  "name": "stacco-render",
+  "version": "1.0.0",
+  "description": "offline bake, encode and measurement for the stacco demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "^25.4.0"
+  }
+}

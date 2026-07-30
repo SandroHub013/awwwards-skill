@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stacco — the cut is the storyteller</title>
+<meta name="description" content="Cappuccetto Rosso in nine shots, scrubbed by the scroll bar. Demo 09 was one take that hid its seams; this one is an edit that declares every cut, and prints the lens and the move under each frame. Nothing filmed, nothing generated. Built with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="stacco — the cut is the storyteller">
+<meta property="og:description" content="Nine shots, one tale. A scroll-scrubbed film that declares every cut instead of hiding it — because the cut is where a film speaks.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/stacco/">
+
+<link rel="preload" as="image" href="media/01-partenza.poster.avif" type="image/avif" fetchpriority="high">
+
+<!-- Critical CSS inline. The LCP element is shot 01's poster, preloaded above and
+     declared in the HTML; no <video> exists until JS decides the network can
+     afford one. Everything whose POSITION is fixed or sticky is styled here —
+     in soglia the same rule was learned by measuring a 0.064 CLS. -->
+<style>
+  :root{
+    --ink:#07090a;--ink-2:#0d1113;--bar:#05070700;
+    --pale:#e6ebe8;--pale-2:#9aa8a5;--pale-3:#61706e;
+    --rosso:#c4302f;--brace:#e0a463;
+    --gutter:clamp(1rem,.55rem + 2vw,2.6rem);
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --rail:clamp(9.5rem,18vh,12rem);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,h2,p,figure,ul,ol,dl,dd{margin:0;padding:0}
+  body{background:var(--ink);color:var(--pale);font-family:var(--sans);line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .skip{position:absolute;left:1rem;top:-5rem;z-index:90;background:var(--pale);color:var(--ink);
+    padding:.55rem 1rem;font-family:var(--mono);font-size:.8rem}
+  .skip:focus{top:1rem}
+  .head{position:fixed;inset-inline:0;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:.9rem;
+    align-items:baseline;justify-content:space-between;
+    padding:1rem var(--gutter);font-family:var(--mono);font-size:.8rem;
+    background:linear-gradient(180deg,var(--ink) 30%,transparent)}
+  .head a{color:inherit;text-decoration:none}
+  .head__meta{color:var(--pale-3);font-size:.7rem;letter-spacing:.13em;text-transform:uppercase}
+  .dim{color:var(--pale-3)}
+  .prog{position:fixed;top:0;left:0;right:0;height:2px;z-index:70;background:#ffffff14}
+  .prog i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--rosso)}
+  .film{position:relative;z-index:1;height:1130svh} /* 41 baked seconds × 0.25vh/s + 1; app.js fine-tunes */
+  .stage{position:sticky;top:0;height:100svh;display:grid;grid-template-rows:1fr var(--rail);
+    background:var(--ink);overflow:hidden}
+  .gate{position:relative;overflow:hidden}
+  .shot{position:absolute;inset:0;visibility:hidden}
+  .shot.is-on{visibility:visible}
+  .shot__still,.shot__clip{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+    background:var(--ink)}
+  .shot__clip{opacity:0}
+  .shot.has-clip .shot__clip{opacity:1}
+  .shot.has-clip .shot__still{opacity:0}
+  .card{position:absolute;left:var(--gutter);bottom:clamp(1.1rem,4vh,2.6rem);z-index:20;
+    max-width:min(90%,34rem);opacity:1;pointer-events:none}
+  .card__word{font-size:clamp(3.2rem,10.5vw,8.5rem);line-height:.86;letter-spacing:-.045em;
+    font-weight:600;margin:0}
+  .card__line{margin-top:.5rem;font-family:var(--mono);font-size:clamp(.68rem,1.1vw,.82rem);
+    letter-spacing:.06em;color:var(--pale-2);max-width:34ch}
+  .rail{position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;
+    gap:0 var(--gutter);padding:0 var(--gutter) clamp(.9rem,2.2vh,1.6rem)}
+  /* explicit areas: auto-placement put the caption and the slate in the same
+     cell at some viewport heights, and a slate printed through a headline is
+     the one thing a film's caption bar must never do */
+  .slate{grid-area:1/1/2/3;display:flex;flex-wrap:wrap;gap:.35rem 1.15rem;
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--pale-3);padding:.7rem 0 .6rem;border-top:1px solid #ffffff14}
+  .copy{grid-area:2/1/3/2;align-self:start;padding-top:.55rem;min-width:0}
+  .list{display:flex;gap:.32rem;align-items:center;padding:0;margin:0;list-style:none}
+  .auto{width:44px;height:44px;border-radius:50%;margin:0;padding:0;flex:0 0 auto}
+  .tools{grid-area:2/2/3/3;align-self:end}
+</style>
+<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2307090a'/><rect x='14' y='30' width='30' height='40' fill='%23e6ebe8'/><rect x='56' y='30' width='30' height='40' fill='%23c4302f'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#come">Skip the film, read how it is cut</a>
+
+<header class="head">
+  <a href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="head__meta">Demo 11 &middot; cut film &middot; nine shots, nine files</p>
+</header>
+
+<div class="prog" aria-hidden="true"><i data-prog></i></div>
+
+<main>
+<section class="film" data-film aria-label="Cappuccetto Rosso in nine shots. Scroll to run the film.">
+  <div class="stage" data-stage>
+
+    <div class="gate" data-gate>
+      <!-- Shot 01's still is declared, not injected: it is the LCP element and the
+           no-JS fallback. app.js claims it for the first shot. -->
+      <figure class="shot is-on" data-shot="01-partenza">
+        <img class="shot__still" src="media/01-partenza.poster.avif" width="1920" height="804"
+             fetchpriority="high" decoding="async"
+             alt="A cottage at first light with its door open, a small red-cloaked figure walking away down a dirt path toward dark trees.">
+      </figure>
+
+      <!-- The main title, over the first shot and only the first shot — a film
+           has one and this page had none. It paints with the first frame
+           (opacity 1 in the critical CSS, no JS reveal) so it is the first LCP
+           candidate; app.js takes it away at the first cut. -->
+      <div class="card" data-card>
+        <h1 class="card__word">stacco</h1>
+        <p class="card__line">Cappuccetto Rosso in nine shots &mdash; and the cut is the one
+          telling it</p>
+      </div>
+    </div>
+
+    <div class="rail">
+      <p class="slate" data-slate>
+        <span data-slate-shot>SHOT 01/09</span>
+        <span data-slate-lens>28 mm</span>
+        <span data-slate-move>LOCK + PUSH</span>
+        <span class="slate__tc" data-slate-tc>00:00.0</span>
+        <span class="slate__cut" data-slate-cut aria-hidden="true">CUT</span>
+      </p>
+
+      <div class="copy" data-copy>
+        <p class="copy__eyebrow"><span data-eyebrow>prima luce</span></p>
+        <h2 class="copy__head" data-head>She is given a basket and a road</h2>
+        <p class="copy__body" data-body>First light on the mother&rsquo;s cottage. The wood begins
+          where the light stops, and the road only goes one way.</p>
+      </div>
+
+      <div class="tools">
+        <nav aria-label="Shots">
+          <ol class="list" data-list></ol>
+        </nav>
+        <button class="auto" data-auto aria-pressed="false" aria-label="Resume the film (spacebar)">
+          <svg class="auto__play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5l8 5.5-8 5.5z" fill="currentColor"/></svg>
+          <svg class="auto__pause" viewBox="0 0 16 16" aria-hidden="true">
+            <rect x="3.5" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/>
+            <rect x="9.3" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── the epilogue ─────────────────────────────────────────────────────────── -->
+<section class="come" id="come">
+  <div class="come__inner">
+    <p class="eyebrow">come &egrave; montata</p>
+    <h2 class="come__title">Soglia hid its cuts. This one prints them.</h2>
+
+    <p class="come__lead">Demo 09 is a single camera flight through a hill town. It had to be
+      cut into seven files for one boring reason &mdash; a browser cannot seek a clip it has
+      not loaded &mdash; so every cut was hidden inside a doorway and the seam frame was
+      shipped twice. Here the cutting is the point, so the file boundary and the artistic
+      boundary are the same boundary: <b>one shot, one clip, nine of each</b>. There is no
+      seam frame, no crossfade, and nothing in the engine that pretends the edit is not
+      happening.</p>
+
+    <p>What that buys is the thing the brief actually asked for: a frame that keeps
+      changing. Nine setups, nine lenses from 18 to 85&thinsp;mm, and nine different jobs
+      for the camera &mdash; a lock-off, a static long lens, a side track, an overhead crane,
+      an insert, a low wide two-shot, a race at knee height, a crane down, and a push in.
+      A continuous take can hold your attention with places. An edit holds it with framing,
+      and it never has to move an inch to change your mind.</p>
+
+    <p>What it costs is the loader. A dissolve gives you a hundred milliseconds of warning
+      in which a still can stand in for a clip nobody has finished downloading. A cut gives
+      you nothing: it lands on frame one or it lands on a poster. So the lazy radius here is
+      <b>asymmetric</b> &mdash; it looks 2.4 viewport-heights forward and 0.8 back, keeps one
+      extra shot resident, and that is the entire price of not being able to fade.</p>
+
+    <svg class="cutmap" viewBox="0 0 760 96" role="img"
+         aria-label="Nine shot blocks of different widths, separated by full-height cut lines, with focal lengths printed under each.">
+      <g font-family="ui-monospace,Menlo,monospace" font-size="9" letter-spacing="1">
+        <rect x="10"    y="20" width="87.3" height="40" class="cm"/><text x="53.7"  y="45" text-anchor="middle">01</text><text x="53.7"  y="76" text-anchor="middle" class="cm-mm">28</text>
+        <rect x="100.3" y="20" width="78.6" height="40" class="cm"/><text x="139.6" y="45" text-anchor="middle">02</text><text x="139.6" y="76" text-anchor="middle" class="cm-mm">50</text>
+        <rect x="181.9" y="20" width="87.3" height="40" class="cm"/><text x="225.6" y="45" text-anchor="middle">03</text><text x="225.6" y="76" text-anchor="middle" class="cm-mm">35</text>
+        <rect x="272.2" y="20" width="69.8" height="40" class="cm cm-hero"/><text x="307.1" y="45" text-anchor="middle">04</text><text x="307.1" y="76" text-anchor="middle" class="cm-mm">24</text>
+        <rect x="345.0" y="20" width="61.1" height="40" class="cm"/><text x="375.6" y="45" text-anchor="middle">05</text><text x="375.6" y="76" text-anchor="middle" class="cm-mm">85</text>
+        <rect x="409.1" y="20" width="87.3" height="40" class="cm"/><text x="452.8" y="45" text-anchor="middle">06</text><text x="452.8" y="76" text-anchor="middle" class="cm-mm">21</text>
+        <rect x="499.4" y="20" width="69.8" height="40" class="cm"/><text x="534.3" y="45" text-anchor="middle">07</text><text x="534.3" y="76" text-anchor="middle" class="cm-mm">18</text>
+        <rect x="572.2" y="20" width="78.6" height="40" class="cm"/><text x="611.5" y="45" text-anchor="middle">08</text><text x="611.5" y="76" text-anchor="middle" class="cm-mm">40</text>
+        <rect x="653.8" y="20" width="96.0" height="40" class="cm"/><text x="701.8" y="45" text-anchor="middle">09</text><text x="701.8" y="76" text-anchor="middle" class="cm-mm">58</text>
+        <text x="10" y="12" class="cm-mm">MM</text>
+      </g>
+    </svg>
+    <p class="cutmap__note">Block width is the shot&rsquo;s baked duration; the number under it is
+      its focal length. Eight cuts, no dissolves, and shot 04 &mdash; the overhead &mdash; is the
+      one the other eight are arranged around.</p>
+
+    <dl class="facts">
+      <div><dt>Footage</dt><dd><b>None.</b> One seeded scene file &mdash; no models, no textures, no AI</dd></div>
+      <div><dt>Cast</dt><dd>Two rigs of boxes and cones: a child 1.16&thinsp;m tall, a wolf whose head meets hers</dd></div>
+      <div><dt>Render</dt><dd>984 frames, 24&thinsp;fps, 2.39:1 &mdash; headless Chrome + Three.js, baked on the repo&rsquo;s own machine</dd></div>
+      <div><dt>Clips</dt><dd>9. One per shot. No seam frame is shipped twice, because no seam is hidden</dd></div>
+      <div><dt>Lenses</dt><dd>Real fields of view: the slate&rsquo;s millimetres are what the camera was actually given</dd></div>
+      <div><dt>Mobile</dt><dd>Re-framed to 4:5, shot by shot, with its own field and offset &mdash; never a crop</dd></div>
+      <div><dt>Transport</dt><dd>Native scroll position, mapped. The scrollbar, the keyboard and deep links stay honest</dd></div>
+      <div><dt>Autoplay</dt><dd>The film runs itself at its baked 41&thinsp;s pace. Wheel, touch, arrows or spacebar hand control back</dd></div>
+      <div><dt>Reduced motion</dt><dd>No clip loads at all. Nine posters cross-dissolve &mdash; and nine stills with their lenses under them is a shot list</dd></div>
+    </dl>
+
+    <p class="come__note">Self-scored in
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/docs/demos/stacco/SCORE.md">SCORE.md</a>;
+      the concept and the shot list were written before any markup in
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/docs/demos/stacco/PLAN.md">PLAN.md</a>;
+      asset provenance in
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/docs/demos/stacco/ledger.json">ledger.json</a>.
+      The scroll-scrub doctrine both this and demo 09 are built on is
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/19-scroll-scrub.md">19-scroll-scrub.md</a>.</p>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <a href="../../">&#8592; awwwards<span class="dim">.skill</span></a>
+  <p class="dim">stacco &middot; a demo built with the skill, scored with the skill</p>
+</footer>
+
+<noscript><style>
+  .film{height:auto}
+  .stage{position:relative;height:auto;display:block}
+  .gate{height:60svh}
+  .shot{visibility:visible}
+  .rail{grid-template-columns:1fr}
+  .tools,.prog{display:none}
+</style></noscript>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

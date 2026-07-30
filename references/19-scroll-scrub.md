@@ -174,6 +174,25 @@ invisible; let JS create it when the network can afford it. And the landing copy
 must paint with the first frame (an `opacity: 1` initial state, not a JS reveal) or
 a late-painting paragraph becomes the LCP element instead.
 
+**That rule holds only for a film that waits for the user.** LCP keeps updating
+until the first input, and a full-bleed clip is a larger candidate than any title
+over it — so a scrub film that *autoplays from the top* will hand its LCP to a
+`<video>` for anyone who loads the page and does nothing. Demo 11 (`stacco`)
+measures 0.92s to its title and 5.65s to the clip that then displaces it. Budget for
+both numbers, publish both, and if a single good LCP matters more than the film
+starting by itself, do not autoplay on load.
+
+### Load one clip at a time
+
+A 2.4vh look-ahead means two or three clips want fetching the instant the page
+opens. Fetching them together is a stampede: measured on Fast 3G + 4× CPU, the first
+clip finished at **9.8s** in parallel against **~3.4s** on its own, and the film
+opened on a still it should already have been past. A six-line queue — one request in
+flight, sorted by distance from the current scroll position — fixed that, and also
+took scrub long frames from 8.3–10% to **3.9%** and autoplay long frames from
+4.1–4.3% to **2.8%**. The fetches were competing with the decoder, not only with each
+other, which is not obvious until it is measured.
+
 ## Fallbacks & accessibility
 
 - **Reduced motion**: clips never load; stills cross-dissolve on scroll. The journey
