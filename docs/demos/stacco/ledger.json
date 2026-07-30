@@ -1,0 +1,200 @@
+{
+  "demo": "stacco — the cut is the storyteller",
+  "subject": "Cappuccetto Rosso, told in nine shots",
+  "footage": "none — no filming, no stock, no AI generation",
+  "renderer": {
+    "scene": "render/scene.js + render/actors.js — one seeded world (mulberry32, seed 1697, the year Perrault published the tale)",
+    "shots": "render/shots.js — nine camera setups; the lens on screen is the field of view it was rendered through",
+    "engine": "three.js 0.185.1 (MIT) via CDN, headless Chrome (puppeteer-core)",
+    "capture": "render/capture.mjs — deterministic per-shot bake, window.__renderFrame(shot, u)",
+    "passes": [
+      {
+        "name": "desktop",
+        "size": "1920x804",
+        "aspect": "2.39:1 scope",
+        "frames": 984
+      },
+      {
+        "name": "mobile",
+        "size": "720x900",
+        "aspect": "4:5 re-frame",
+        "frames": 984,
+        "note": "re-framed shot by shot with its own field and lateral offset — never a crop"
+      }
+    ]
+  },
+  "encoder": "ffmpeg 8.1.2 — SVT-AV1 (desktop, -g 8), libx264 (desktop -g 8, mobile -g 4), AVIF stills via libaom",
+  "cutting": "one shot, one clip. No seam frame is shipped twice and no crossfade exists in the engine, because no cut here is hidden",
+  "film": {
+    "shots": 9,
+    "cuts": 8,
+    "secs": 41,
+    "frames": 984,
+    "fps": 24
+  },
+  "cost_usd": 0,
+  "shots": [
+    {
+      "id": "01-partenza",
+      "n": "01",
+      "title": "la partenza",
+      "lens_mm": 28,
+      "move": "LOCK + PUSH",
+      "secs": 5,
+      "frames": 120,
+      "fps": 24,
+      "bytes": {
+        "av1": 664639,
+        "h264": 823049,
+        "mobile_h264": 438195,
+        "poster": 10252,
+        "poster_mobile": 3911
+      }
+    },
+    {
+      "id": "02-margine",
+      "n": "02",
+      "title": "il margine",
+      "lens_mm": 50,
+      "move": "STATIC LOW",
+      "secs": 4.5,
+      "frames": 108,
+      "fps": 24,
+      "bytes": {
+        "av1": 561012,
+        "h264": 603347,
+        "mobile_h264": 393845,
+        "poster": 10307,
+        "poster_mobile": 4293
+      }
+    },
+    {
+      "id": "03-sentiero",
+      "n": "03",
+      "title": "il sentiero",
+      "lens_mm": 35,
+      "move": "TRACK LEFT",
+      "secs": 5,
+      "frames": 120,
+      "fps": 24,
+      "bytes": {
+        "av1": 809292,
+        "h264": 1067875,
+        "mobile_h264": 549882,
+        "poster": 7992,
+        "poster_mobile": 3954
+      }
+    },
+    {
+      "id": "04-dall-alto",
+      "n": "04",
+      "title": "dall'alto",
+      "lens_mm": 24,
+      "move": "CRANE DOWN",
+      "secs": 4,
+      "frames": 96,
+      "fps": 24,
+      "bytes": {
+        "av1": 145266,
+        "h264": 396869,
+        "mobile_h264": 191390,
+        "poster": 2973,
+        "poster_mobile": 1562
+      }
+    },
+    {
+      "id": "05-occhi",
+      "n": "05",
+      "title": "gli occhi",
+      "lens_mm": 85,
+      "move": "STATIC LONG",
+      "secs": 3.5,
+      "frames": 84,
+      "fps": 24,
+      "bytes": {
+        "av1": 144941,
+        "h264": 218507,
+        "mobile_h264": 182322,
+        "poster": 2075,
+        "poster_mobile": 847
+      }
+    },
+    {
+      "id": "06-incontro",
+      "n": "06",
+      "title": "l'incontro",
+      "lens_mm": 21,
+      "move": "SLOW ARC",
+      "secs": 5,
+      "frames": 120,
+      "fps": 24,
+      "bytes": {
+        "av1": 243868,
+        "h264": 444275,
+        "mobile_h264": 293500,
+        "poster": 3906,
+        "poster_mobile": 1982
+      }
+    },
+    {
+      "id": "07-scorciatoia",
+      "n": "07",
+      "title": "la scorciatoia",
+      "lens_mm": 18,
+      "move": "RACE LOW",
+      "secs": 4,
+      "frames": 96,
+      "fps": 24,
+      "bytes": {
+        "av1": 346091,
+        "h264": 604653,
+        "mobile_h264": 232380,
+        "poster": 4795,
+        "poster_mobile": 1952
+      }
+    },
+    {
+      "id": "08-radura",
+      "n": "08",
+      "title": "la radura",
+      "lens_mm": 40,
+      "move": "CRANE DOWN",
+      "secs": 4.5,
+      "frames": 108,
+      "fps": 24,
+      "bytes": {
+        "av1": 191530,
+        "h264": 426489,
+        "mobile_h264": 297374,
+        "poster": 2488,
+        "poster_mobile": 1969
+      }
+    },
+    {
+      "id": "09-che-occhi",
+      "n": "09",
+      "title": "che occhi grandi",
+      "lens_mm": 58,
+      "move": "PUSH IN",
+      "secs": 5.5,
+      "frames": 132,
+      "fps": 24,
+      "bytes": {
+        "av1": 246730,
+        "h264": 531025,
+        "mobile_h264": 320271,
+        "poster": 3301,
+        "poster_mobile": 1857
+      }
+    }
+  ],
+  "totals_bytes": {
+    "av1": 3353369,
+    "h264": 5116089,
+    "mobile_h264": 2899159,
+    "poster": 48089,
+    "poster_mobile": 22327
+  },
+  "technique_credit": "scroll-scrub segment chain (blob-loaded clips, seek coalescing, iOS priming) adapted from oso95/scroll-world (MIT); the hard-cut engine, the asymmetric look-ahead and the slate are this build's own",
+  "generated": "2026-07-30"
+}

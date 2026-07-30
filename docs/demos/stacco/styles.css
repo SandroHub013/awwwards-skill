@@ -1,0 +1,187 @@
+/* stacco — everything that is not needed for the first paint.
+
+   The critical rules (anything fixed or sticky, plus the letterbox) live inline
+   in index.html; this file is the rest of the design system: type, the slate,
+   the shot list, the epilogue. */
+
+/* ── the gate ───────────────────────────────────────────────────────────────
+   The frame is `object-fit: contain` inside a black gate, so the letterbox is
+   not a pair of decorative bars — it is what is left when a 2.39:1 image is put
+   in a box that is not 2.39:1, and it costs nothing to be exactly right. */
+.shot__still { transition: opacity .18s linear; transform-origin: center 48%; }
+.shot__clip { transition: opacity .18s linear; }
+
+/* the one gradient in the build: the gate's own edge, so the picture does not
+   collide with the rail's rule */
+.gate::after {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 3.5rem;
+  background: linear-gradient(180deg, transparent, #07090a);
+  pointer-events: none;
+}
+
+/* ── the main title ────────────────────────────────────────────────────────
+   The one piece of type that sits over the picture, because a main title is
+   what a film puts over its first shot. It is scrimmed rather than boxed: a
+   soft wedge of the page's own black, wide enough to hold the word and nothing
+   more. */
+.card { transition: opacity .25s linear; }
+.card::before {
+  content: ""; position: absolute; inset: -2.5rem -6rem -2.5rem -3rem; z-index: -1;
+  background: radial-gradient(120% 100% at 22% 70%, #07090ae0 0%, #07090aa8 45%, transparent 78%);
+}
+.card__word { color: var(--pale); }
+@media (max-width: 860px) {
+  .card { bottom: clamp(.8rem, 3vh, 1.6rem); }
+  .card__line { max-width: 26ch; }
+}
+
+/* ── the slate ─────────────────────────────────────────────────────────────
+   It reads like camera paperwork because it is camera paperwork: shot, lens,
+   move, timecode. Under reduced motion the same string is what the shot list
+   announces, so nothing here is decoration for its own sake. */
+.slate span { display: inline-block; }
+.slate__tc { color: var(--pale-2); font-variant-numeric: tabular-nums; }
+.slate span:first-child { color: var(--pale); }
+.slate__cut {
+  color: var(--rosso); opacity: 0; letter-spacing: .3em;
+}
+.slate__cut.is-flash { animation: cutflash .42s steps(1, end) 1; }
+@keyframes cutflash {
+  0%, 32% { opacity: 1; }
+  33%, 100% { opacity: 0; }
+}
+
+/* ── the copy ──────────────────────────────────────────────────────────────
+   Lives in the black under the frame, never over it. A 2.39:1 image with a
+   paragraph across its lower third is a poster, not a film. */
+.copy__eyebrow {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--rosso); margin-bottom: .3rem;
+}
+.copy__head {
+  font-size: clamp(1.06rem, 1.65vw, 1.44rem); line-height: 1.2; font-weight: 600;
+  letter-spacing: -.012em; text-wrap: balance; max-width: 26ch;
+}
+.copy__body {
+  margin-top: .38rem; font-size: clamp(.86rem, .95vw, .96rem); line-height: 1.5;
+  color: var(--pale-2); max-width: 62ch;
+}
+
+/* On a wide screen the caption goes two-up — headline beside body — so the rail
+   stays one band of black under the frame instead of growing into the picture. */
+@media (min-width: 1000px) {
+  .copy { display: grid; grid-template-columns: minmax(0, 24ch) minmax(0, 46ch); gap: 0 clamp(1.4rem, 3vw, 2.8rem); }
+  .copy__eyebrow { grid-column: 1 / -1; }
+  .copy__head { max-width: none; }
+  .copy__body { margin-top: .12rem; }
+}
+
+/* ── tools: the shot list and the transport ────────────────────────────────── */
+.tools { display: flex; align-items: center; gap: clamp(.6rem, 1.6vw, 1.2rem); padding-bottom: .15rem; }
+.list__dot {
+  appearance: none; background: none; border: 1px solid #ffffff1f; color: var(--pale-3);
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .04em;
+  width: 2rem; height: 1.65rem; border-radius: 2px; cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+  transition: color .16s, border-color .16s, background-color .16s;
+}
+.list__dot:hover { color: var(--pale); border-color: #ffffff3d; }
+.list__dot.is-active {
+  color: var(--ink); background: var(--rosso); border-color: var(--rosso);
+}
+.list__dot:focus-visible, .auto:focus-visible, .skip:focus-visible,
+.head a:focus-visible, .foot a:focus-visible, .come a:focus-visible {
+  outline: 2px solid var(--brace); outline-offset: 2px;
+}
+
+.auto {
+  appearance: none; background: none; border: 1px solid #ffffff2b; color: var(--pale);
+  cursor: pointer; display: grid; place-items: center;
+  transition: border-color .16s, color .16s;
+}
+.auto:hover { border-color: var(--pale-2); }
+.auto svg { width: 13px; height: 13px; grid-area: 1/1; }
+.auto__pause { display: none; }
+.is-auto .auto__pause { display: block; }
+.is-auto .auto__play { display: none; }
+
+/* ── the epilogue ──────────────────────────────────────────────────────────── */
+.come { position: relative; z-index: 2; background: var(--ink-2); padding: clamp(4rem, 11vh, 8rem) 0; }
+.come__inner { width: min(100% - var(--gutter) * 2, 74ch); margin-inline: auto; }
+.eyebrow {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--rosso);
+}
+.come__title {
+  font-size: clamp(1.7rem, 4vw, 2.9rem); line-height: 1.08; letter-spacing: -.018em;
+  margin: .7rem 0 1.5rem; text-wrap: balance;
+}
+.come p { margin-bottom: 1.15rem; color: var(--pale-2); font-size: clamp(.98rem, 1.05vw, 1.06rem); }
+.come__lead { color: var(--pale) !important; font-size: clamp(1.04rem, 1.2vw, 1.16rem) !important; }
+.come b { color: var(--pale); font-weight: 600; }
+.come a { color: var(--brace); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+.cutmap { display: block; width: 100%; height: auto; margin: 2.2rem 0 .6rem; }
+.cutmap .cm { fill: #ffffff12; stroke: #ffffff24; }
+.cutmap .cm-hero { fill: #c4302f38; stroke: #c4302f80; }
+.cutmap text { fill: var(--pale-2); }
+.cutmap .cm-mm { fill: var(--pale-3); }
+.cutmap__note { font-size: .84rem !important; color: var(--pale-3) !important; }
+
+.facts { margin: 2rem 0 1.4rem; border-top: 1px solid #ffffff14; }
+.facts > div {
+  display: grid; grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr); gap: .4rem 1.4rem;
+  padding: .7rem 0; border-bottom: 1px solid #ffffff10;
+}
+.facts dt {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--pale-3); padding-top: .18rem;
+}
+.facts dd { color: var(--pale-2); font-size: .95rem; }
+.facts b { color: var(--pale); }
+.come__note { font-size: .88rem !important; color: var(--pale-3) !important; }
+
+.foot {
+  position: relative; z-index: 2; background: var(--ink);
+  display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; justify-content: space-between;
+  padding: 2.2rem var(--gutter) 2.6rem;
+  font-family: var(--mono); font-size: .78rem;
+  border-top: 1px solid #ffffff12;
+}
+.foot a { color: inherit; text-decoration: none; }
+.foot a:hover { color: var(--brace); }
+
+/* ── responsive ────────────────────────────────────────────────────────────
+   Under 860px the clips are the 4:5 portrait re-frame, so the gate is taller
+   and the rail takes the room the scope bars used to. The copy does not move
+   on top of the picture at any width. */
+@media (max-width: 860px) {
+  :root { --rail: clamp(12rem, 28vh, 15.5rem); }
+  .rail { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; }
+  .slate { grid-area: 1/1/2/2; }
+  .copy { grid-area: 2/1/3/2; }
+  .tools { grid-area: 3/1/4/2; align-self: end; }
+  .tools { justify-content: space-between; }
+  .copy__head { max-width: none; }
+  .facts > div { grid-template-columns: 1fr; gap: .1rem; }
+  .head__meta { display: none; }
+}
+@media (max-width: 420px) {
+  .list__dot { width: 1.7rem; height: 1.5rem; font-size: .6rem; }
+  .slate { gap: .2rem .8rem; font-size: .64rem; }
+}
+
+/* ── reduced motion ────────────────────────────────────────────────────────
+   No clip is ever fetched (app.js), so this is the whole film: nine stills.
+   Here — and only here — the shots dissolve, because with no motion inside a
+   frame a hard cut between two stills reads as a broken page rather than as an
+   edit. The stills carry the journey; that is why every poster is its own
+   shot's first frame. */
+@media (prefers-reduced-motion: reduce) {
+  .shot { visibility: visible; opacity: 0; transition: opacity .5s ease; }
+  .shot.is-on { opacity: 1; }
+  .shot__still { transform: none !important; }
+  .slate__cut { display: none; }
+  .auto { display: none; }
+  * { scroll-behavior: auto !important; }
+}

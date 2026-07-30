@@ -1,3 +1,12 @@
 .impeccable/
 audit/
 node_modules/
+
+# offline render intermediates: PNG frame dirs, scouting stills, harness output
+docs/demos/*/render/frames/
+docs/demos/*/render/frames-m/
+docs/demos/*/render/scout/
+docs/demos/*/render/page/
+docs/demos/*/render/*.log
+docs/demos/*/render/card.png
+docs/demos/*/render/shots-index.png
