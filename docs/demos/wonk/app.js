@@ -21,6 +21,12 @@ const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SHIPPED = { opsz: 9,   wght: 900, SOFT: 0,   WONK: 1 };
 const ASKED   = { opsz: 144, wght: 300, SOFT: 100, WONK: 0 };
 
+/* The hero deliberately leaves the shipped opsz behind. Fraunces hides its
+   wonky forms behind a GSUB feature variation that fires for opsz <= 18, so
+   at the shipped 9 the WONK axis cannot change a single glyph. 60 clears it.
+   Kept as its own object so nobody "fixes" SHIPPED to match. */
+const HERO = { opsz: 60, wght: 900, SOFT: 0 };
+
 const fmt = (tag, v) => (tag === "WONK" ? v.toFixed(2) : Math.round(v).toString());
 
 /* ---- smooth scroll, handed back to the browser when motion is off ---- */
@@ -44,34 +50,31 @@ if (!REDUCED) {
   if (word && slider) {
     const paint = (wonk) => {
       word.style.setProperty("--hx-wonk", wonk);
-      out.value = wonk.toFixed(2);
+      out.value = String(wonk);
       cells.forEach((c) => {
         const tag = c.dataset.ax;
-        c.textContent = tag === "WONK" ? wonk.toFixed(2) : fmt(tag, SHIPPED[tag]);
+        c.textContent = tag === "WONK" ? String(wonk) : fmt(tag, HERO[tag]);
       });
     };
 
     slider.addEventListener("input", () => paint(parseFloat(slider.value)));
     paint(parseFloat(slider.value));
 
-    /* One breath on load so the control is discoverable inside 3s.
-       Never under reduced motion, and never if the user got there first. */
+    /* One flip and back on load so the control is discoverable inside 3s.
+       Never under reduced motion, and never if the user got there first.
+
+       Not a tween. WONK is a glyph substitution gated on a threshold at
+       0.49, so every value between the two ends renders as one end or the
+       other. Easing it would be a lie told in 60 frames. */
     if (!REDUCED) {
       let touched = false;
       const markTouched = () => { touched = true; };
       slider.addEventListener("pointerdown", markTouched, { once: true });
       slider.addEventListener("keydown", markTouched, { once: true });
 
-      const state = { v: 1 };
-      gsap.timeline({ delay: 0.7 })
-        .to(state, {
-          v: 0, duration: 1.1, ease: "power2.inOut",
-          onUpdate: () => { if (!touched) { slider.value = state.v; paint(state.v); } },
-        })
-        .to(state, {
-          v: 1, duration: 0.9, ease: "power2.inOut",
-          onUpdate: () => { if (!touched) { slider.value = state.v; paint(state.v); } },
-        }, "+=0.35");
+      const flip = (v) => { if (touched) return; slider.value = v; paint(v); };
+      gsap.delayedCall(0.9, () => flip(0));
+      gsap.delayedCall(2.1, () => flip(1));
     }
   }
 }
@@ -131,14 +134,22 @@ document.querySelectorAll(".axis").forEach((row) => {
   if (!slider || !spec) return;
 
   const tag = slider.dataset.axis;
+  /* Every row holds the other three where the font left them. The WONK row
+     cannot: at the shipped opsz 9 the feature variation forces the tidy
+     glyphs and the row would demonstrate nothing. It declares its own opsz
+     in the markup, and the page says so underneath. */
   const base = { ...SHIPPED };
+  if (slider.dataset.baseOpsz) base.opsz = parseFloat(slider.dataset.baseOpsz);
 
   const paint = () => {
     const v = parseFloat(slider.value);
     const s = { ...base, [tag]: v };
     spec.style.fontVariationSettings =
       `"opsz" ${s.opsz}, "wght" ${s.wght}, "SOFT" ${s.SOFT}, "WONK" ${s.WONK}`;
-    if (out) out.textContent = fmt(tag, v);
+    /* WONK reads as 0 or 1 here: this row has two stops, and "0.00" would
+       promise the values in between. fmt keeps the decimals for the scrubbed
+       column, where they are real. */
+    if (out) out.textContent = tag === "WONK" ? String(v) : fmt(tag, v);
   };
 
   slider.addEventListener("input", paint);

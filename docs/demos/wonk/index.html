@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>wonk — the axis Fraunces ships switched on</title>
-<meta name="description" content="A type specimen for one number: WONK, the Fraunces axis whose default value is 1. The typeface is crooked as shipped, and you have to ask for the straight version. Built with the awwwards Claude Code skill.">
+<meta name="description" content="A type specimen for one number: WONK, the Fraunces axis whose default value is 1 — and which the font overrules at every optical size of 18 or under, before the axis is even read. Built with the awwwards Claude Code skill.">
 <meta name="color-scheme" content="light">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="wonk — the axis Fraunces ships switched on">
-<meta property="og:description" content="WONK's default value is 1. Fraunces is crooked as shipped; correctness is the thing you have to ask for.">
+<meta property="og:description" content="WONK's default value is 1. At opsz 18 and under Fraunces substitutes the tidy letterforms anyway — the axis is shipped switched on and overruled.">
 <meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/wonk/">
 
 <!-- No font preload on purpose. Measured on Fast 3G it took bandwidth from the
@@ -42,24 +42,25 @@
     <div class="hero__panel">
       <p class="hero__claim">
         One of its four axes is called <b>Wonky</b>. In the font&rsquo;s own
-        <code>fvar</code> table, its default value is <b data-hl>1</b>.
+        <code>fvar</code> table, its default value is <b data-hl>1</b> &mdash; and the
+        font only obeys it above <code>opsz</code> 18.
       </p>
 
       <div class="control">
         <label class="control__label" for="wonk">
-          WONK <span class="control__hint">drag to straighten</span>
+          WONK <span class="control__hint">watch the n</span>
         </label>
         <input id="wonk" class="control__range" type="range"
-               min="0" max="1" step="0.01" value="1"
+               min="0" max="1" step="1" value="1"
                aria-describedby="wonk-out">
-        <output id="wonk-out" class="control__out" for="wonk">1.00</output>
+        <output id="wonk-out" class="control__out" for="wonk">1</output>
       </div>
 
       <dl class="readout" aria-label="Live axis values">
-        <div><dt>opsz</dt><dd data-ax="opsz">9</dd></div>
+        <div><dt>opsz</dt><dd data-ax="opsz">60</dd></div>
         <div><dt>wght</dt><dd data-ax="wght">900</dd></div>
         <div><dt>SOFT</dt><dd data-ax="SOFT">0</dd></div>
-        <div><dt>WONK</dt><dd data-ax="WONK">1.00</dd></div>
+        <div><dt>WONK</dt><dd data-ax="WONK">1</dd></div>
       </dl>
     </div>
 
@@ -97,9 +98,13 @@
     </div>
 
     <p class="note" data-reveal>
-      The default instance is named <b>Fraunces 9pt Black</b>. Set a page in Fraunces and
-      touch nothing else and you get the display cut, at its heaviest, with the wonk
-      switched on. Every other state is a request.
+      The default instance is named <b>Fraunces 9pt Black</b>: the nine-point cut, at its
+      heaviest, with the wonk switched on. Except it is not. Elsewhere in the same binary a
+      <code>GSUB</code> feature-variation record swaps
+      <code>h&nbsp;m&nbsp;n&nbsp;s&nbsp;&amp;&nbsp;&ntilde;</code> for their tidy alternates
+      whenever <code>opsz</code> is 18 or under &mdash; and it is tested before
+      <code>WONK</code> is consulted at all. So the default instance declares the wonk and
+      then draws the letters without it. The axis is shipped switched on and overruled.
     </p>
   </section>
 
@@ -144,8 +149,8 @@
         So the four axes are not four effects. They are one argument about how much
         personality a letter can carry before it stops being a letter and starts being a
         picture of one. You are watching that argument resolve as you read this: the type
-        under your eyes is straightening, softening, and moving from the display cut to
-        the text cut, one scroll at a time.
+        under your eyes is straightening, softening, and moving from the text cut to the
+        display cut, one scroll at a time.
       </p>
 
       <p>
@@ -165,7 +170,7 @@
       <h2 class="section__title">Each axis, alone, on the same word</h2>
     </div>
     <p class="lede" data-reveal>
-      Same eight letters, same file. Each row moves one axis and holds the other three
+      Same ten letters, same file. Each row moves one axis and holds the other three
       exactly where the font left them &mdash; so every difference you can see below is
       attributable to a single number.
     </p>
@@ -207,11 +212,21 @@
           <p class="axis__name">Wonky <span>0 &ndash; 1</span></p>
         </div>
         <p class="axis__spec" data-spec="WONK">Handgloves</p>
-        <input class="axis__range" type="range" min="0" max="1" step="0.01" value="0"
-               data-axis="WONK" aria-label="Wonky, 0 to 1">
-        <output class="axis__out" data-out="WONK">0.00</output>
+        <input class="axis__range" type="range" min="0" max="1" step="1" value="0"
+               data-axis="WONK" data-base-opsz="60" aria-label="Wonky, 0 or 1">
+        <output class="axis__out" data-out="WONK">0</output>
       </li>
     </ul>
+
+    <p class="note" data-reveal>
+      One row breaks that rule, and it has to. <code>WONK</code> is held at
+      <code>opsz</code> 60 rather than the shipped 9, because under 18 the substitution
+      never fires and the row would prove nothing. It also has two stops instead of a
+      hundred: the record that fires above 18 is a threshold at
+      <b data-hl>0.49</b>, not a ramp. The substitution reaches six glyphs and
+      <code>Handgloves</code> holds two of them, so watch the <i>n</i> and the <i>s</i>
+      &mdash; the capital <i>H</i> is not on the list.
+    </p>
   </section>
 
   <!-- ── beat 5 ── the numbers ───────────────────────────────────── -->
@@ -249,21 +264,32 @@
   <section class="section states" id="states">
     <div class="section__head">
       <p class="eyebrow">The whole idea, standing still</p>
-      <h2 class="section__title">As shipped, and as asked for</h2>
+      <h2 class="section__title">Declared, obeyed, and asked for</h2>
     </div>
 
     <div class="states__grid">
-      <figure class="state state--wonk">
-        <p class="state__spec" aria-hidden="true">Rafflesia</p>
+      <figure class="state state--gated">
+        <!-- Handsome, not a prettier word: n, s and m are three of the six
+             glyphs WONK swaps, so the card carries three times the evidence. -->
+        <p class="state__spec" aria-hidden="true">Handsome</p>
         <figcaption>
-          <b>WONK 1</b> &middot; SOFT 0 &middot; opsz 9 &middot; wght 900
-          <span>What you get by typing nothing.</span>
+          <b>WONK&nbsp;1</b> &middot; SOFT&nbsp;0 &middot; opsz&nbsp;9 &middot; wght&nbsp;900
+          <span>What you get by typing nothing. The wonk is on and the
+          <i>n</i>, <i>s</i> and <i>m</i> are all tidy.</span>
+        </figcaption>
+      </figure>
+      <figure class="state state--wonk">
+        <p class="state__spec" aria-hidden="true">Handsome</p>
+        <figcaption>
+          <b>WONK&nbsp;1</b> &middot; SOFT&nbsp;0 &middot; opsz&nbsp;60 &middot; wght&nbsp;900
+          <span>The same 1, one axis above the ceiling. Now those three
+          letters are allowed to kick.</span>
         </figcaption>
       </figure>
       <figure class="state state--true">
-        <p class="state__spec" aria-hidden="true">Rafflesia</p>
+        <p class="state__spec" aria-hidden="true">Handsome</p>
         <figcaption>
-          <b>WONK 0</b> &middot; SOFT 100 &middot; opsz 144 &middot; wght 300
+          <b>WONK&nbsp;0</b> &middot; SOFT&nbsp;100 &middot; opsz&nbsp;144 &middot; wght&nbsp;300
           <span>What you get by asking.</span>
         </figcaption>
       </figure>
@@ -271,8 +297,10 @@
 
     <p class="note" data-reveal>
       This page has a signature move, and it is the scroll. But the point survives it: if
-      motion is off, or JavaScript never runs, the two states sit here side by side and
-      the argument is still on the table. That is the test a concept has to pass.
+      motion is off, or JavaScript never runs, the three states sit here side by side and
+      the argument is still on the table &mdash; including the one the first two cards make
+      on their own, which is that a default value and a rendered letter are not the same
+      claim. That is the test a concept has to pass.
     </p>
   </section>
 

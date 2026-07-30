@@ -43,9 +43,10 @@
   --step-2:  clamp(1.56rem, 1.41rem + 0.66vw, 2.05rem);
   --step-3:  clamp(1.95rem, 1.68rem + 1.19vw, 2.85rem);
   --step-4:  clamp(2.44rem, 1.97rem + 2.07vw, 4.00rem);
-  /* Measured, not guessed: "wonk" sets 2.78x its font-size in the shipped
-     axes, so 400px fills --page at its 1140px ceiling with room for the
-     letterforms to widen as WONK drops to 0. */
+  /* Measured, not guessed: "wonk" sets 2.62x its font-size at the hero's
+     axes (opsz 60, wght 900), so the 400px ceiling lands at 1046px inside
+     a 1140px --page. WONK moves that ratio by 0.001 — the alternates are
+     drawn to the same advance, which is why the word never reflows. */
   --display: clamp(3.5rem, 0.2rem + 25vw, 25rem);
 
   --space-3xs: .25rem; --space-2xs: .5rem;  --space-xs: .75rem;
@@ -215,10 +216,13 @@ b { font-weight: 700; }
   letter-spacing: -.02em;
   margin-block: clamp(1rem, 3vw, 2.5rem);
   color: var(--accent);
-  /* display cut, at its heaviest — exactly the fvar defaults.
-     Only WONK moves here, and only because the reader drags it. */
+  /* opsz 60, not the fvar default of 9, and that gap is the finding:
+     Fraunces gates its wonky forms behind a GSUB feature-variation
+     condition that fires whenever opsz <= 18. Under that ceiling the font
+     substitutes the tidy alternates no matter what WONK says, so at the
+     shipped default the axis is inert. Only WONK moves here. */
   font-variation-settings:
-    "opsz" 9, "wght" 900, "SOFT" 0, "WONK" var(--hx-wonk);
+    "opsz" 60, "wght" 900, "SOFT" 0, "WONK" var(--hx-wonk);
   /* the morph relayouts this one block, not the document */
   contain: layout paint style;
   will-change: font-variation-settings;
@@ -491,16 +495,23 @@ table { border-collapse: collapse; width: 100%; min-width: 30rem; }
   background: var(--paper-2);
 }
 .state__spec {
-  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  /* three cards now, not two, so the specimen gives back the width */
+  font-size: clamp(2rem, 5vw, 3.2rem);
   line-height: 1.05;
   letter-spacing: -.015em;
   margin-bottom: var(--space-m);
   word-break: break-word;
 }
-.state--wonk { border-color: var(--accent); background: var(--accent-2); }
-.state--wonk .state__spec {
+/* The accent still means "as shipped", and as shipped is the gated one. */
+.state--gated { border-color: var(--accent); background: var(--accent-2); }
+.state--gated .state__spec {
   color: var(--accent);
   font-variation-settings: "opsz" 9, "wght" 900, "SOFT" 0, "WONK" 1;
+}
+/* Same WONK as the gated card. Only opsz differs, and only opsz decides
+   whether the font honours WONK at all. */
+.state--wonk .state__spec {
+  font-variation-settings: "opsz" 60, "wght" 900, "SOFT" 0, "WONK" 1;
 }
 .state--true .state__spec {
   font-variation-settings: "opsz" 144, "wght" 300, "SOFT" 100, "WONK" 0;
@@ -518,7 +529,10 @@ table { border-collapse: collapse; width: 100%; min-width: 30rem; }
 .state figcaption span { display: block; margin-top: var(--space-3xs); color: var(--ink-2); }
 
 @media (min-width: 48rem) {
-  .states__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* two up until the page can afford three, then three */
+  .states__grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
 }
 
 /* ── beat 7 · colophon ─────────────────────────────────────────── */
