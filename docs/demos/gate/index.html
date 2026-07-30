@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>gate — the page is not loaded, it is verified</title>
+<meta name="description" content="An intro sequence for eduardstan.github.io: the masthead is already set, and the rest of the page is withheld until seven date comparisons discharge against the files the facts were read out of. A build study made with the awwwards Claude Code skill.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff">
+<!-- Three rules: the claim, the comparison, the verdict. Inline so the first view
+     costs exactly one request. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fff'/%3E%3Crect x='5' y='9' width='22' height='2' fill='%230a0a0a'/%3E%3Crect x='5' y='16' width='13' height='2' fill='%231231d6'/%3E%3Crect x='5' y='23' width='22' height='2' fill='%230a0a0a'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="gate — the page is not loaded, it is verified">
+<meta property="og:description" content="Seven comparisons, zero contradictions, one excused. An intro built as the build gate running, for a site whose whole idea is that every claim names its source.">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/demos/gate/">
+<meta property="og:image" content="https://sandrohub013.github.io/awwwards-skill/demos/gate/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A broadsheet masthead reading Ionel Eduard STAN, Ph.D., and beneath it a column headed The gate: 7/7 comparisons, 0 contradictions, 1 excused, then the verdict astro build — passes, then the first rows of the ledger.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- His own theme bootstrap, kept verbatim including the localStorage key, so a
+     visitor arriving from eduardstan.github.io keeps the choice they made there. -->
+<script>
+  (() => {
+    let stored = null;
+    try { stored = localStorage.getItem('theme'); } catch {}
+    const dark = stored === 'dark' ||
+      (stored === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+
+<!-- Arming the gate. This has to happen before the body is parsed, or the resolved
+     ledger paints for a frame and the intro is a flash of its own answer. It also
+     has to be *conditional*, because there are three visitors who must never see
+     the gate run: one who asked for less motion, one who has already watched it in
+     this tab, and one whose app.js never arrives — the failsafe covers the third,
+     so a script that 404s cannot hold a page hostage. -->
+<script>
+  (() => {
+    let seen = false;
+    try { seen = sessionStorage.getItem('gate:passed') === '1'; } catch {}
+    if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('gate-armed');
+    setTimeout(() => document.documentElement.classList.remove('gate-armed'), 2500);
+  })();
+</script>
+
+<!-- All of the CSS, inline, in one request. The LCP element is the masthead <h1>,
+     which is final at the first frame and never moves — the gate runs *beside* it, it
+     is not a curtain over it. There is deliberately no second stylesheet: see the note
+     partway down this block for what splitting one off cost. -->
+<style>
+  :root{
+    /* Lifted verbatim from his _astro/BaseLayout.*.css so this is in his design
+       system, not near it. */
+    --page:#fff; --ink:#0a0a0a; --muted:#565656; --rule:#cbcbcb;
+    --hair:#d9d9d9; --record:#f4f5fa; --accent:#1231d6;
+
+    /* No webfonts: Archivo Black and LedgerSerif are served from his origin and are
+       not redistributed here. Arial Black / Segoe UI Black carry the display role,
+       Palatino / Georgia the text role. Declared on the page, not just in PLAN.md. */
+    --display:"Arial Black","Segoe UI Black","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --serif:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"Go Mono","SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+
+    --step-mono:clamp(.68rem,.655rem + .11vw,.75rem);
+    --step-label:clamp(.7rem,.68rem + .1vw,.76rem);
+    --step-0:clamp(.95rem,.92rem + .14vw,1.024rem);
+    --step-1:clamp(1.06rem,1rem + .26vw,1.2rem);
+    --step-2:clamp(1.3rem,1.2rem + .45vw,1.6rem);
+    --step-display:clamp(2rem,.85rem + 4.9vw,5.1rem);
+
+    --gutter:clamp(1.1rem,.55rem + 2.1vw,2.75rem);
+    --measure:min(100% - var(--gutter)*2,1180px);
+    --space-s:.5rem; --space-m:1rem; --space-l:1.75rem; --space-xl:3rem;
+
+    --dur-fast:.18s; --dur-row:.18s; --dur-base:.32s;
+    --ease-out:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme=dark]{
+    --page:#0a0a0a; --ink:#ededed; --muted:#9c9c9c; --rule:#333;
+    --hair:#282828; --record:#101218; --accent:#8aa5ff;
+  }
+  html{color-scheme:light} [data-theme=dark]{color-scheme:dark}
+
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,h2,h3,p,ol,ul,li,figure,address{margin:0;padding:0}
+  ol,ul{list-style:none}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--page); color:var(--ink);
+    font-family:var(--serif); font-size:16.38px; line-height:1.55;
+    /* His body sets tabular figures. The ledger depends on it: a counter that
+       jitters as it counts is the tell that nothing is really being measured. */
+    font-feature-settings:"tnum" 1;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  :where(a,button,summary,input,label,[tabindex]):focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .skip{position:absolute;left:var(--gutter);top:-4rem;z-index:90;padding:.5rem .75rem;
+    background:var(--ink);color:var(--page);text-decoration:none;transition:top var(--dur-fast)}
+  .skip:focus{top:.75rem}
+
+  .label{font-family:var(--mono);font-size:var(--step-label);letter-spacing:.02em;
+    text-transform:none;color:var(--muted)}
+  .em{color:var(--accent)}
+
+  .wrap{width:var(--measure);margin-inline:auto;display:flex;flex-direction:column;
+    min-height:100svh}
+
+  /* ── chrome ───────────────────────────────────────────────────────────── */
+  .bar{display:flex;flex-wrap:wrap;gap:var(--space-m) var(--space-l);align-items:baseline;
+    padding:var(--space-m) 0;border-bottom:1px solid var(--rule)}
+  .who{text-decoration:none;flex:1 1 20ch}
+  .bar nav{display:flex;flex-wrap:wrap;gap:.1rem .9rem}
+  .bar nav a{text-decoration:none;border-bottom:1px solid transparent}
+  .bar nav a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+  .chip{border:1px solid var(--rule);background:none;color:var(--muted);
+    padding:.2rem .5rem;font:inherit;font-family:var(--mono);font-size:var(--step-label);
+    cursor:pointer}
+  .chip:hover{border-color:var(--accent);color:var(--ink)}
+  [data-theme=light] .d-only,[data-theme=dark] .l-only{display:none}
+
+  /* ── masthead: final at the first frame ───────────────────────────────── */
+  /* Tuned against the fold, not chosen: at 1440×900 the seventh comparison — the
+     excused one, the beat the whole sequence is built around — has to be on screen
+     while it resolves. Every rem above the sheet is a rem it costs. */
+  .masthead{padding:clamp(1.4rem,3.1vw,2.6rem) 0 var(--space-l);border-bottom:1px solid var(--rule)}
+  .masthead h1{font-family:var(--display);font-weight:900;font-size:var(--step-display);
+    line-height:.94;letter-spacing:-.035em;text-wrap:balance}
+  .dateline{display:flex;flex-wrap:wrap;gap:.15rem 1.1rem;margin-top:var(--space-m)}
+
+  /* ── sheet ────────────────────────────────────────────────────────────── */
+  .sheet{display:grid;gap:var(--space-xl) var(--space-l);padding:var(--space-l) 0 var(--space-xl);
+    flex:1}
+  @media (min-width:46em){.sheet{grid-template-columns:1fr 1fr}}
+  /* The gate takes the widest track so its mono claims mostly hold one line —
+     seven claims wrapping twice is 100px of fold the excused row cannot spare. */
+  @media (min-width:70em){.sheet{grid-template-columns:1.9fr 1fr 1fr}}
+  .col{display:flex;flex-direction:column;gap:var(--space-m);min-width:0}
+  .sec{font-family:var(--mono);font-size:var(--step-label);font-weight:400;
+    color:var(--muted);display:flex;justify-content:space-between;gap:var(--space-m);
+    padding-bottom:.4rem;border-bottom:1px solid var(--ink)}
+  /* A second section inside a column is a new article, not the next paragraph. */
+  .col .sec:not(:first-child){margin-top:var(--space-m)}
+  .sec b{font-weight:400;color:var(--ink)}
+
+  /* A disclosure has to be closed by rules that ship with the document, never by a
+     stylesheet that arrives later — anything hidden late flashes on screen first.
+     Same reason the .record-of source labels are here. */
+  .record,.record-of{display:none}
+  #inspect:checked ~ .wrap .record{display:flex}
+  #inspect:checked ~ .wrap .record-of{display:inline}
+  #inspect:checked ~ .wrap .chip[for=inspect]{border-color:var(--accent);color:var(--ink)}
+  /* The checkbox itself is visually hidden, so tabbing to it would put focus
+     nowhere. Hand its ring to the label the reader can actually see. */
+  #inspect:focus-visible ~ .wrap .chip[for=inspect]{
+    outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ── the gate ─────────────────────────────────────────────────────────── */
+  .gate{display:flex;flex-direction:column}
+  .row{display:grid;grid-template-columns:2.5ch 1fr;gap:0 .9rem;align-items:start;
+    padding:.45rem 0;border-bottom:1px solid var(--hair)}
+  .row__n{grid-column:1;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* The number holds column one; the claim, the answer and the excusal all stack
+     in column two. Stated rather than left to auto-placement, which would have
+     wrapped the answer into the 2.5ch counter track. */
+  .row__claim{grid-column:2;display:block;font-family:var(--mono);font-size:var(--step-mono);
+    color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+  /* The answer line is present and sized from the first frame even while empty:
+     the hairline draws across exactly the space the answer will occupy, so the
+     resolution costs zero layout and CLS is 0 by construction, not by tuning. */
+  .row__slot{grid-column:2;position:relative;display:block;margin-top:.22rem;min-height:1.5em}
+  .row__value{display:block;font-size:var(--step-0);line-height:1.5}
+  .row__value b{font-weight:400;color:var(--muted)}
+  .row__hair{position:absolute;left:0;top:.7em;height:1px;width:100%;
+    background:var(--accent);transform:scaleX(0);transform-origin:left center;
+    opacity:0;pointer-events:none}
+  .row__why{grid-column:2;margin-top:.35rem;font-size:var(--step-mono);
+    font-family:var(--mono);line-height:1.5;color:var(--muted);
+    border-left:2px solid var(--accent);padding-left:.6rem}
+  .row[data-holds=no] .row__value{color:var(--accent)}
+  .row[data-holds=no] .row__value b{color:var(--accent)}
+
+  /* At the three-column threshold the answer gets a track of its own, so all seven
+     verdicts stack in one flush column and the single ∉ in the run is visible at a
+     glance rather than read for. It is also the only way the seventh comparison —
+     the excused one — resolves above the fold on a 900px screen: side by side, a
+     row is one line instead of two. Below this width they stack, which is the
+     base layout, not a fallback. */
+  @media (min-width:70em){
+    .row{grid-template-columns:3ch minmax(0,1fr) max-content}
+    .row__slot{grid-column:3;margin-top:0;min-width:17ch}
+    .row__value{white-space:nowrap}
+    .row__why{grid-column:2/-1}
+  }
+
+  .meter{display:flex;flex-direction:column;gap:.45rem}
+  .meter__rule{display:block;height:2px;background:var(--hair)}
+  .meter__rule i{display:block;height:100%;background:var(--ink);
+    transform:scaleX(1);transform-origin:left center}
+  .meter__read b{font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums}
+  .verdict{font-family:var(--mono);font-size:var(--step-label);color:var(--ink)}
+  .verdict::before{content:"› ";color:var(--accent)}
+
+  /* ── the unresolved state ─────────────────────────────────────────────────
+     Every rule below hangs off .gate-armed on <html>, set by the arming script
+     above and removed the moment the gate settles. The authored HTML is the
+     *resolved* ledger: with JS off, under reduced motion, on a repeat visit, or
+     if app.js never arrives, none of this applies and the page is simply
+     finished. The gate can never withhold an answer it failed to compute.
+
+     It is armed from the head, before the body is parsed, for the same reason the
+     .record blocks are hidden there: app.js is deferred, so a pending state applied
+     any later than this is a flash of the answer it was meant to withhold. */
+  .gate-armed .row{opacity:0;transform:translateY(6px)}
+  .gate-armed .row.is-shown{opacity:1;transform:none;
+    transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+  .gate-armed .row:not(.is-done) .row__value,
+  .gate-armed .row:not(.is-done) .row__why{opacity:0}
+  .gate-armed .row.is-drawing .row__hair{opacity:1;transform:scaleX(1);
+    transition:transform var(--dur-row) linear,opacity 50ms linear}
+  /* Two cues for the row under measurement, not one: the hairline is a single
+     pixel, and at a glance the accent on the row number is what tells you where
+     the gate has got to. */
+  .gate-armed .row.is-drawing .row__n{color:var(--accent)}
+  .gate-armed .row.is-done .row__hair{opacity:0;transition:opacity var(--dur-fast) linear}
+  .gate-armed .row.is-done .row__value{transition:opacity var(--dur-fast) var(--ease-out)}
+  .gate-armed .row.is-done .row__why{transition:opacity var(--dur-base) var(--ease-out)}
+  .meter__rule i{transition:transform var(--dur-row) linear}
+
+  /* ── the withheld sheet ───────────────────────────────────────────────────
+     Columns two and three, and the footer, exist because the gate passed — a
+     contradiction would have refused the build that produced them. Opacity and
+     clip only: no box changes size, so CLS stays 0 while they are granted. */
+  .gate-armed [data-granted]{opacity:0;clip-path:inset(0 0 100% 0)}
+  [data-granted]{transition:opacity var(--dur-base) var(--ease-out),
+    clip-path var(--dur-base) var(--ease-out)}
+
+  /* ── from here down: what a non-blocking styles.css used to carry ──────────
+     It was split off out of habit, and the habit cost 0.085 CLS. This page has
+     no below-fold section — every column is on the first screen — so a
+     stylesheet arriving one round trip late re-measured .blurb's line count,
+     gave .over a border it did not have, and resized the strand headings and the
+     stat figures underneath content that had already painted. Inlined, the page
+     is one request and nothing reflows, which is worth more than the 4 KB the
+     split ever saved. */
+
+  /* ── provenance ─────────────────────────────────────────────────────────────
+     The .record blocks are his idea and they are the reason the site is what it
+     is: a claim that names its source. `display` is set in the disclosure rules
+     above; everything else about the block is here. */
+  .record{background:var(--record);border-left:2px solid var(--accent);
+    padding:var(--space-m);margin-top:var(--space-s);flex-direction:column;gap:.7rem;
+    font-family:var(--mono);font-size:var(--step-mono);line-height:1.55;color:var(--muted)}
+  .record b{font-weight:400;color:var(--ink)}
+  .record i{font-style:italic}
+  .record a{color:var(--accent)}
+  .record code{font-family:var(--mono);
+    background:color-mix(in oklab,var(--ink) 8%,transparent);padding:.05em .3em}
+  .record-of{color:var(--accent);font-weight:400}
+
+  /* ── column one: the gate's own prose ─────────────────────────────────────── */
+  .blurb{font-size:var(--step-0);line-height:1.6;color:var(--muted);max-width:46ch}
+  /* A command name is one word. Letting `astro build` break across two lines
+     reads as two commands. */
+  .blurb code{font-family:var(--mono);font-size:.92em;color:var(--ink);white-space:nowrap}
+  /* The two files the ledger runs over, hoisted out of the seven rows that used
+     to repeat them. His own footer states the scope of a check the same way, on
+     its own line — and taking it off the rows is what let each claim hold two
+     lines instead of three. */
+  .over{padding-top:.55rem;border-top:1px solid var(--ink);color:var(--muted)}
+
+  /* ── column two: the strands ──────────────────────────────────────────────── */
+  .strands{display:flex;flex-direction:column;gap:var(--space-l);counter-reset:strand}
+  .strands li{counter-increment:strand}
+  .strands h3{font-family:var(--display);font-weight:900;font-size:var(--step-2);
+    line-height:1.15;letter-spacing:-.025em;text-indent:-.04em}
+  .strands h3::before{content:counter(strand,decimal-leading-zero) " ";
+    font-family:var(--mono);font-size:var(--step-label);font-weight:400;letter-spacing:0;
+    color:var(--accent);vertical-align:.55em;margin-right:.5rem}
+  .strands p{margin-top:.4rem;font-size:var(--step-0);line-height:1.6;max-width:44ch}
+
+  /* ── column three: the count, then the feed ───────────────────────────────── */
+  .stats{display:flex;flex-direction:column}
+  .stats li{display:grid;grid-template-columns:4ch 1fr;gap:.8rem;align-items:baseline;
+    padding:.38rem 0;border-bottom:1px solid var(--hair)}
+  .stats .n{font-family:var(--display);font-weight:900;font-size:var(--step-1);
+    letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-align:right}
+  .stats .l{line-height:1.4}
+  .feed{display:flex;flex-direction:column}
+  .feed li{padding:.55rem 0;border-bottom:1px solid var(--hair)}
+  .feed .when{display:block;color:var(--accent)}
+  .feed p{margin-top:.15rem;font-size:var(--step-0);line-height:1.45}
+  .feed b{font-weight:400}
+  .feed b,.stats .n{color:var(--ink)}
+  .more-feed a{text-decoration:none;border-bottom:1px solid var(--rule)}
+  .more-feed a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+  /* ── footer ───────────────────────────────────────────────────────────────── */
+  .sheet-footer{padding:var(--space-l) 0 var(--space-xl);border-top:1px solid var(--ink)}
+  .colophon{max-width:92ch;line-height:1.6}
+  .colophon b{font-weight:400;color:var(--ink)}
+  .colophon a{color:var(--accent)}
+
+  /* ── narrow: the sheet stacks, and the ledger keeps its touch targets ──────
+     Not a shrunk desktop layout. Below 46em the gate goes first and the ledger
+     rows get real height, because a seven-row ledger read on a phone is the
+     primary reading of this page, not a fallback for it. */
+  @media (max-width:46em){
+    .row{padding:.7rem 0}
+    .row__slot{min-height:1.6em}
+    .col--gate{order:-1}
+    /* Three deliberate rows instead of a ragged wrap: who he is, the two
+       switches, then the nav. Letting .who share row one left the theme toggle
+       orphaned on a line of its own. */
+    .who{flex-basis:100%}
+    .bar nav{order:3;flex-basis:100%}
+  }
+  @media (min-width:70em){.blurb{max-width:52ch}}
+
+  /* ── coarse pointers get real targets ──────────────────────────────────────
+     Measured, not assumed: at 390×844 with a touch pointer every standalone
+     control in the chrome came in under 44px — the `cv` link was 14px wide. The
+     type stays exactly the same size; only the hit box grows, so the bar still
+     reads as a dateline and not as a stack of buttons. Inline links inside a
+     paragraph are left alone: their neighbours are far enough apart that the
+     WCAG 2.5.8 spacing exception covers them, and padding them would break the
+     line rhythm of the text they sit in. */
+  @media (pointer:coarse){
+    .bar{gap:var(--space-s) var(--space-l)}
+    .bar nav{gap:0 1.2rem}
+    .bar nav a,.chip,.skip,.more-feed a,.who{
+      min-height:44px;display:inline-flex;align-items:center}
+    .chip{padding-inline:.75rem}
+    /* 44px of hit box would otherwise add 26px of air above and below the bar. */
+    .bar nav a,.who{margin-block:-.6rem}
+  }
+
+  /* Print: the audit trail is the one thing worth printing, so the provenance
+     blocks stop being a disclosure and become footnotes. */
+  @media print{
+    .bar,.skip,.more-feed{display:none}
+    .record{display:block !important;background:none;border-left-width:1px}
+    .record-of{display:inline !important}
+    .row__hair{display:none}
+    .wrap{width:100%}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- His real Inspect sources switch, reimplemented rather than imitated: a checkbox
+     the .record blocks read through the sibling selector. Works by tap, by click and
+     by keyboard, with no JS involved at all. -->
+<input type="checkbox" id="inspect" class="vh">
+
+<div class="wrap">
+
+  <header class="bar">
+    <a class="label who" href="https://eduardstan.github.io/">Ionel Eduard STAN, Ph.D. / University of Milano-Bicocca</a>
+    <nav aria-label="Main" class="label">
+      <a href="https://eduardstan.github.io/publications/">index</a>
+      <a href="https://eduardstan.github.io/lately/">lately</a>
+      <a href="https://eduardstan.github.io/professional_activities/">service</a>
+      <a href="https://eduardstan.github.io/projects/">projects</a>
+      <a href="https://eduardstan.github.io/talks/">talks</a>
+      <a href="https://eduardstan.github.io/cv/">cv</a>
+    </nav>
+    <label class="label chip" for="inspect">Inspect sources</label>
+    <button type="button" id="theme-toggle" class="label chip">
+      <span class="l-only">Dark</span><span class="d-only">Light</span>
+    </button>
+  </header>
+
+  <main id="main">
+
+    <section class="masthead">
+      <h1>Ionel Eduard STAN, Ph.D.</h1>
+      <div class="dateline label">
+        <span>Intelligent Sensing Laboratory (ISLab)</span>
+        <span>Department of Informatics, Systems and Communication (DISCo)</span>
+        <span>University of Milano-Bicocca</span>
+        <span class="em">44 publications · 2 editorial boards</span>
+      </div>
+    </section>
+
+    <div class="sheet">
+
+      <!-- ── Column 1: the gate. Authored in its resolved state, which is the state
+           it keeps for the rest of the visit. app.js only ever *adds* the unresolved
+           state on top, so this column is correct before and without any script. -->
+      <div class="col col--gate">
+        <h2 class="sec">The gate<span class="record-of">web/src/lib/consistency.ts</span></h2>
+
+        <!-- The readout sits under the section rule, not at the foot of the ledger
+             where a total belongs. It is where the reader is already looking while the
+             gate runs, and the verdict is the point: a summary nobody watches arrive
+             is just a number. -->
+        <p class="meter">
+          <span class="meter__rule" aria-hidden="true"><i data-meter-fill></i></span>
+          <span class="meter__read label"><b data-meter-n>7</b>/7 comparisons ·
+            <b data-meter-bad>0</b> contradictions · <b class="em" data-meter-exc>1</b> excused</span>
+        </p>
+        <p class="verdict" data-verdict>astro build — passes</p>
+
+        <p class="blurb">An announcement must fall in the year of the fact it hangs on,
+          or the year before it. A contradiction refuses <code>astro build</code>.</p>
+        <p class="over label">over content/cv.yaml, content/publications.bib</p>
+
+        <ol class="gate" data-gate aria-busy="false">
+          <li class="row" data-fact="2026" data-announced="2025-12-10" data-holds="yes">
+            <span class="row__n label">01</span>
+            <span class="row__claim">service[] IJCAI 2026 · years[2026] vs announced 2025-12-10</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2025, 2026} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2025" data-announced="2025-10-26" data-holds="yes">
+            <span class="row__n label">02</span>
+            <span class="row__claim">service[] Neurocomputing · Oct 2025–Present vs announced 2025-10-26</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2024, 2025} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2025" data-announced="2025-10" data-holds="yes">
+            <span class="row__n label">03</span>
+            <span class="row__claim">ModalAssociationRules.jl · 2025-10 vs announced 2025-10</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2024, 2025} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2025" data-announced="2025-10" data-holds="yes">
+            <span class="row__n label">04</span>
+            <span class="row__claim">Sole.jl · 2025-10 vs announced 2025-10</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2024, 2025} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2026" data-announced="2025-09-23" data-holds="yes">
+            <span class="row__n label">05</span>
+            <span class="row__claim">service[] ICLR 2026 · years[2026] vs announced 2025-09-23</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2025, 2026} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2026" data-announced="2025-09-09" data-holds="yes">
+            <span class="row__n label">06</span>
+            <span class="row__claim">service[] ICASSP 2026 · years[2026] vs announced 2025-09-09</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∈ {2025, 2026} · <b>holds</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+          </li>
+          <li class="row" data-fact="2024" data-announced="2025-03-03" data-holds="no">
+            <span class="row__n label">07</span>
+            <span class="row__claim">service[1] Frontiers in Artificial Intelligence · dates Mar 2024–Present vs announced 2025-03-03</span>
+            <span class="row__slot">
+              <span class="row__value">2025 ∉ {2023, 2024} · <b>excused</b></span>
+              <span class="row__hair" aria-hidden="true"></span>
+            </span>
+            <span class="row__why">content/cv.yaml:240,239 — appointed to the board in March
+              2024 and announced on the site a year later, on 2025-03-03T10:00:00+02:00, when
+              the special issue launched. Both dates are correct and both are stated here.
+              Excusal expires 2027-01-01.</span>
+          </li>
+        </ol>
+
+        <div class="record">
+          <p>This ledger runs <b>7</b> comparisons; his own gate reports <b>18</b>. Seven
+            are the ones whose <i>both</i> halves are published — a fact carrying a year,
+            and a <a href="https://eduardstan.github.io/lately/">Lately</a> announcement
+            carrying a date. The other eleven live in <b>content/cv.yaml</b> and
+            <b>content/publications.bib</b>, which are not public, so they are counted
+            here and not claimed.</p>
+          <p>The predicate is evaluated in <b>app.js</b> at load, not tweened: the counter
+            is the number of comparisons actually discharged, and the <b>excused</b> verdict
+            on row 07 is a real result of the predicate failing. On a page whose whole idea
+            is that a claim names its source, a fake progress bar was the one thing that
+            could not be faked.</p>
+          <p>Also not compared, and stated on his page for the same reason: <b>service[10]</b>
+            Elsevier Engineering Applications of Artificial Intelligence and
+            <b>service[11]</b> IEEE Journal of Biomedical and Health Informatics each carry
+            an announcement date but state no year of their own to compare it against.</p>
+        </div>
+      </div>
+
+      <!-- ── Columns 2 and 3 exist because the gate passed. That is not a metaphor:
+           app.js holds them until the last comparison discharges, because a
+           contradiction would have refused the build that produced them. -->
+      <div class="col" data-granted>
+        <h2 class="sec">Three strands<span class="record-of">web/src/lib/strands.ts</span></h2>
+        <ol class="strands">
+          <li>
+            <h3>Interpretable AI</h3>
+            <p>Formal logic and symbolic AI used to make learned models inspectable:
+              temporal decision trees and forests, rule extraction, and explanations that
+              can be checked rather than taken on trust.</p>
+          </li>
+          <li>
+            <h3>Temporal and logic methods</h3>
+            <p>Modal and interval temporal logic as a learning language — tableau systems,
+              fuzzy generalisations, model checking, and modal symbolic learning over time
+              series, audio and sensor streams.</p>
+          </li>
+          <li>
+            <h3>Agentic AI</h3>
+            <p>Systems that plan and act, not only predict. Taught rather than published so
+              far: it runs through two Bicocca courses, and the nearest work in the record
+              is on strategic reasoning and automated synthesis for multi-agent systems.</p>
+          </li>
+        </ol>
+        <div class="record">
+          <p>Unlike everything else on this page, the strands are not read out of a
+            repository file — nothing in the repository states a strand structure. The copy
+            lives in <b>web/src/lib/strands.ts</b>, and each strand names the files its
+            claim rests on.</p>
+        </div>
+      </div>
+
+      <div class="col" data-granted>
+        <h2 class="sec">The count<span class="record-of">content/publications.bib</span></h2>
+        <ul class="stats">
+          <li><span class="n">44</span><span class="l label">entries in this bibliography</span></li>
+          <li><span class="n">21</span><span class="l label">conference entries</span></li>
+          <li><span class="n">8</span><span class="l label">journal entries</span></li>
+          <li><span class="n">7</span><span class="l label">workshop entries</span></li>
+          <li><span class="n">6</span><span class="l label">under review entries</span></li>
+          <li><span class="n">2</span><span class="l label">software entries</span></li>
+          <li><span class="n">2</span><span class="l label">editorial boards</span></li>
+          <li><span class="n">15</span><span class="l label">service roles on record</span></li>
+        </ul>
+
+        <h2 class="sec">Lately<span class="record-of">content/cv.yaml</span></h2>
+        <ul class="feed">
+          <li><span class="when label"><time datetime="2025-12-10">10 Dec 2025</time> · Service</span>
+            <p><b>Program Committee</b>, IJCAI 2026.</p></li>
+          <li><span class="when label"><time datetime="2025-10-26">26 Oct 2025</time> · Editorial</span>
+            <p><b>Associate Editor</b>, Elsevier Neurocomputing Journal.</p></li>
+          <li><span class="when label"><time datetime="2025-10">Oct 2025</time> · Software</span>
+            <p><b>ModalAssociationRules.jl</b>, DROPS Artifacts.</p></li>
+          <li><span class="when label"><time datetime="2025-10">Oct 2025</time> · Software</span>
+            <p><b>Sole.jl</b>, DROPS Artifacts.</p></li>
+        </ul>
+        <p class="more-feed"><a class="label" href="https://eduardstan.github.io/lately/">All 70 items →</a></p>
+        <div class="record">
+          <p>Every row above is quoted from the published page and is the second half of a
+            comparison in column one: the feed exists because a fact carries a date, and the
+            gate exists because that date can disagree with the fact.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="sheet-footer" data-granted>
+    <p class="colophon label">
+      <b>gate</b> — an intro study for <a href="https://eduardstan.github.io/">eduardstan.github.io</a>,
+      built with the <a href="https://github.com/SandroHub013/awwwards-skill">awwwards</a> skill for
+      Claude Code. The design language, the copy and the facts are his. No webfonts, no images,
+      no portrait: <b>Archivo Black</b> and <b>LedgerSerif</b> are served from his origin and are
+      not redistributed here, so the display role falls to Arial Black / Segoe UI Black and the
+      text role to Palatino / Georgia. Everything else on this page is quoted, computed, or said
+      to be neither.
+    </p>
+  </footer>
+
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
