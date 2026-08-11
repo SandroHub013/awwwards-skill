@@ -275,7 +275,6 @@ export function createOrbit({ canvas, data } = {}) {
   const aimA = new THREE.Vector3();
   const aimB = new THREE.Vector3();
   const smoothstep = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
-  const tmp = new THREE.Vector3();
 
   function update(dt) {
     state.p += (state.target - state.p) * Math.min(1, dt * 2.6);

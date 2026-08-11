@@ -71,7 +71,7 @@ if (!abyss) {
     /* Until the visitor takes it, the lamp sweeps on its own — slowly, so the
        page is never a black rectangle waiting to be discovered, and the
        interaction is legible within about three seconds. */
-    let t0 = performance.now();
+    const t0 = performance.now();
     const sweep = () => {
       if (!touched) {
         const t = (performance.now() - t0) / 1000;

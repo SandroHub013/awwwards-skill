@@ -1,7 +1,8 @@
 /* Generate ledger.json from the files on disk — a figure cannot drift from
    the file it describes. Run after encode.sh. */
-import { readdir, stat, writeFile } from "node:fs/promises";
+import { stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { requiredMediaPaths, validateSegments, sumBytes, reportMissing } from "./lib.mjs";
 
 const MEDIA = join(import.meta.dirname, "..", "media");
 const SEGMENTS = [
@@ -14,24 +15,41 @@ const SEGMENTS = [
   { id: "s3-bottega", kind: "scene", frames: [768, 935], secs: 7.0 },
 ];
 
-const size = async (p) => (await stat(p)).size;
-const segments = [];
-for (const s of SEGMENTS) {
-  const bytes = {
-    av1: await size(join(MEDIA, `${s.id}.av1.mp4`)),
-    h264: await size(join(MEDIA, `${s.id}.h264.mp4`)),
-    mobile_h264: await size(join(MEDIA, "m", `${s.id}.h264.mp4`)),
-  };
-  if (s.kind === "scene") {
-    bytes.poster = await size(join(MEDIA, `${s.id}.poster.avif`));
-    bytes.poster_mobile = await size(join(MEDIA, "m", `${s.id}.poster.avif`));
-  }
-  segments.push({ ...s, fps: 24, bytes });
+const FPS = 24;
+
+// the table describes the encode; if the two disagree the ledger is a lie
+const problems = validateSegments(SEGMENTS, { fps: FPS });
+if (problems.length) {
+  console.error(`gen-ledger: the segment table does not describe a ${FPS}fps chain:`);
+  for (const p of problems) console.error(`  - ${p}`);
+  process.exit(1);
 }
 
-const totals = {};
-for (const s of segments) for (const [k, v] of Object.entries(s.bytes))
-  totals[k] = (totals[k] || 0) + v;
+// null rather than a throw, so one run names every file encode.sh still owes us
+const size = async (p) => {
+  try {
+    return (await stat(p)).size;
+  } catch (err) {
+    if (err.code === "ENOENT") return null;
+    throw err;                        // EACCES and friends are not "not encoded yet"
+  }
+};
+
+const measured = await Promise.all(SEGMENTS.map(async (s) => {
+  const results = await Promise.all(requiredMediaPaths(s).map(async (f) => {
+    const path = join(MEDIA, ...f.parts);
+    return { key: f.key, path, size: await size(path) };
+  }));
+  return { segment: s, results };
+}));
+
+reportMissing(measured.flatMap((m) => m.results));   // every gap in one message
+
+const segments = measured.map(({ segment, results }) => ({
+  ...segment, fps: FPS, bytes: Object.fromEntries(results.map((r) => [r.key, r.size])),
+}));
+
+const totals = sumBytes(segments);
 
 const ledger = {
   demo: "soglia — every seam is a doorway",

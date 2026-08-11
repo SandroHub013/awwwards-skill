@@ -1,0 +1,20 @@
+{
+  "name": "awwwards-skill",
+  "version": "1.9.0",
+  "private": true,
+  "type": "module",
+  "description": "Tooling and tests for the awwwards skill. The skill itself ships as SKILL.md, references/ and assets/ — this manifest exists so the render harness can be linted and tested in CI.",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:mutation": "node scripts/mutation-check.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "vitest": "^2.1.5"
+  }
+}

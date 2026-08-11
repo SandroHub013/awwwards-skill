@@ -175,7 +175,7 @@ function cottage(THREE, rng, opts) {
 /* The bedroom. A three-walled set with a ceiling, so the sun outside cannot
    reach it and the lamp is the only light — which is why it is parked at x=400
    rather than inside the cottage geometry. */
-function bedroom(THREE, rng) {
+function bedroom(THREE, _rng) {
   const g = new THREE.Group();
   const W = 6.2, D = 7.4, H = 3.1;
   const wallM = { color: PAL.intWall };

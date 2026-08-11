@@ -41,7 +41,7 @@ for (const view of [{ n: "d", w: 1440, h: 900 }, { n: "m", w: 390, h: 844 }]) {
   await page.evaluate(() => window.dispatchEvent(new KeyboardEvent("wheel")));
   await new Promise((r) => setTimeout(r, 600));
 
-  const stops = await page.evaluate(() => {
+  await page.evaluate(() => {
     // pause autoplay so a stop is a stop
     window.dispatchEvent(new WheelEvent("wheel"));
     return null;
