@@ -171,7 +171,7 @@ export function createDiagram({ canvas, rows, locus, palette, colorSpace = "srgb
   const mono = (px) => `${px}px ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace`;
 
   function buildChrome() {
-    const { w, h, s, tight, px, py } = state.geo;
+    const { w, h, tight, px, py } = state.geo;
     const dpr = state.dpr;
     for (const l of [under, over]) {
       l.c.width = Math.round(w * dpr); l.c.height = Math.round(h * dpr);

@@ -7,24 +7,32 @@ import puppeteer from "puppeteer-core";
 import { mkdir, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { extname, join } from "node:path";
+import {
+  parseArgs, numArg, mimeFor, resolveRequestPath, safeJoin,
+  frameName, scoutName, frameTime, frameRange, parseScoutStops, dataUrlToBuffer,
+} from "./lib.mjs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const args = Object.fromEntries(process.argv.slice(2).map((a, i, arr) =>
-  a.startsWith("--") ? [a.slice(2), arr[i + 1] && !arr[i + 1].startsWith("--") ? arr[i + 1] : true] : null).filter(Boolean));
+const args = parseArgs(process.argv.slice(2));
 
-const W = +(args.w || 1920), H = +(args.h || 1080), FOV = +(args.fov || 42);
-const OUT = args.out || "frames";
-const MIME = { ".html": "text/html", ".js": "text/javascript", ".png": "image/png" };
+const W = numArg(args, "w", 1920), H = numArg(args, "h", 1080), FOV = numArg(args, "fov", 42);
+const OUT = typeof args.out === "string" ? args.out : "frames";
 
 // tiny static server so the CDN import and module graph behave exactly like prod
 const server = createServer(async (req, res) => {
+  const rel = resolveRequestPath(req.url);
+  const path = rel === null ? null : safeJoin(import.meta.dirname, rel);
+  if (path === null) { res.writeHead(400); res.end(); return; }
   try {
-    const path = join(import.meta.dirname, req.url.split("?")[0] === "/" ? "index.html" : req.url.split("?")[0]);
     const data = await readFile(path);
-    res.writeHead(200, { "content-type": MIME[extname(path)] || "application/octet-stream" });
+    res.writeHead(200, { "content-type": mimeFor(path) });
     res.end(data);
-  } catch { res.writeHead(404); res.end(); }
+  } catch (err) {
+    // ENOENT is the ordinary 404; anything else is a broken harness, and a
+    // silent 404 there costs a debugging afternoon (the page just never readies)
+    if (err.code !== "ENOENT") console.error(`static server: ${req.url} → ${err.code ?? err.message}`);
+    res.writeHead(404); res.end();
+  }
 });
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
@@ -42,20 +50,20 @@ await page.waitForFunction("window.__ready === true", { timeout: 30000 });
 await mkdir(OUT, { recursive: true });
 
 if (args.scout) {
-  for (const t of String(args.scout).split(",").map(Number)) {
+  for (const t of parseScoutStops(args.scout)) {
     const data = await page.evaluate((t) => window.__render(t), t);
-    const name = `${OUT}/scout-${String(t).replace(".", "_")}.png`;
-    await writeFile(name, Buffer.from(data.split(",")[1], "base64"));
+    const name = `${OUT}/${scoutName(t)}`;
+    await writeFile(name, dataUrlToBuffer(data));
     console.log(name);
   }
 } else {
-  const N = +(args.frames || 936);
-  const from = +(args.from || 0), to = +(args.to || N - 1);
+  const N = numArg(args, "frames", 936);
+  const { from, to } = frameRange(args, N);
   const t0 = Date.now();
   for (let i = from; i <= to; i++) {
-    const t = i / (N - 1);
+    const t = frameTime(i, N);
     const data = await page.evaluate((t) => window.__render(t), t);
-    await writeFile(`${OUT}/${String(i).padStart(5, "0")}.png`, Buffer.from(data.split(",")[1], "base64"));
+    await writeFile(`${OUT}/${frameName(i)}`, dataUrlToBuffer(data));
     if (i % 50 === 0) console.log(`${i}/${N}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   }
 }

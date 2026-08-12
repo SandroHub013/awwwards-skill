@@ -281,7 +281,6 @@ export function buildTown(THREE) {
   // paving ribbon following the curve
   {
     const pts = streetCurve.getPoints(24);
-    const g = new THREE.PlaneGeometry(7, 1);
     const pos = [];
     const idx = [];
     for (let i = 0; i < pts.length; i++) {

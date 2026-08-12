@@ -3,24 +3,14 @@
 import puppeteer from "puppeteer-core";
 import { mkdir, readFile } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, join } from "node:path";
+import { join } from "node:path";
+import { createStaticHandler, stopName } from "./lib.mjs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const MOBILE = process.argv.includes("mobile");
 const DOCS = join(import.meta.dirname, "..", "..", "..");
-const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
-  ".avif": "image/avif", ".mp4": "video/mp4", ".png": "image/png", ".webp": "image/webp",
-  ".svg": "image/svg+xml", ".json": "application/json" };
 
-const server = createServer(async (req, res) => {
-  try {
-    let p = decodeURIComponent(req.url.split("?")[0]);
-    if (p.endsWith("/")) p += "index.html";
-    const data = await readFile(join(DOCS, p));
-    res.writeHead(200, { "content-type": MIME[extname(p)] || "application/octet-stream" });
-    res.end(data);
-  } catch { res.writeHead(404); res.end(); }
-});
+const server = createServer(createStaticHandler({ root: DOCS, readFile }));
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 
@@ -60,7 +50,7 @@ for (const p of stops) {
     };
   });
   console.log(`p=${p}`, JSON.stringify(state));
-  await page.screenshot({ path: `shots/${tag}-${String(p).replace(".", "_")}.png` });
+  await page.screenshot({ path: `shots/${stopName(tag, p)}` });
 }
 
 // epilogue

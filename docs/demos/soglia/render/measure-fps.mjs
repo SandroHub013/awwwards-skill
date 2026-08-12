@@ -1,20 +1,11 @@
 import puppeteer from "puppeteer-core";
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, join } from "node:path";
+import { join } from "node:path";
+import { createStaticHandler, summariseFrames, formatFrames } from "./lib.mjs";
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const DOCS = join(import.meta.dirname, "..", "..", "..");
-const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
-  ".avif": "image/avif", ".mp4": "video/mp4" };
-const server = createServer(async (req, res) => {
-  try {
-    let p = decodeURIComponent(req.url.split("?")[0]);
-    if (p.endsWith("/")) p += "index.html";
-    const data = await readFile(join(DOCS, p));
-    res.writeHead(200, { "content-type": MIME[extname(p)] || "application/octet-stream" });
-    res.end(data);
-  } catch { res.writeHead(404); res.end(); }
-});
+const server = createServer(createStaticHandler({ root: DOCS, readFile }));
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: "shell",
@@ -43,12 +34,7 @@ for (const cfg of [{ name: "desktop", w: 1440, h: 900 }, { name: "mobile-viewpor
       else setTimeout(() => done({ deltas }), 400);
     })();
   }));
-  const d = res.deltas.slice(2, -2);
-  const fps = d.map((x) => 1000 / x);
-  const avg = fps.reduce((a, b) => a + b, 0) / fps.length;
-  const p05 = fps.sort((a, b) => a - b)[Math.floor(fps.length * 0.05)];
-  const longFrames = d.filter((x) => x > 33).length;
-  console.log(`${cfg.name}: avg ${avg.toFixed(1)} fps, p5 ${p05.toFixed(1)} fps, frames>33ms ${longFrames}/${d.length} (${(100 * longFrames / d.length).toFixed(1)}%)`);
+  console.log(formatFrames(cfg.name, summariseFrames(res.deltas, { trim: 2 })));
   await page.close();
 }
 await browser.close(); server.close();

@@ -177,7 +177,7 @@ export const SHOTS = [
     },
     // runs after the world matrices are flushed, so the glow sits on the eye
     // wherever the pose actually put it
-    after(w, THREE) { w.wolf.eyeR.getWorldPosition(w.lights.eyeGlow.position); },
+    after(w) { w.wolf.eyeR.getWorldPosition(w.lights.eyeGlow.position); },
   },
 
   /* ── 06 ─────────────────────────────────────────────────────────────────── */
@@ -227,7 +227,7 @@ export const SHOTS = [
       api.girlWalk(u * 1.1, { swing: clamp(1.1 - u * 3, 0, 1), turn: 0.10, look: 0.10 });
       api.hide(w.girlDoor);
     },
-    after(w, THREE) { w.wolf.eyeR.getWorldPosition(w.lights.eyeGlow.position); },
+    after(w) { w.wolf.eyeR.getWorldPosition(w.lights.eyeGlow.position); },
   },
 
   /* ── 07 ─────────────────────────────────────────────────────────────────── */
