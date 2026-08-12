@@ -1,6 +1,11 @@
 .impeccable/
 audit/
 node_modules/
+coverage/
+
+# Scratch harnesses for one-off experiments. They were tracked once and
+# accounted for 45% of the repo; the history still has them.
+.tmp-*/
 
 # offline render intermediates: PNG frame dirs, scouting stills, harness output
 docs/demos/*/render/frames/
