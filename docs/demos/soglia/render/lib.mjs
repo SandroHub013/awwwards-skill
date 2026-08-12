@@ -3,7 +3,7 @@
    the I/O, this file keeps the arithmetic and the parsing, so both can be tested.
 
    Covered by ../../../../tests/render-lib.test.mjs. */
-import { extname, posix } from "node:path";
+import { extname, posix, resolve, sep } from "node:path";
 
 /* ── CLI ──────────────────────────────────────────────────────────────────── */
 
@@ -74,6 +74,23 @@ export function resolveRequestPath(url) {
   return posix.normalize(p);
 }
 
+/** Join a served-root and an already-normalised relative path, and return the
+ *  absolute path only if it really lands inside the root. Returns null
+ *  otherwise.
+ *
+ *  resolveRequestPath already refuses traversal, but this is the check that
+ *  makes it true on disk rather than in string space: resolve() collapses
+ *  everything — `..`, symlink-shaped input, platform separators — and the
+ *  prefix test then decides. Two independent guards, because the string-level
+ *  one is easy to get subtly wrong (see the comment in resolveRequestPath). */
+export function safeJoin(root, rel) {
+  if (typeof root !== "string" || typeof rel !== "string") return null;
+  const base = resolve(root);
+  const target = resolve(base, `.${rel.startsWith("/") ? rel : `/${rel}`}`);
+  if (target !== base && !target.startsWith(base + sep)) return null;
+  return target;
+}
+
 /** Build the request handler the harness servers share. `readFile` and the
  *  logger are injected so the routing and the error classification can be
  *  exercised without a socket or a disk.
@@ -85,9 +102,10 @@ export function resolveRequestPath(url) {
 export function createStaticHandler({ root, readFile, log = console.error }) {
   return async function handle(req, res) {
     const rel = resolveRequestPath(req.url);
-    if (rel === null) { res.writeHead(400); res.end(); return; }
+    const file = rel === null ? null : safeJoin(root, rel);
+    if (file === null) { res.writeHead(400); res.end(); return; }
     try {
-      const data = await readFile(posix.join(root, rel));
+      const data = await readFile(file);
       res.writeHead(200, { "content-type": mimeFor(rel) });
       res.end(data);
     } catch (err) {
@@ -100,8 +118,10 @@ export function createStaticHandler({ root, readFile, log = console.error }) {
 /* ── frame naming and timing (capture.mjs) ────────────────────────────────── */
 
 export const frameName = (i) => `${String(i).padStart(5, "0")}.png`;
-export const scoutName = (t) => `scout-${String(t).replace(".", "_")}.png`;
-export const stopName = (tag, p) => `${tag}-${String(p).replace(".", "_")}.png`;
+// every dot, not just the first: a number only ever carries one, but a name
+// that silently keeps a second is a file written somewhere unintended
+export const scoutName = (t) => `scout-${String(t).replaceAll(".", "_")}.png`;
+export const stopName = (tag, p) => `${tag}-${String(p).replaceAll(".", "_")}.png`;
 
 /** Normalised time in [0,1] for frame `i` of `n`. A one-frame bake has no
  *  interval to divide by, so it is rejected rather than yielding Infinity. */

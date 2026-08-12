@@ -4,7 +4,7 @@
    is worth asserting on. */
 import { describe, it, expect, vi } from "vitest";
 import {
-  parseArgs, numArg, mimeFor, resolveRequestPath, createStaticHandler,
+  parseArgs, numArg, mimeFor, resolveRequestPath, safeJoin, createStaticHandler,
   frameName, scoutName, stopName, frameTime, frameRange, parseScoutStops, dataUrlToBuffer,
   trimEnds, percentile, summariseFrames, formatFrames,
   throttleProfile, totalEncodedBytes, cumulativeLayoutShift,
@@ -126,6 +126,35 @@ describe("resolveRequestPath", () => {
   });
 });
 
+describe("safeJoin", () => {
+  it("resolves a path inside the root to an absolute path", () => {
+    expect(safeJoin("/docs", "/demos/soglia/index.html")).toBe("/docs/demos/soglia/index.html");
+  });
+
+  it("accepts the root itself", () => {
+    expect(safeJoin("/docs", "/")).toBe("/docs");
+  });
+
+  it("tolerates a relative input", () => {
+    expect(safeJoin("/docs", "app.js")).toBe("/docs/app.js");
+  });
+
+  it("refuses a path that resolves outside the root", () => {
+    expect(safeJoin("/docs", "/../etc/passwd")).toBeNull();
+    expect(safeJoin("/docs", "/demos/../../etc/passwd")).toBeNull();
+  });
+
+  it("refuses a sibling directory that merely shares the root's prefix", () => {
+    // /docs-secret must not pass just because it starts with /docs
+    expect(safeJoin("/docs", "/../docs-secret/keys.txt")).toBeNull();
+  });
+
+  it("refuses non-string input", () => {
+    expect(safeJoin("/docs", undefined)).toBeNull();
+    expect(safeJoin(undefined, "/a")).toBeNull();
+  });
+});
+
 describe("createStaticHandler", () => {
   const mkRes = () => ({ code: null, headers: null, body: null,
     writeHead(c, h) { this.code = c; this.headers = h ?? null; },
@@ -159,6 +188,18 @@ describe("createStaticHandler", () => {
     expect(log).toHaveBeenCalledWith(expect.stringContaining("EACCES"));
   });
 
+  it("resolves the root before reading, rather than pasting strings together", async () => {
+    // a root with a trailing slash or an unresolved segment must still produce
+    // one clean absolute path — this is safeJoin doing the work, not concatenation
+    const readFile = vi.fn().mockResolvedValue("x");
+    await createStaticHandler({ root: "/docs/", readFile })({ url: "/app.js" }, mkRes());
+    expect(readFile).toHaveBeenCalledWith("/docs/app.js");
+
+    readFile.mockClear();
+    await createStaticHandler({ root: "/docs/demos/..", readFile })({ url: "/app.js" }, mkRes());
+    expect(readFile).toHaveBeenCalledWith("/docs/app.js");
+  });
+
   it("400s a request that escapes the root, without touching the disk", async () => {
     const readFile = vi.fn();
     const res = mkRes();
@@ -182,6 +223,11 @@ describe("frame naming", () => {
     expect(scoutName(0)).toBe("scout-0.png");
     expect(stopName("m", 0.62)).toBe("m-0_62.png");
     expect(stopName("d", 1)).toBe("d-1.png");
+  });
+
+  it("replaces every dot, not just the first", () => {
+    expect(scoutName("0.1.2")).toBe("scout-0_1_2.png");
+    expect(stopName("d", "0.1.2")).toBe("d-0_1_2.png");
   });
 });
 

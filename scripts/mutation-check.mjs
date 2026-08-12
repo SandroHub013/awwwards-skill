@@ -44,16 +44,26 @@ const MUTATIONS = [
   ["resolve: accept relative paths", `if (!p.startsWith("/")) return null;`, ``],
   ["resolve: accept empty input", `if (typeof url !== "string" || url === "") return null;`, `if (typeof url !== "string") return "/";`],
 
+  // ---- safeJoin
+  ["safeJoin: no containment check", `if (target !== base && !target.startsWith(base + sep)) return null;`, ``],
+  ["safeJoin: prefix test without the separator", `!target.startsWith(base + sep)`, `!target.startsWith(base)`],
+  ["safeJoin: reject the root itself", `if (target !== base && `, `if (`],
+  ["safeJoin: no type guard", `if (typeof root !== "string" || typeof rel !== "string") return null;`, ``],
+  ["safeJoin: ignore the root", `resolve(base, \`.\${rel.startsWith("/") ? rel : \`/\${rel}\`}\`)`, `resolve(rel)`],
+
   // ---- createStaticHandler
   ["handler: 200 on read failure", `if (err?.code !== "ENOENT") log(`, `if (false) log(`],
   ["handler: log every 404", `if (err?.code !== "ENOENT") log`, `if (true) log`],
-  ["handler: serve despite a bad path", `if (rel === null) { res.writeHead(400); res.end(); return; }`, ``],
+  ["handler: serve despite a bad path", `if (file === null) { res.writeHead(400); res.end(); return; }`, ``],
+  ["handler: bypass safeJoin", `const file = rel === null ? null : safeJoin(root, rel);`, `const file = rel === null ? null : root + rel;`],
   ["handler: wrong content type", `mimeFor(rel)`, `"text/plain"`],
 
   // ---- frame naming / timing
   ["frameName: pad to 4", `padStart(5, "0")`, `padStart(4, "0")`],
-  ["scoutName: keep the dot", `scout-\${String(t).replace(".", "_")}`, `scout-\${t}`],
-  ["stopName: keep the dot", `\${tag}-\${String(p).replace(".", "_")}`, `\${tag}-\${p}`],
+  ["scoutName: keep the dot", `scout-\${String(t).replaceAll(".", "_")}`, `scout-\${t}`],
+  ["scoutName: replace only the first dot", `scout-\${String(t).replaceAll(".", "_")}`, `scout-\${String(t).replace(".", "_")}`],
+  ["stopName: keep the dot", `\${tag}-\${String(p).replaceAll(".", "_")}`, `\${tag}-\${p}`],
+  ["stopName: replace only the first dot", `\${tag}-\${String(p).replaceAll(".", "_")}`, `\${tag}-\${String(p).replace(".", "_")}`],
   ["frameTime: off-by-one", `return i / (n - 1);`, `return i / n;`],
   ["frameTime: allow n<2", `if (!Number.isInteger(n) || n < 2) throw new RangeError`, `if (false) throw new RangeError`],
   ["frameRange: default to n", `numArg(args, "to", n - 1)`, `numArg(args, "to", n)`],

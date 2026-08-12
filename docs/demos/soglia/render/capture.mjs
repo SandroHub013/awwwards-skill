@@ -7,9 +7,8 @@ import puppeteer from "puppeteer-core";
 import { mkdir, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import {
-  parseArgs, numArg, mimeFor, resolveRequestPath,
+  parseArgs, numArg, mimeFor, resolveRequestPath, safeJoin,
   frameName, scoutName, frameTime, frameRange, parseScoutStops, dataUrlToBuffer,
 } from "./lib.mjs";
 
@@ -22,9 +21,9 @@ const OUT = typeof args.out === "string" ? args.out : "frames";
 // tiny static server so the CDN import and module graph behave exactly like prod
 const server = createServer(async (req, res) => {
   const rel = resolveRequestPath(req.url);
-  if (rel === null) { res.writeHead(400); res.end(); return; }
+  const path = rel === null ? null : safeJoin(import.meta.dirname, rel);
+  if (path === null) { res.writeHead(400); res.end(); return; }
   try {
-    const path = join(import.meta.dirname, rel);
     const data = await readFile(path);
     res.writeHead(200, { "content-type": mimeFor(path) });
     res.end(data);
