@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  structure:
+    name: structure and links
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      # Asserts the frontmatter, the manifests, every relative link, the
+      # install scripts' safety properties and that no scratch directory
+      # is tracked again.
+      - name: Tests
+        run: npm test
+
+  shell:
+    name: install scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ShellCheck install.sh
+        run: shellcheck --shell=sh install.sh
+
+      - name: PSScriptAnalyzer install.ps1
+        shell: pwsh
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          # PSAvoidUsingWriteHost targets library code, where writing
+          # straight to the console steals output a caller wanted to
+          # capture. This is an installer whose entire job is to tell a
+          # human what it is doing, which is the documented exception.
+          $found = Invoke-ScriptAnalyzer -Path install.ps1 `
+            -Severity Error, Warning `
+            -ExcludeRule PSAvoidUsingWriteHost
+          $found | Format-Table -AutoSize
+          if ($found) { exit 1 }
+
+  json:
+    name: manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate every tracked JSON file
+        run: |
+          set -eu
+          git ls-files '*.json' | while read -r file; do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$file"
+            echo "ok  $file"
+          done
