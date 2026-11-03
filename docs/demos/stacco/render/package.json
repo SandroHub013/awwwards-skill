@@ -11,6 +11,6 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "puppeteer-core": "^25.4.0"
+    "puppeteer-core": "^25.16.0"
   }
 }
