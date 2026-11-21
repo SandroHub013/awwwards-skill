@@ -73,6 +73,7 @@ describe('SKILL.md', () => {
 describe('manifest del plugin', () => {
   const plugin = JSON.parse(read('.claude-plugin/plugin.json'));
   const marketplace = JSON.parse(read('.claude-plugin/marketplace.json'));
+  const agPlugin = JSON.parse(read('.antigravity-plugin/plugin.json'));
   const pkg = JSON.parse(read('package.json'));
 
   it('marketplace.json elenca almeno un plugin', () => {
@@ -92,6 +93,15 @@ describe('manifest del plugin', () => {
 
   it('plugin.json è JSON valido con un nome', () => {
     expect(typeof plugin).toBe('object');
+  });
+
+  it('la versione del plugin antigravity combacia con package.json', () => {
+    expect(agPlugin.version).toBe(pkg.version);
+  });
+
+  it('plugin.json antigravity è JSON valido con un nome', () => {
+    expect(typeof agPlugin).toBe('object');
+    expect(agPlugin.name).toBe('awwwards');
   });
 });
 
@@ -184,12 +194,39 @@ describe('install.sh', () => {
     expect(script).not.toMatch(/git\s+.*reset\s+--hard/);
   });
 
-  it('rispetta CLAUDE_SKILLS_DIR', () => {
+  it('rispetta CLAUDE_SKILLS_DIR e AGENTS_SKILLS_DIR', () => {
     expect(script).toContain('CLAUDE_SKILLS_DIR');
+    expect(script).toContain('AGENTS_SKILLS_DIR');
   });
 
   it('non scrive fuori dalla directory della skill', () => {
     expect(script).not.toMatch(/rm\s+-rf\s+[$"']*\$HOME[/"'\s]*$/m);
+  });
+});
+
+describe('install.ps1', () => {
+  const script = read('install.ps1');
+
+  it('arresta l\'esecuzione su errore', () => {
+    expect(script).toContain("$ErrorActionPreference = 'Stop'");
+  });
+
+  it('non fa pull distruttivi', () => {
+    expect(script).toContain('--ff-only');
+    expect(script).not.toMatch(/git\s+.*reset\s+--hard/);
+  });
+
+  it('supporta AGENTS_SKILLS_DIR e CLAUDE_SKILLS_DIR', () => {
+    expect(script).toContain('AGENTS_SKILLS_DIR');
+    expect(script).toContain('CLAUDE_SKILLS_DIR');
+  });
+
+  it('supporta la cartella .agents per Antigravity', () => {
+    expect(script).toContain('.agents');
+  });
+
+  it('non cancella ricorsivamente la cartella utente di root', () => {
+    expect(script).not.toMatch(/Remove-Item\s+-Recurse\s+-Force\s+["']\$env:USERPROFILE["']\s*$/m);
   });
 });
 
