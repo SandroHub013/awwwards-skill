@@ -24,13 +24,14 @@ curl -fsSL https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/in
 <summary><b>Windows, plain git, or Claude Code plugin</b></summary>
 
 ```powershell
-# Windows PowerShell
+# Windows PowerShell (Antigravity 2.0 & Claude Code)
 irm https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.ps1 | iex
 ```
 
 ```sh
-# no pipe to shell
+# no pipe to shell (Claude Code or Antigravity 2.0)
 git clone https://github.com/SandroHub013/awwwards-skill.git ~/.claude/skills/awwwards
+git clone https://github.com/SandroHub013/awwwards-skill.git ~/.agents/skills/awwwards
 ```
 
 ```
@@ -39,12 +40,12 @@ git clone https://github.com/SandroHub013/awwwards-skill.git ~/.claude/skills/aw
 /plugin install awwwards@awwwards-skill
 ```
 
-All routes install to `~/.claude/skills/awwwards`. Re-run the one-liner to update.
-Remove with `rm -rf ~/.claude/skills/awwwards`.
+Install routes target `~/.agents/skills/awwwards` or `~/.claude/skills/awwwards`.
+Re-run the one-liner to update. Remove with `rm -rf ~/.agents/skills/awwwards` (or `.claude`).
 
 </details>
 
-Then restart Claude Code (or `/reload-skills`) and say:
+Then restart Antigravity or Claude Code (or `/reload-skills`) and say:
 
 ```
 /awwwards                                        read the workflow

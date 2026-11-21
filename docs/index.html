@@ -587,7 +587,7 @@
           <code id="s-sh">curl -fsSL https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.sh | sh</code>
           <button type="button" class="copy" data-copy="#s-sh"><span class="copy__label">Copy</span></button>
         </div>
-        <p class="snippet__note">Clones into <code>~/.claude/skills/awwwards</code>. Re-run to update.</p>
+        <p class="snippet__note">Clones into <code>~/.agents/skills/awwwards</code> or <code>~/.claude/skills/awwwards</code>. Re-run to update.</p>
       </div>
 
       <div class="tabs__panel" role="tabpanel" id="panel-ps" aria-labelledby="tab-ps" tabindex="0" hidden>
@@ -595,15 +595,15 @@
           <code id="s-ps">irm https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.ps1 | iex</code>
           <button type="button" class="copy" data-copy="#s-ps"><span class="copy__label">Copy</span></button>
         </div>
-        <p class="snippet__note">PowerShell. Same destination, same update behaviour.</p>
+        <p class="snippet__note">PowerShell (Windows 10/11). Supports Antigravity and Claude Code destinations.</p>
       </div>
 
       <div class="tabs__panel" role="tabpanel" id="panel-git" aria-labelledby="tab-git" tabindex="0" hidden>
         <div class="snippet">
-          <code id="s-git">git clone https://github.com/SandroHub013/awwwards-skill.git ~/.claude/skills/awwwards</code>
+          <code id="s-git">git clone https://github.com/SandroHub013/awwwards-skill.git ~/.agents/skills/awwwards</code>
           <button type="button" class="copy" data-copy="#s-git"><span class="copy__label">Copy</span></button>
         </div>
-        <p class="snippet__note">No pipe to shell. Read every line first. You should.</p>
+        <p class="snippet__note">No pipe to shell. Target <code>~/.agents/skills/awwwards</code> (Antigravity) or <code>~/.claude/skills/awwwards</code>.</p>
       </div>
 
       <div class="tabs__panel" role="tabpanel" id="panel-plugin" aria-labelledby="tab-plugin" tabindex="0" hidden>
